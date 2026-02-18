@@ -26,6 +26,9 @@
       # fonts
       nerd-fonts.fira-code
       nerd-fonts.fira-mono
+
+      # themes 
+      kitty-themes
     ];
   };
 }

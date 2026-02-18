@@ -27,7 +27,7 @@
     }@inputs:
     let
       # TODO: replace with your username
-      primaryUser = "YOUR_USERNAME";
+      primaryUser = "nunocf";
     in
     {
       # build darwin flake using:

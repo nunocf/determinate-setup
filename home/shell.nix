@@ -4,8 +4,19 @@ _: {
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    historySubstringSearch.enable = true;
+    history = {
+      expireDuplicatesFirst = true;
+      ignoreDups = true;
+      ignoreSpace = true;
+      save = 20000;
+      size = 20000;
+      share = true;
+      append = true;
+    };
 
     shellAliases = {
+      ls = "ls --color=auto -F";
       la = "ls -la";
       ".." = "cd ..";
       "nix-switch" = "sudo darwin-rebuild switch --flake ~/.config/nix";
