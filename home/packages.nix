@@ -24,9 +24,10 @@
 
       # fonts
       nerd-fonts.fira-code
-      nerd-fonts.fira-mono
+      nerd-fonts.jetbrains-mono
+      nerd-fonts._0xproto
 
-      # themes 
+      # themes
       kitty-themes
 
     ];

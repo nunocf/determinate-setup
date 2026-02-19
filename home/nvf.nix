@@ -78,13 +78,28 @@
 
       formatter.conform-nvim.enable = true;
       telescope.enable = true;
-      statusline.lualine.enable = true;
+      statusline.lualine = {
+        enable = true;
+        theme = "everforest";
+
+      };
 
       autopairs.nvim-autopairs.enable = true;
 
       autocomplete.nvim-cmp.enable = true;
       lineNumberMode = "number";
-      visuals.nvim-cursorline.enable = true;
+
+      visuals = {
+        indent-blankline.enable = true;
+        nvim-cursorline = {
+          enable = true;
+          setupOpts = {
+            cursorline.enable = true;
+            cursorword.enable = true;
+          };
+        };
+      };
+
       binds.whichKey.enable = true;
     };
   };

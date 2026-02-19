@@ -24,8 +24,6 @@
 
       # dev
       "cursor"
-      "visual-studio-code"
-      "ghostty"
       "zed"
 
       # messaging
@@ -35,7 +33,7 @@
       # other
       "1password"
       "protonvpn"
-      "thebrowsercompany-dia"
+      "arc"
     ];
     brews = [
     ];
