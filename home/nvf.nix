@@ -1,5 +1,4 @@
 {
-
   programs.nvf = {
     enable = true;
     settings.vim = {
@@ -56,15 +55,19 @@
       lsp = {
         enable = true;
         formatOnSave = true;
-
+        otter-nvim.enable = true;
+        null-ls.enable = true;
       };
       languages = {
+        enableFormat = true;
+        enableTreesitter = true;
         nix = {
           enable = true;
+          format.enable = true;
         };
-
         markdown.enable = true;
         haskell.enable = true;
+        lua.enable = true;
       };
 
       clipboard = {
@@ -99,6 +102,7 @@
 
       binds.whichKey.enable = true;
       statusline.lualine = import ./nvim/lualine.nix;
+      tabline.nvimBufferline = import ./nvim/bufferline.nix;
     };
   };
 }

@@ -9,24 +9,11 @@
 
     # Diff
     c = [
-      ''
+      ''           
         {
               "diff",
               symbols = { added = " ", modified = " ", removed = " " },
               diff_color = { added = "DiffAdd", modified = "DiffChange", removed = "DiffDelete" },
-              separator = { right = '' },
-              padding = { left = 1, right = 1 }
-            }''
-      ''
-        {
-              "diagnostics",
-              symbols = { error = "", warn = "", info = "", hint = "󰌵" },
-              diagnostics_color = {
-                error = "DiagnosticError",
-                warn  = "DiagnosticWarn",
-                info  = "DiagnosticInfo",
-                hint  = "DiagnosticHint"
-              },
               separator = { right = '' },
               padding = { left = 1, right = 1 }
             }''
