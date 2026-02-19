@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home = {
     packages = with pkgs; [
       # dev tools
@@ -11,6 +10,8 @@
       ripgrep
       gh
       zoxide
+      less
+      fzf
 
       # programming languages
 
@@ -29,7 +30,6 @@
 
       # themes
       kitty-themes
-
     ];
   };
 }

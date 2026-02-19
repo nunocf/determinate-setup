@@ -1,5 +1,4 @@
-{ primaryUser, ... }:
-{
+{primaryUser, ...}: {
   imports = [
     ./packages.nix
     ./git.nix
@@ -13,10 +12,12 @@
     stateVersion = "25.05";
     sessionVariables = {
       # shared environment variables
+      EDITOR = "nvim";
+      TERMINAL = "kitty";
+      PAGER = "less";
     };
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
-
   };
 }
