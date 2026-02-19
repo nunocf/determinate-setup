@@ -17,5 +17,6 @@
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
+
   };
 }
