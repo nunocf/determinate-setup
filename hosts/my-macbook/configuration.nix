@@ -1,6 +1,7 @@
 {
   pkgs,
   primaryUser,
+  nvf,
   ...
 }:
 {
@@ -13,6 +14,9 @@
 
   # host-specific home-manager configuration
   home-manager.users.${primaryUser} = {
+    imports = [
+	nvf.homeManagerModules.default
+	];
     home.packages = with pkgs; [
       graphite-cli
     ];

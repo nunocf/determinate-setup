@@ -5,6 +5,7 @@
     ./git.nix
     ./shell.nix
     ./kitty.nix
+    ./nvf.nix
   ];
 
   home = {

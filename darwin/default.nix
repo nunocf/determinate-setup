@@ -56,7 +56,7 @@
     shell = pkgs.zsh;
   };
   environment = {
-    systemPackages = [pkgs.kitty];
+    systemPackages = [ pkgs.kitty ];
     systemPath = [
       "/opt/homebrew/bin"
     ];

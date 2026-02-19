@@ -1,0 +1,91 @@
+{
+  programs.nvf = {
+    enable = true;
+    settings.vim = {
+      theme = {
+        enable = true;
+        name = "everforest";
+        style = "hard";
+      };
+      options = {
+        tabstop = 2;
+        shiftwidth = 2;
+        expandtab = true;
+        smartindent = true;
+        mouse = "a";
+        splitbelow = true;
+        splitright = true;
+        updatetime = 50;
+        ignorecase = true;
+        smartcase = true;
+
+        swapfile = false;
+        autoread = true;
+        backup = false;
+        undofile = true;
+        signcolumn = "yes";
+        scrolloff = 10;
+        showmode = false;
+        cmdheight = 0;
+        encoding = "utf-8";
+        fileencoding = "utf-8";
+      };
+      globals.mapleader = ",";
+
+      keymaps = [
+        {
+          key = "<leader>vr";
+          mode = "n";
+          action = "<C-W>v";
+          silent = true;
+          desc = "Split window right";
+        }
+        {
+          key = "<leader>vb";
+          mode = "n";
+          action = "<C-W>s";
+          silent = true;
+          desc = "Split window below";
+        }
+      ];
+
+      viAlias = true;
+      vimAlias = true;
+
+      lsp = {
+        enable = true;
+        formatOnSave = true;
+
+      };
+      languages = {
+        nix = {
+          enable = true;
+        };
+
+        markdown.enable = true;
+        haskell.enable = true;
+      };
+
+      clipboard = {
+        enable = true;
+        registers = "unnamedplus";
+      };
+
+      treesitter = {
+        enable = true;
+        indent.enable = true;
+      };
+
+      formatter.conform-nvim.enable = true;
+      telescope.enable = true;
+      statusline.lualine.enable = true;
+
+      autopairs.nvim-autopairs.enable = true;
+
+      autocomplete.nvim-cmp.enable = true;
+      lineNumberMode = "number";
+      visuals.nvim-cursorline.enable = true;
+      binds.whichKey.enable = true;
+    };
+  };
+}

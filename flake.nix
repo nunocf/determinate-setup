@@ -14,6 +14,9 @@
 
     # declarative homebrew management
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    
+    nvf.url = "github:notashelf/nvf";
+    nvf.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -23,10 +26,10 @@
       nixpkgs,
       home-manager,
       nix-homebrew,
+      nvf,
       ...
     }@inputs:
     let
-      # TODO: replace with your username
       primaryUser = "nunocf";
     in
     {
@@ -38,7 +41,7 @@
           ./darwin
           ./hosts/my-macbook/configuration.nix
         ];
-        specialArgs = { inherit inputs self primaryUser; };
+        specialArgs = { inherit inputs self primaryUser nvf; };
       };
 
     };

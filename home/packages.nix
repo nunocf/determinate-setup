@@ -13,7 +13,6 @@
       zoxide
 
       # programming languages
-      mise # node, deno, bun, rust, python, etc.
 
       # misc
       nil
@@ -29,6 +28,7 @@
 
       # themes 
       kitty-themes
+
     ];
   };
 }
