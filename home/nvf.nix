@@ -102,7 +102,7 @@
       terminal.toggleterm = {
         enable = true;
         setupOpts = {direction = "float";};
-        mappings.open = "t";
+        mappings.open = "<leader>t";
         lazygit = {
           enable = true;
         };
