@@ -103,6 +103,7 @@
       binds.whichKey.enable = true;
       statusline.lualine = import ./nvim/lualine.nix;
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
+      mini = import ./home/mini.nix;
     };
   };
 }
