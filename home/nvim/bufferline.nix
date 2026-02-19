@@ -8,10 +8,10 @@
       numbers = "none";
       diagnostics = false;
     };
-    mappings = {
-      cycleNext = "n";
-      cyclePrevious = "N";
-      closeCurrent = "bn";
-    };
+  };
+  mappings = {
+    cycleNext = "n";
+    cyclePrevious = "N";
+    closeCurrent = "bn";
   };
 }
