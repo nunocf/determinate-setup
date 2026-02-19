@@ -99,11 +99,19 @@
         };
         nvim-web-devicons.enable = true;
       };
+      terminal.toggleterm = {
+        enable = true;
+        setupOpts = {direction = "float";};
+        mappings.open = "t";
+        lazygit = {
+          enable = true;
+        };
+      };
 
       binds.whichKey.enable = true;
       statusline.lualine = import ./nvim/lualine.nix;
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
-      mini = import ./home/mini.nix;
+      mini = import ./nvim/mini.nix;
     };
   };
 }
