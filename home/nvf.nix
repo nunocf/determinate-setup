@@ -98,7 +98,10 @@
           };
         };
         nvim-web-devicons.enable = true;
+        fidget-nvim.enable = true;
       };
+      ui.noice.enable = true;
+
       terminal.toggleterm = {
         enable = true;
         setupOpts = {direction = "float";};
@@ -111,6 +114,16 @@
       binds.whichKey.enable = true;
       statusline.lualine = import ./nvim/lualine.nix;
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
+      utility = {
+        motion.flash-nvim = import ./nvim/flash.nix;
+        oil-nvim = {
+          enable = true;
+          setupOpts = {
+            skip_confirm_for_simple_edits = true;
+            default_file_explorer = true;
+          };
+        };
+      };
       mini = import ./nvim/mini.nix;
     };
   };
