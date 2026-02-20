@@ -47,6 +47,13 @@
           silent = true;
           desc = "Split window below";
         }
+        {
+          key = "-";
+          mode = "n";
+          action = "<CMD>Oil --float<CR>";
+          silent = true;
+          desc = "Open Oil in a floating window";
+        }
       ];
 
       viAlias = true;
