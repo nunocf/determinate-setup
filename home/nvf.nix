@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   programs.nvf = {
     enable = true;
     settings.vim = {
@@ -131,7 +131,14 @@
             default_file_explorer = true;
           };
         };
+        snacks-nvim = {
+          enable = true;
+          setupOpts = {
+            dashboard = import ./nvim/dashboard.nix;
+          };
+        };
       };
+
       mini = import ./nvim/mini.nix;
     };
   };
