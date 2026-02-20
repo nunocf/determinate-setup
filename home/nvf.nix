@@ -116,6 +116,7 @@
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
       utility = {
         motion.flash-nvim = import ./nvim/flash.nix;
+        surround.enable = true;
         oil-nvim = {
           enable = true;
           setupOpts = {
