@@ -4,8 +4,7 @@
   self,
   primaryUser,
   ...
-}:
-{
+}: {
   imports = [
     ./homebrew.nix
     ./settings.nix
@@ -56,10 +55,10 @@
     shell = pkgs.zsh;
   };
   environment = {
-    systemPackages = [ pkgs.kitty ];
+    systemPackages = [pkgs.kitty];
     systemPath = [
       "/opt/homebrew/bin"
     ];
-    pathsToLink = [ "/Applications" ];
+    pathsToLink = ["/Applications"];
   };
 }
