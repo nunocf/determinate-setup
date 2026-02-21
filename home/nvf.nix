@@ -88,6 +88,7 @@
         fold = true;
         indent.enable = true;
         textobjects.enable = true;
+        autotagHtml = true;
       };
 
       formatter.conform-nvim.enable = true;
