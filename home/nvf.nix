@@ -100,7 +100,6 @@
       lineNumberMode = "number";
 
       visuals = {
-        indent-blankline.enable = true;
         nvim-cursorline = {
           enable = true;
           setupOpts = {
@@ -135,12 +134,7 @@
             default_file_explorer = true;
           };
         };
-        snacks-nvim = {
-          enable = true;
-          setupOpts = {
-            dashboard = import ./nvim/dashboard.nix;
-          };
-        };
+        snacks-nvim = import ./nvim/snacks-nvim.nix;
       };
 
       mini = import ./nvim/mini.nix;
