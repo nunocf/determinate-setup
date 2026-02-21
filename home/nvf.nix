@@ -5,9 +5,6 @@
 }: {
   programs.nvf = {
     enable = true;
-    extraLuaFiles = [
-      ./nvim/extraConfig.lua
-    ];
     settings.vim = {
       theme = {
         enable = true;
@@ -35,6 +32,9 @@
 
         '';
       };
+      extraLuaFiles = [
+        ./nvim/extraConfig.lua
+      ];
 
       options = {
         tabstop = 2;
