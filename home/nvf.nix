@@ -32,30 +32,7 @@
       };
       globals.mapleader = ",";
 
-      keymaps = [
-        {
-          key = "<leader>vr";
-          mode = "n";
-          action = "<C-W>v";
-          silent = true;
-          desc = "Split window right";
-        }
-        {
-          key = "<leader>vb";
-          mode = "n";
-          action = "<C-W>s";
-          silent = true;
-          desc = "Split window below";
-        }
-        {
-          key = "-";
-          mode = "n";
-          action = "<CMD>Oil --float<CR>";
-          silent = true;
-          desc = "Open Oil in a floating window";
-        }
-      ];
-
+      keymaps = import ./nvim/keymaps.nix;
       viAlias = true;
       vimAlias = true;
 
@@ -87,8 +64,8 @@
         enable = true;
         fold = true;
         indent.enable = true;
-        textobjects.enable = true;
-        autotagHtml = true;
+        # textobjects.enable = true;
+        # autotagHtml = true;
       };
 
       formatter.conform-nvim.enable = true;
