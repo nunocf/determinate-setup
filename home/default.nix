@@ -1,4 +1,8 @@
-{primaryUser, ...}: {
+{
+  primaryUser,
+  pkgs,
+  ...
+}: {
   imports = [
     ./packages.nix
     ./git.nix
@@ -15,9 +19,11 @@
       EDITOR = "nvim";
       TERMINAL = "kitty";
       PAGER = "less";
+      PATH = ''${pkgs.neovim}/bin:$PATH'';
     };
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
+    file.".config/nvf/init.lua".text = "";
   };
 }
