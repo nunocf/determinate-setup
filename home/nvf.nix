@@ -92,7 +92,7 @@
       };
 
       formatter.conform-nvim.enable = true;
-      telescope.enable = true;
+      # telescope.enable = true;
 
       autopairs.nvim-autopairs.enable = true;
 

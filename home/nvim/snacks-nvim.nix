@@ -10,5 +10,6 @@
     scroll.enable = true;
     statuscolumn.enable = false;
     words.enable = true;
+    picker.enable = true;
   };
 }
