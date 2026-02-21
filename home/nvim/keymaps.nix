@@ -1,17 +1,22 @@
 [
   # Window splits
+
+  {
+    key = "<leader>v";
+    mode = "n";
+    action = "";
+    desc = "Splits";
+  }
   {
     key = "<leader>vr";
     mode = "n";
     action = "<C-W>v";
-    silent = true;
     desc = "Split window right";
   }
   {
     key = "<leader>vb";
     mode = "n";
     action = "<C-W>s";
-    silent = true;
     desc = "Split window below";
   }
   # Oil
@@ -23,11 +28,12 @@
     desc = "Open Oil in a floating window";
   }
   # Picker
-  # Group label (this creates the "Find" header in which-key)
+
+  # Group label
   {
     mode = "n";
     key = "<leader>f";
-    action = "<cmd>WhichKey<cr>";
+    action = "";
     desc = "Find";
   }
   # Actual picker mappings
@@ -43,5 +49,27 @@
     key = "<leader>fg";
     action = "<cmd>lua Snacks.picker.grep()<cr>";
     desc = "Live grep";
+  }
+
+  # Git (example)
+  {
+    mode = "n";
+    key = "<leader>g";
+    action = "";
+    desc = "Git";
+  }
+  # Comment
+  {
+    mode = "n";
+    key = "gc";
+    action = "";
+    desc = "Comment";
+  }
+  #Folds
+  {
+    mode = "n";
+    key = "gz";
+    action = "";
+    desc = "Folds";
   }
 ]

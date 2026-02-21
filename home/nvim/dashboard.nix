@@ -19,7 +19,7 @@
         action = ":lua Snacks.dashboard.pick('live_grep')";
         desc = " Find Text";
         icon = " ";
-        key = "g";
+        key = "s";
       }
       {
         action = ":qa";
