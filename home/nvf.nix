@@ -1,4 +1,4 @@
-{
+{pkgs, ...}: {
   programs.nvf = {
     enable = true;
     settings.vim = {
@@ -27,8 +27,6 @@
         scrolloff = 10;
         showmode = false;
         cmdheight = 0;
-        encoding = "utf-8";
-        fileencoding = "utf-8";
       };
       globals.mapleader = ",";
 
@@ -38,21 +36,17 @@
 
       lsp = {
         enable = true;
-        formatOnSave = true;
         otter-nvim.enable = true;
-        null-ls.enable = true;
       };
       languages = {
-        enableFormat = true;
-        enableTreesitter = true;
-        nix = {
-          enable = true;
-          format.enable = true;
-        };
+        nix.enable = true;
         markdown.enable = true;
         haskell.enable = true;
         lua.enable = true;
         html.enable = true;
+        css.enable = true;
+        bash.enable = true;
+        ts.enable = true;
       };
 
       clipboard = {
@@ -63,9 +57,9 @@
       treesitter = {
         enable = true;
         fold = true;
-        indent.enable = true;
         # textobjects.enable = true;
         # autotagHtml = true;
+        autotagHtml = true;
       };
 
       formatter.conform-nvim.enable = true;
@@ -98,7 +92,20 @@
         };
       };
 
-      binds.whichKey.enable = true;
+      binds.whichKey = {
+        enable = true;
+        register = {
+          # "<leader>f" = "Find";
+          # "<leader>g" = "Git";
+          # "<leader>v" = "Splits";
+          # "gc" = "Comment";
+          # "gz" = "Folds";
+        };
+        setupOpts = {
+          show_help = false;
+          operators_ignore = ["gc" "gz" "gZ" "i" "a"];
+        };
+      };
       statusline.lualine = import ./nvim/lualine.nix;
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
       utility = {

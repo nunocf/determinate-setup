@@ -3,7 +3,7 @@
     packages = with pkgs; [
       # dev tools
       curl
-      vim
+      neovim
       tmux
       htop
       tree
@@ -12,8 +12,16 @@
       zoxide
       less
       fzf
+      lazygit
+      imagemagick
+      ghostscript
+      tectonic
+      mermaid-cli
+      fd
 
       # programming languages
+      nodejs
+      tree-sitter
 
       # misc
       nil
