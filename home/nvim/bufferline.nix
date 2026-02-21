@@ -10,8 +10,8 @@
     };
   };
   mappings = {
-    cycleNext = "n";
-    cyclePrevious = "N";
-    closeCurrent = "bn";
+    cycleNext = "<leader>n";
+    cyclePrevious = "<leader>N";
+    closeCurrent = "<leader>bn";
   };
 }
