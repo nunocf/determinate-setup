@@ -85,8 +85,8 @@
 
       treesitter = {
         enable = true;
+        fold = true;
         indent.enable = true;
-        folds.enable = true;
         textobjects.enable = true;
       };
 
