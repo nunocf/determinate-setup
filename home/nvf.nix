@@ -79,9 +79,14 @@
           };
         };
         nvim-web-devicons.enable = true;
-        fidget-nvim.enable = true;
+      ui.noice = {
+        enable = true;
+        setupOpts = {
+          lsp = {
+            signature.enabled = true;
+          };
+        };
       };
-      ui.noice.enable = true;
 
       terminal.toggleterm = {
         enable = true;
