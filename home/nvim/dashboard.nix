@@ -1,6 +1,5 @@
 {
   sections = [
-    {section = "header";}
     {
       section = "keys";
       gap = 1;
