@@ -75,6 +75,7 @@
         markdown.enable = true;
         haskell.enable = true;
         lua.enable = true;
+        html.enable = true;
       };
 
       clipboard = {
@@ -85,6 +86,8 @@
       treesitter = {
         enable = true;
         indent.enable = true;
+        folds.enable = true;
+        textobjects.enable = true;
       };
 
       formatter.conform-nvim.enable = true;
