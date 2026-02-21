@@ -9,7 +9,7 @@
 
     # Diff
     c = [
-      ''           
+      ''         
         {
               "diff",
               symbols = { added = " ", modified = " ", removed = " " },
