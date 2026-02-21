@@ -11,5 +11,9 @@
     statuscolumn.enable = false;
     words.enable = true;
     picker.enable = true;
+    explorer.enable = true;
+    image.enable = true;
+    lazygit.enable = true;
+    input.enable = true;
   };
 }
