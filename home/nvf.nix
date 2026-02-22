@@ -82,6 +82,7 @@
         nix.enable = true;
         markdown.enable = true;
         haskell.enable = true;
+
         lua = {
           enable = true;
           lsp.lazydev.enable = true;
@@ -131,13 +132,13 @@
         linters = {
           statix.cmd = lib.getExe pkgs.statix;
           deadnix.cmd = lib.getExe pkgs.deadnix;
-          hlint.cmd = lib.getExe pkgs.hlint;
           shellcheck.cmd = lib.getExe pkgs.shellcheck;
 
           # If this attr isn't present in your nixpkgs, use pkgs.luajitPackages.luacheck
           luacheck.cmd = lib.getExe pkgs.luajitPackages.luacheck;
 
           markdownlint-cli2.cmd = lib.getExe pkgs.nodePackages.markdownlint-cli2;
+          hlint.cmd = "hlint";
 
           eslint_d = {
             cmd = lib.getExe pkgs.nodePackages.eslint_d;
@@ -254,10 +255,10 @@
 
           formatters = {
             alejandra.command = lib.getExe pkgs.alejandra;
-            fourmolu.command = lib.getExe pkgs.fourmolu;
             stylua.command = lib.getExe pkgs.stylua;
             shfmt.command = lib.getExe pkgs.shfmt;
             prettierd.command = lib.getExe pkgs.prettierd;
+            fourmolu.command = "fourmolu";
           };
         };
       };
@@ -380,15 +381,16 @@
           };
         };
         snacks-nvim = import ./nvim/snacks-nvim.nix;
+        direnv.enable = true;
       };
 
       mini = import ./nvim/mini.nix;
 
       notes.todo-comments.enable = true;
 
-      startPlugins = [
-        pkgs.vimPlugins.vim-nix
-      ];
+      # startPlugins = [
+      #   pkgs.vimPlugins.vim-nix
+      # ];
     };
   };
 }

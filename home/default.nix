@@ -9,6 +9,7 @@
     ./shell.nix
     ./kitty.nix
     ./nvf.nix
+    ./direnv.nix
   ];
 
   home = {
