@@ -32,6 +32,8 @@
       };
       extraLuaFiles = [
         ./nvim/extraConfig.lua
+        ./nvim/whichkey.lua
+        ./nvim/trouble.lua
       ];
 
       options = {
@@ -71,10 +73,29 @@
         enable = true;
         trouble = {
           enable = true;
+
           setupOpts = {
-            lsp.win.position = "right";
+            focus = true;
+
+            # IMPORTANT: this fixes your current incorrect nested option
+            win = {
+              position = "right";
+            };
+
+            # Critical for Haskell long errors
+            multiline = true;
+
+            warn_no_results = false;
+
+            modes = {
+              diagnostics = {
+                auto_open = false;
+                auto_close = true;
+              };
+            };
           };
         };
+
         formatOnSave = false;
       };
 
@@ -85,7 +106,11 @@
 
         lua = {
           enable = true;
-          lsp.lazydev.enable = true;
+          lsp = {
+            lazydev.enable = true;
+            # pick the server using the enum NVF wants
+            servers = ["lua-language-server"];
+          };
         };
 
         html.enable = true;
@@ -348,7 +373,7 @@
         setupOpts = {
           direction = "float";
         };
-        mappings.open = "<leader>t";
+        mappings.open = "<leader>tt";
         lazygit = {
           enable = true;
         };
@@ -357,14 +382,13 @@
       binds.whichKey = {
         enable = true;
         setupOpts = {
-          show_help = false;
-          operators_ignore = [
-            "gc"
-            "gz"
-            "gZ"
-            "i"
-            "a"
-          ];
+          preset = "modern";
+          icons = {
+            breadcrumb = "»";
+            separator = "➜";
+            group = "+";
+          };
+          win.border = "rounded";
         };
       };
       statusline.lualine = import ./nvim/lualine.nix;
@@ -387,10 +411,6 @@
       mini = import ./nvim/mini.nix;
 
       notes.todo-comments.enable = true;
-
-      # startPlugins = [
-      #   pkgs.vimPlugins.vim-nix
-      # ];
     };
   };
 }

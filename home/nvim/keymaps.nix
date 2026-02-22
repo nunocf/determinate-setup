@@ -1,158 +1,262 @@
 [
-  # Window splits
+  {
+    key = "<leader><leader>";
+    mode = "n";
+    action = "<cmd>LeaderDashboard<cr>";
+    desc = "Leader dashboard";
+  }
+  ############################################################
+  # FILES / SEARCH
+  ############################################################
 
   {
-    key = "<leader>v";
-    mode = "n";
-    action = "";
-    desc = "Splits";
-  }
-  {
-    key = "<leader>vr";
-    mode = "n";
-    action = "<C-W>v";
-    desc = "Split window right";
-  }
-  {
-    key = "<leader>vb";
-    mode = "n";
-    action = "<C-W>s";
-    desc = "Split window below";
-  }
-  # Oil
-  {
-    key = "-";
-    mode = "n";
-    action = "<CMD>Oil --float<CR>";
-    silent = true;
-    desc = "Open Oil in a floating window";
-  }
-  # Picker
-
-  # Group label
-  {
-    mode = "n";
-    key = "<leader>f";
-    action = "";
-    desc = "Find";
-  }
-  # Actual picker mappings
-  {
-    mode = "n";
     key = "<leader>ff";
-    action = "<cmd>lua Snacks.picker.files()<cr>";
-    desc = "Files";
-  }
-
-  {
     mode = "n";
+    action = "<cmd>lua Snacks.picker.files()<cr>";
+    desc = "Find files";
+  }
+  {
     key = "<leader>fg";
+    mode = "n";
     action = "<cmd>lua Snacks.picker.grep()<cr>";
     desc = "Live grep";
   }
   {
-    mode = "n";
     key = "<leader>fb";
+    mode = "n";
     action = "<cmd>lua Snacks.picker.buffers()<cr>";
     desc = "Buffers";
   }
-
   {
-    mode = "n";
     key = "<leader>fr";
+    mode = "n";
     action = "<cmd>lua Snacks.picker.recent()<cr>";
     desc = "Recent files";
   }
 
-  # Git (example)
+  ############################################################
+  # GIT / BUILD
+  ############################################################
+
   {
+    key = "<leader>gt";
     mode = "n";
-    key = "<leader>g";
-    action = "";
-    desc = "Git";
+    action = "<cmd>SmartGhcid<cr>";
+    desc = "Run ghcid";
   }
-  # Comment
   {
+    key = "<leader>gl";
     mode = "n";
-    key = "gc";
-    action = "";
-    desc = "Comment";
+    action = "<cmd>LazyGit<cr>";
+    desc = "LazyGit";
   }
-  #Folds
+
+  ############################################################
+  # DIAGNOSTICS / ERRORS
+  ############################################################
+
   {
+    key = "<leader>xn";
     mode = "n";
-    key = "gz";
-    action = "";
-    desc = "Folds";
-  }
-  # Noice group
-  {
-    key = "<leader>sn";
-    mode = "n";
-    action = "";
-    desc = "Noice";
+    silent = true;
+    action = ''
+      function()
+        vim.diagnostic.goto_next({severity=vim.diagnostic.severity.ERROR})
+        vim.diagnostic.open_float(nil,{focus=false})
+      end
+    '';
+    desc = "Next error";
   }
 
   {
-    key = "<leader>snl";
+    key = "<leader>xp";
     mode = "n";
-    action = "<cmd>Noice last<cr>";
-    desc = "Noice Last Message";
-  }
-
-  {
-    key = "<leader>snh";
-    mode = "n";
-    action = "<cmd>Noice history<cr>";
-    desc = "Noice History";
-  }
-
-  {
-    key = "<leader>sna";
-    mode = "n";
-    action = "<cmd>Noice all<cr>";
-    desc = "Noice All";
-  }
-
-  {
-    key = "<leader>snd";
-    mode = "n";
-    action = "<cmd>Noice dismiss<cr>";
-    desc = "Dismiss Notifications";
-  }
-  # Trouble group
-  {
-    key = "<leader>x";
-    mode = "n";
-    action = "";
-    desc = "Diagnostics";
+    silent = true;
+    action = ''
+      function()
+        vim.diagnostic.goto_prev({severity=vim.diagnostic.severity.ERROR})
+        vim.diagnostic.open_float(nil,{focus=false})
+      end
+    '';
+    desc = "Previous error";
   }
 
   {
     key = "<leader>xx";
     mode = "n";
+    action = "<cmd>Trouble diagnostics toggle filter.buf=0<cr>";
+    desc = "Trouble buffer";
+  }
+  {
+    key = "<leader>xX";
+    mode = "n";
     action = "<cmd>Trouble diagnostics toggle<cr>";
-    desc = "Diagnostics";
+    desc = "Trouble workspace";
   }
 
-  {
-    key = "<leader>xw";
-    mode = "n";
-    action = "<cmd>Trouble workspace_diagnostics<cr>";
-    desc = "Workspace Diagnostics";
-  }
+  ############################################################
+  # LSP NAVIGATION
+  ############################################################
 
   {
-    key = "<leader>xd";
+    key = "<leader>ld";
     mode = "n";
-    action = "<cmd>Trouble document_diagnostics<cr>";
-    desc = "Document Diagnostics";
+    action = "<cmd>lua vim.lsp.buf.definition()<cr>";
+    desc = "Definition";
+  }
+  {
+    key = "<leader>lr";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.references()<cr>";
+    desc = "References";
+  }
+  {
+    key = "<leader>lh";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.hover()<cr>";
+    desc = "Hover";
+  }
+  {
+    key = "<leader>li";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.implementation()<cr>";
+    desc = "Implementation";
   }
 
+  ############################################################
+  # CODE ACTIONS / REFACTOR
+  ############################################################
+
   {
-    key = "<leader>xq";
+    key = "<leader>ca";
     mode = "n";
-    action = "<cmd>Trouble quickfix<cr>";
-    desc = "Quickfix";
+    action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
+    desc = "Code action";
+  }
+  {
+    key = "<leader>cr";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.rename()<cr>";
+    desc = "Rename";
+  }
+  {
+    key = "<leader>cf";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.format()<cr>";
+    desc = "Format";
+  }
+
+  ############################################################
+  # BUFFERS
+  ############################################################
+
+  {
+    key = "<leader>bd";
+    mode = "n";
+    action = "<cmd>bdelete<cr>";
+    desc = "Delete buffer";
+  }
+  {
+    key = "<leader>bn";
+    mode = "n";
+    action = "<cmd>bnext<cr>";
+    desc = "Next buffer";
+  }
+  {
+    key = "<leader>bp";
+    mode = "n";
+    action = "<cmd>bprevious<cr>";
+    desc = "Previous buffer";
+  }
+
+  ############################################################
+  # WINDOWS
+  ############################################################
+
+  {
+    key = "<leader>ws";
+    mode = "n";
+    action = "<C-W>s";
+    desc = "Split below";
+  }
+  {
+    key = "<leader>wv";
+    mode = "n";
+    action = "<C-W>v";
+    desc = "Split right";
+  }
+  {
+    key = "<leader>wd";
+    mode = "n";
+    action = "<C-W>c";
+    desc = "Close window";
+  }
+  {
+    key = "<leader>ww";
+    mode = "n";
+    action = "<C-W>w";
+    desc = "Next window";
+  }
+
+  ############################################################
+  # UTILITIES / TOOLS
+  ############################################################
+
+  {
+    key = "<leader>uh";
+    mode = "n";
+    action = "<cmd>checkhealth<cr>";
+    desc = "Check health";
+  }
+
+  ############################################################
+  # UI / TOGGLES
+  ############################################################
+
+  {
+    key = "<leader>sn";
+    mode = "n";
+    action = "<cmd>Noice history<cr>";
+    desc = "Noice history";
+  }
+
+  ############################################################
+  # QUIT / SESSION
+  ############################################################
+
+  {
+    key = "<leader>qq";
+    mode = "n";
+    action = "<cmd>qa<cr>";
+    desc = "Quit all";
+  }
+  {
+    key = "<leader>wq";
+    mode = "n";
+    action = "<cmd>wq<cr>";
+    desc = "Save & quit";
+  }
+  ############################################################
+  # MISC
+  ############################################################
+  # Visual stay in indent mode after < or >
+  {
+    action = "<gv";
+    key = "<";
+    mode = "v";
+  }
+  {
+    action = ">gv";
+    key = ">";
+    mode = "v";
+  }
+
+  # stop highlighting with <CR>
+  {
+    action = "<cmd>nohl<CR>";
+    key = "<CR>";
+    mode = "n";
+    desc = "Clear search highlight";
+    noremap = true;
   }
 ]

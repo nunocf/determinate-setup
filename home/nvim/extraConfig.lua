@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()
 		vim.opt_local.formatoptions:remove({ "c", "r", "o" }) -- no auto comment on Enter/o/O
-		vim.opt_local.formatoptions:append({ "j" })         -- remove comment leader when possible
+		vim.opt_local.formatoptions:append({ "j" }) -- remove comment leader when possible
 	end,
 })
 
