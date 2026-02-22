@@ -45,138 +45,117 @@ ftmap("markdown", "<leader>mw", function()
 end, "Markdown: toggle wrap")
 
 ----------------------------------------------------------------
--- DYNAMIC LEADER DASHBOARD
+-- DYNAMIC LEADER DASHBOARD (NO Snacks.picker UI)
 ----------------------------------------------------------------
 local function leader_dashboard()
-	local actions = {}
+	local items = {} -- list of { label = "...", run = function() ... end }
 
-	--------------------------------------------------------------
-	-- Always available (Snacks pickers)
-	--------------------------------------------------------------
-	local ok_snacks, Snacks = pcall(require, "snacks")
-
-	if ok_snacks then
-		table.insert(actions, {
-			"Find file",
-			function()
-				Snacks.picker.files()
-			end,
-		})
-		table.insert(actions, {
-			"Live grep",
-			function()
-				Snacks.picker.grep()
-			end,
-		})
-		table.insert(actions, {
-			"Buffers",
-			function()
-				Snacks.picker.buffers()
-			end,
-		})
+	local function cmd_exists(name)
+		return vim.fn.exists(":" .. name) == 2
 	end
 
-	--------------------------------------------------------------
-	-- LSP actions
-	--------------------------------------------------------------
-	if next(vim.lsp.get_clients({ bufnr = 0 })) ~= nil then
-		table.insert(actions, { "Go to definition", vim.lsp.buf.definition })
-		table.insert(actions, { "References", vim.lsp.buf.references })
-		table.insert(actions, { "Rename symbol", vim.lsp.buf.rename })
-		table.insert(actions, { "Code action", vim.lsp.buf.code_action })
-	end
-
-	--------------------------------------------------------------
-	-- Diagnostics
-	--------------------------------------------------------------
-	if #vim.diagnostic.get(0) > 0 then
-		table.insert(actions, {
-			"Next error",
-			function()
-				vim.diagnostic.goto_next()
-				vim.diagnostic.open_float(nil, { focus = false })
-			end,
-		})
-
-		table.insert(actions, {
-			"Open Trouble",
-			function()
-				vim.cmd("Trouble diagnostics toggle filter.buf=0")
-			end,
-		})
-	end
-
-	--------------------------------------------------------------
-	-- Git detection (works from subfolders)
-	--------------------------------------------------------------
-	if vim.fn.finddir(".git", ".;") ~= "" then
-		table.insert(actions, {
-			"LazyGit",
-			function()
-				vim.cmd("LazyGit")
-			end,
-		})
-	end
-
-	--------------------------------------------------------------
-	-- Haskell tools
-	--------------------------------------------------------------
-	if vim.bo.filetype == "haskell" then
-		if vim.fn.executable("ghcid") == 1 then
-			table.insert(actions, {
-				"Run ghcid",
-				function()
-					vim.cmd("SmartGhcid")
-				end,
-			})
-		end
-
-		table.insert(actions, {
-			"Next typed hole",
-			function()
-				local diags = vim.diagnostic.get(0)
-				local cur = vim.api.nvim_win_get_cursor(0)[1] - 1
-				for _, d in ipairs(diags) do
-					if d.message:match("hole") and d.lnum > cur then
-						vim.api.nvim_win_set_cursor(0, { d.lnum + 1, d.col or 0 })
-						vim.diagnostic.open_float(nil, { focus = false })
-						return
-					end
+	local function add(label, fn)
+		table.insert(items, {
+			label = label,
+			run = function()
+				local ok, err = pcall(fn)
+				if not ok then
+					vim.notify(("Dashboard action failed: %s\n%s"):format(label, err), vim.log.levels.ERROR)
 				end
 			end,
 		})
 	end
 
-	--------------------------------------------------------------
-	-- SHOW MENU (Snacks picker OR fallback)
-	--------------------------------------------------------------
-	if ok_snacks then
-		Snacks.picker({
-			items = actions,
-			format = function(item)
-				return item[1]
-			end,
-			confirm = function(item)
-				item[2]()
-			end,
-			title = "Leader Dashboard",
-		})
+	-- Try to use Snacks' existing pickers (not Snacks UI)
+	local ok_snacks, Snacks = pcall(require, "snacks")
+
+	-- Always available
+	if ok_snacks and Snacks and Snacks.picker then
+		add("Find file", function()
+			Snacks.picker.files()
+		end)
+		add("Live grep", function()
+			Snacks.picker.grep()
+		end)
+		add("Buffers", function()
+			Snacks.picker.buffers()
+		end)
 	else
-		vim.ui.select(actions, {
-			prompt = "Leader Dashboard",
-			format_item = function(item)
-				return item[1]
-			end,
-		}, function(choice)
-			if choice then
-				choice[2]()
-			end
+		add("Find file (fallback: netrw)", function()
+			vim.cmd("Explore")
 		end)
 	end
+
+	-- LSP (only if attached)
+	if next(vim.lsp.get_clients({ bufnr = 0 })) ~= nil then
+		add("Go to definition", vim.lsp.buf.definition)
+		add("References", vim.lsp.buf.references)
+		add("Rename symbol", vim.lsp.buf.rename)
+		add("Code action", vim.lsp.buf.code_action)
+	end
+
+	-- Diagnostics
+	if #vim.diagnostic.get(0) > 0 then
+		add("Next diagnostic", function()
+			vim.diagnostic.goto_next()
+			vim.diagnostic.open_float(nil, { focus = false })
+		end)
+
+		if cmd_exists("Trouble") then
+			add("Trouble (buffer diagnostics)", function()
+				vim.cmd("Trouble diagnostics toggle filter.buf=0")
+			end)
+		end
+	end
+
+	-- Git
+	if vim.fn.finddir(".git", ".;") ~= "" and cmd_exists("LazyGit") then
+		add("LazyGit", function()
+			vim.cmd("LazyGit")
+		end)
+	end
+
+	-- Haskell
+	if vim.bo.filetype == "haskell" then
+		if cmd_exists("SmartGhcid") and vim.fn.executable("ghcid") == 1 then
+			add("Run ghcid", function()
+				vim.cmd("SmartGhcid")
+			end)
+		end
+
+		add("Next typed hole", function()
+			local diags = vim.diagnostic.get(0)
+			local cur = vim.api.nvim_win_get_cursor(0)[1] - 1
+			for _, d in ipairs(diags) do
+				if d.message and d.message:match("hole") and d.lnum > cur then
+					vim.api.nvim_win_set_cursor(0, { d.lnum + 1, d.col or 0 })
+					vim.diagnostic.open_float(nil, { focus = false })
+					return
+				end
+			end
+			vim.notify("No more typed holes", vim.log.levels.INFO)
+		end)
+	end
+
+	if #items == 0 then
+		vim.notify("Leader Dashboard: no actions available", vim.log.levels.WARN)
+		return
+	end
+
+	-- Native UI selector (stable)
+	vim.ui.select(items, {
+		prompt = "Leader Dashboard",
+		format_item = function(item)
+			return item.label
+		end,
+	}, function(choice)
+		if choice then
+			choice.run()
+		end
+	end)
 end
 
 vim.api.nvim_create_user_command("LeaderDashboard", leader_dashboard, {})
-
 ----------------------------------------------------------------
 -- WHICH-KEY AUTO GROUP GENERATOR (GLOBAL + BUFFER)
 ----------------------------------------------------------------
