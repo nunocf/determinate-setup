@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   homebrew = {
     enable = true;
 
@@ -29,6 +28,7 @@
       # messaging
       "discord"
       "slack"
+      "whatsapp" # Pick your GHC package-set attribute here.
 
       # other
       "1password"
