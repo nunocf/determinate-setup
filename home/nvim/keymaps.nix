@@ -3,12 +3,6 @@
     key = "<leader><leader>";
     mode = "n";
     action = "<cmd>LeaderDashboard<cr>";
-    desc = "Leader dashboard";
-  }
-  {
-    key = "<leader><leader>";
-    mode = "n";
-    action = "<cmd>LeaderDashboard<cr>";
     desc = "Command palette";
   }
   ############################################################
@@ -270,5 +264,13 @@
     mode = "n";
     action = "<cmd>lua vim.lsp.buf.hover()<cr>";
     desc = "Hover documentation";
+  }
+  {
+    key = "-";
+    mode = "n";
+    action = "<cmd>Oil --float<cr>";
+    desc = "Oil (float)";
+    silent = true;
+    noremap = true;
   }
 ]
