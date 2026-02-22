@@ -264,7 +264,39 @@
 
       autopairs.nvim-autopairs.enable = true;
 
-      autocomplete.nvim-cmp.enable = true;
+      autocomplete.blink-cmp = {
+        enable = true;
+        friendly-snippets.enable = true;
+
+        setupOpts = {
+          snippets.preset = "default";
+
+          sources.default = ["lsp" "path" "snippets" "buffer"];
+
+          completion = {
+            accept.auto_brackets.enabled = true;
+
+            documentation = {
+              auto_show = true;
+              auto_show_delay_ms = 200;
+            };
+          };
+
+          keymap = {
+            preset = "enter";
+            "<C-y>" = ["select_and_accept"];
+            # Optional super-tab behavior:
+            # preset = "super-tab";
+          };
+
+          cmdline = {
+            enabled = true;
+            keymap = {
+              preset = "cmdline";
+            };
+          };
+        };
+      };
       lineNumberMode = "number";
 
       visuals = {
@@ -285,7 +317,6 @@
             override = {
               "vim.lsp.util.convert_input_to_markdown_lines" = true;
               "vim.lsp.util.stylize_markdown" = true;
-              "cmp.entry.get_documentation" = true;
             };
           };
 
