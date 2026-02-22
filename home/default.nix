@@ -8,6 +8,7 @@
     ./git.nix
     ./shell.nix
     ./kitty.nix
+    ./zoxide.nix
     ./nvf.nix
     ./direnv.nix
   ];
