@@ -1,4 +1,18 @@
-vim.cmd("filetype plugin indent on")
+-- Clean up NVF's legacy haskell-tools keys *before* the plugin reads vim.g.haskell_tools
+do
+	local ht = vim.g.haskell_tools
+	if type(ht) ~= "table" then
+		ht = {}
+	end
+	ht.hls = ht.hls or {}
+
+	-- These keys trigger: .haskell_tools: { "hls.root_dir", "hls.enable", "hls.filetypes" }
+	ht.hls.root_dir = nil
+	ht.hls.enable = nil
+	ht.hls.filetypes = nil
+
+	vim.g.haskell_tools = ht
+end
 
 -- Force Nix to use vim-nix indent, not treesitter indentexpr
 vim.api.nvim_create_autocmd("FileType", {
@@ -17,7 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()
 		vim.opt_local.formatoptions:remove({ "c", "r", "o" }) -- no auto comment on Enter/o/O
-		vim.opt_local.formatoptions:append({ "j" }) -- remove comment leader when possible
+		vim.opt_local.formatoptions:append({ "j" })         -- remove comment leader when possible
 	end,
 })
 
