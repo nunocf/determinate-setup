@@ -25,7 +25,7 @@ vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "ErrorMsg" })
 ----------------------------------------------------------------
 -- FLOAT ON CURSOR HOLD (VERY NICE FOR HLS)
 ----------------------------------------------------------------
-vim.o.updatetime = 400
+vim.o.updatetime = 300
 
 vim.api.nvim_create_autocmd("CursorHold", {
 	callback = function()

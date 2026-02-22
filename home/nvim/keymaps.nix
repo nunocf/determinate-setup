@@ -5,6 +5,12 @@
     action = "<cmd>LeaderDashboard<cr>";
     desc = "Leader dashboard";
   }
+  {
+    key = "<leader><leader>";
+    mode = "n";
+    action = "<cmd>LeaderDashboard<cr>";
+    desc = "Command palette";
+  }
   ############################################################
   # FILES / SEARCH
   ############################################################
@@ -258,5 +264,11 @@
     mode = "n";
     desc = "Clear search highlight";
     noremap = true;
+  }
+  {
+    key = "K";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.hover()<cr>";
+    desc = "Hover documentation";
   }
 ]
