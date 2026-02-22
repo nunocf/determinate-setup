@@ -383,6 +383,9 @@
       };
 
       mini = import ./nvim/mini.nix;
+
+      notes.todo-comments.enable = true;
+
       startPlugins = [
         pkgs.vimPlugins.vim-nix
       ];
