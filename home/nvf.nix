@@ -82,7 +82,10 @@
         nix.enable = true;
         markdown.enable = true;
         haskell.enable = true;
-        lua.enable = true;
+        lua = {
+          enable = true;
+          lsp.lazydev.enable = true;
+        };
 
         html.enable = true;
         css.enable = true;
