@@ -30,6 +30,7 @@
       yt-dlp
       ffmpeg
       ollama
+      fourmolu
 
       # fonts
       nerd-fonts.fira-code
