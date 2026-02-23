@@ -10,27 +10,9 @@
         enable = true;
         name = "everforest";
         style = "hard";
-        extraConfig = ''
-          local function fix_snacks_links()
-          	local map = {
-          		Error = "DiagnosticSignError",
-          		Warn = "DiagnosticSignWarn",
-          		Info = "DiagnosticSignInfo",
-          		Hint = "DiagnosticSignHint",
-          	}
-
-          	for lvl, sign in pairs(map) do
-          		vim.api.nvim_set_hl(0, "SnacksNotifierBorder" .. lvl, { link = sign })
-          		vim.api.nvim_set_hl(0, "SnacksNotifierTitle" .. lvl, { link = sign })
-          		vim.api.nvim_set_hl(0, "SnacksNotifierFooter" .. lvl, { link = sign })
-          	end
-          end
-
-          vim.api.nvim_create_autocmd("ColorScheme", { callback = fix_snacks_links })
-          fix_snacks_links()
-        '';
       };
       extraLuaFiles = [
+        ./nvim/theme.lua
         ./nvim/extraConfig.lua
         ./nvim/whichkey.lua
         ./nvim/trouble.lua
@@ -77,12 +59,10 @@
           setupOpts = {
             focus = true;
 
-            # IMPORTANT: this fixes your current incorrect nested option
             win = {
               position = "right";
             };
 
-            # Critical for Haskell long errors
             multiline = true;
 
             warn_no_results = false;
@@ -131,7 +111,7 @@
           ];
 
           # haskell
-          haskell = ["hlint"];
+          # haskell = ["hlint"];
 
           # shell
           sh = ["shellcheck"];
@@ -243,7 +223,7 @@
         setupOpts = {
           format_on_save = {
             timeout_ms = 2000;
-            lsp_format = "fallback";
+            lsp_format = "never";
           };
 
           formatters_by_ft = {
@@ -252,6 +232,7 @@
 
             # haskell
             haskell = ["fourmolu"];
+            cabal = ["cabal_fmt"];
 
             # lua
             lua = ["stylua"];
@@ -260,7 +241,6 @@
             sh = ["shfmt"];
             bash = ["shfmt"];
 
-            # web / ts module (includes js/ts/tsx typically)
             javascript = ["prettierd"];
             javascriptreact = ["prettierd"];
             typescript = ["prettierd"];
@@ -284,6 +264,11 @@
             shfmt.command = lib.getExe pkgs.shfmt;
             prettierd.command = lib.getExe pkgs.prettierd;
             fourmolu.command = "fourmolu";
+            cabal_fmt = {
+              command = "cabal-fmt";
+              args = ["--inplace" "$FILENAME"];
+              stdin = false;
+            };
           };
         };
       };
@@ -297,10 +282,11 @@
         setupOpts = {
           snippets.preset = "default";
 
-          sources.default = ["lsp" "path" "snippets" "buffer"];
+          sources.default = ["lsp" "snippets" "path" "buffer"];
 
           completion = {
             accept.auto_brackets.enabled = true;
+            list.selection.preselect = true;
 
             documentation = {
               auto_show = true;
@@ -309,10 +295,8 @@
           };
 
           keymap = {
-            preset = "enter";
+            preset = "super-tab";
             "<C-y>" = ["select_and_accept"];
-            # Optional super-tab behavior:
-            # preset = "super-tab";
           };
 
           cmdline = {

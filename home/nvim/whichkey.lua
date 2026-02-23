@@ -165,7 +165,13 @@ local function wk_add_groups(buf)
 		return
 	end
 
-	local maps = buf and vim.api.nvim_buf_get_keymap(buf, "n") or vim.api.nvim_get_keymap("n")
+	local maps
+	if buf and vim.api.nvim_buf_is_valid(buf) then
+		maps = vim.api.nvim_buf_get_keymap(buf, "n")
+	else
+		maps = vim.api.nvim_get_keymap("n")
+		buf = nil
+	end
 
 	local names = {
 		["<leader>f"] = "󰍉 Files",
@@ -178,35 +184,38 @@ local function wk_add_groups(buf)
 		["<leader>s"] = "󰙅 UI",
 		["<leader>u"] = "󰔱 Utilities",
 		["<leader>q"] = "󰩈 Quit",
+		["<leader>t"] = "󰆍 Terminal",
 	}
 
 	local seen = {}
 	local spec = {}
 
 	for _, m in ipairs(maps) do
-		if m.lhs:match("^<leader>") then
+		if type(m.lhs) == "string" and m.lhs:match("^<leader>") then
 			local prefix = m.lhs:match("^(<leader>.).+")
 			if prefix and not seen[prefix] then
 				seen[prefix] = true
-				table.insert(spec, {
-					prefix:sub(9), -- strip "<leader>"
-					group = names[prefix] or "Group",
-				})
+				table.insert(spec, { prefix:sub(9), group = names[prefix] or "Group" })
 			end
 		end
 	end
 
-	wk.add(spec, { prefix = "<leader>", buffer = buf })
+	if #spec > 0 then
+		wk.add(spec, { prefix = "<leader>", buffer = buf })
+	end
 end
 
+-- global groups once Neovim is settled
 vim.schedule(function()
 	wk_add_groups(nil)
 end)
 
+-- buffer-local groups after FileType; buffer id can go stale -> guard it
 vim.api.nvim_create_autocmd("FileType", {
 	callback = function(ev)
+		local b = ev.buf
 		vim.defer_fn(function()
-			wk_add_groups(ev.buf)
+			wk_add_groups(b)
 		end, 50)
 	end,
 })

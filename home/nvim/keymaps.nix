@@ -93,6 +93,12 @@
     action = "<cmd>Trouble diagnostics toggle<cr>";
     desc = "Trouble workspace";
   }
+  {
+    key = "<leader>xd";
+    mode = "n";
+    action = "<cmd>lua vim.diagnostic.open_float(nil, { focus = false, scope = 'cursor' })<cr>";
+    desc = "Diagnostic (cursor)";
+  }
 
   ############################################################
   # LSP NAVIGATION
@@ -134,16 +140,40 @@
     desc = "Code action";
   }
   {
-    key = "<leader>cr";
+    key = "<leader>cA";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.code_action({ apply = true })<cr>";
+    desc = "Code action (apply if single)";
+  }
+  {
+    key = "<leader>cR";
     mode = "n";
     action = "<cmd>lua vim.lsp.buf.rename()<cr>";
     desc = "Rename";
+  }
+  {
+    key = "<leader>cr";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'refactor.rewrite', 'quickfix' } } })<cr>";
+    desc = "Code action (rewrite/quickfix)";
+  }
+  {
+    key = "<leader>ts";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'refactor', 'quickfix' } } })<cr>";
+    desc = "Type/signature actions";
   }
   {
     key = "<leader>cf";
     mode = "n";
     action = "<cmd>lua vim.lsp.buf.format()<cr>";
     desc = "Format";
+  }
+  {
+    key = "<leader>cS";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'source', 'source.organizeImports' } } })<cr>";
+    desc = "Code action (source)";
   }
 
   ############################################################
