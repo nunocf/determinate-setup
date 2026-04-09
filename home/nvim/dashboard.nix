@@ -22,6 +22,24 @@
         key = "s";
       }
       {
+        action = ":lua Snacks.dashboard.pick('recent')";
+        desc = " Recent Files";
+        icon = " ";
+        key = "r";
+      }
+      {
+        action = ":lua Snacks.dashboard.pick('projects')";
+        desc = " Projects";
+        icon = " ";
+        key = "p";
+      }
+      {
+        action = ":SessionLoad";
+        desc = " Restore Session";
+        icon = " ";
+        key = "l";
+      }
+      {
         action = ":qa";
         desc = " Quit";
         icon = " ";

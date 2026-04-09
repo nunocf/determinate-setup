@@ -12,8 +12,8 @@
   {
     key = "<leader>ff";
     mode = "n";
-    action = "<cmd>lua Snacks.picker.files()<cr>";
-    desc = "Files";
+    action = "<cmd>lua Snacks.picker.files({ cwd = project_root() })<cr>";
+    desc = "Files (project)";
   }
   {
     key = "<leader>fF";
@@ -24,13 +24,13 @@
   {
     key = "<leader>fg";
     mode = "n";
-    action = "<cmd>lua Snacks.picker.grep()<cr>";
-    desc = "Grep";
+    action = "<cmd>lua Snacks.picker.grep({ cwd = project_root() })<cr>";
+    desc = "Grep (project)";
   }
   {
     key = "<leader>fw";
     mode = "n";
-    action = "<cmd>lua Snacks.picker.grep_word()<cr>";
+    action = "<cmd>lua Snacks.picker.grep_word({ cwd = project_root() })<cr>";
     desc = "Word under cursor";
   }
   {
@@ -44,6 +44,12 @@
     mode = "n";
     action = "<cmd>lua Snacks.picker.recent()<cr>";
     desc = "Recent files";
+  }
+  {
+    key = "<leader>fP";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.projects()<cr>";
+    desc = "Projects";
   }
   {
     key = "<leader>fp";
@@ -385,6 +391,30 @@
     mode = "n";
     action = "<cmd>qa<cr>";
     desc = "Quit all";
+  }
+  {
+    key = "<leader>qr";
+    mode = "n";
+    action = "<cmd>lua Snacks.dashboard()<cr>";
+    desc = "Return to dashboard";
+  }
+  {
+    key = "<leader>qs";
+    mode = "n";
+    action = "<cmd>SessionSave<cr>";
+    desc = "Save session";
+  }
+  {
+    key = "<leader>ql";
+    mode = "n";
+    action = "<cmd>SessionLoad<cr>";
+    desc = "Load session";
+  }
+  {
+    key = "<leader>qd";
+    mode = "n";
+    action = "<cmd>SessionDelete<cr>";
+    desc = "Delete session";
   }
   {
     key = "<leader>wq";

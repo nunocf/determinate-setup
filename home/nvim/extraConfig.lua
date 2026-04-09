@@ -109,6 +109,48 @@ vim.g.html_indent_style1 = "inc"
 ----------------------------------------------------------------
 vim.g.disable_autoformat = false
 
+----------------------------------------------------------------
+-- ROOT / CWD HELPERS
+----------------------------------------------------------------
+local function project_root()
+	local markers = {
+		".git",
+		"flake.nix",
+		"package.json",
+		"mix.exs",
+		"Cargo.toml",
+		"*.cabal",
+		"stack.yaml",
+	}
+
+	local path = vim.api.nvim_buf_get_name(0)
+	local start = path ~= "" and vim.fs.dirname(path) or vim.fn.getcwd()
+	local found = vim.fs.find(markers, { upward = true, path = start })[1]
+
+	if found then
+		return vim.fs.dirname(found)
+	end
+
+	return vim.fn.getcwd()
+end
+
+_G.project_root = project_root
+
+vim.keymap.set("n", "<leader>uc", function()
+	local root = project_root()
+	vim.cmd.lcd(root)
+	vim.notify("cwd=" .. root)
+end, { desc = "Set cwd to project root" })
+
+vim.keymap.set("n", "<leader>uC", function()
+	local cwd = vim.fn.expand("%:p:h")
+	if cwd == "" then
+		cwd = vim.fn.getcwd()
+	end
+	vim.cmd.lcd(cwd)
+	vim.notify("cwd=" .. cwd)
+end, { desc = "Set cwd to buffer dir" })
+
 vim.keymap.set("n", "<leader>uf", function()
 	vim.g.disable_autoformat = not vim.g.disable_autoformat
 	vim.notify("format on save=" .. tostring(not vim.g.disable_autoformat))

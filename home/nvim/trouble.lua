@@ -27,14 +27,59 @@ vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "ErrorMsg" })
 ----------------------------------------------------------------
 vim.o.updatetime = 300
 
+vim.g.diagnostic_hover_enabled = false
+
 vim.api.nvim_create_autocmd("CursorHold", {
 	callback = function()
+		if not vim.g.diagnostic_hover_enabled then
+			return
+		end
+
+		if vim.api.nvim_get_mode().mode ~= "n" then
+			return
+		end
+
+		local float_win = vim.b.diagnostic_hover_win
+		if float_win and vim.api.nvim_win_is_valid(float_win) then
+			return
+		end
+
+		local cursor_diags = vim.diagnostic.get(0, { lnum = vim.api.nvim_win_get_cursor(0)[1] - 1 })
+		if vim.tbl_isempty(cursor_diags) then
+			return
+		end
+
 		vim.diagnostic.open_float(nil, {
 			focus = false,
 			scope = "cursor",
+			close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertEnter", "WinLeave" },
+		}, function(_, winid)
+			vim.b.diagnostic_hover_win = winid
 		})
 	end,
 })
+
+vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "WinLeave", "BufLeave" }, {
+	callback = function()
+		local float_win = vim.b.diagnostic_hover_win
+		if float_win and vim.api.nvim_win_is_valid(float_win) then
+			vim.api.nvim_win_close(float_win, true)
+		end
+		vim.b.diagnostic_hover_win = nil
+	end,
+})
+
+vim.keymap.set("n", "<leader>ux", function()
+	vim.g.diagnostic_hover_enabled = not vim.g.diagnostic_hover_enabled
+	if not vim.g.diagnostic_hover_enabled then
+		local float_win = vim.b.diagnostic_hover_win
+		if float_win and vim.api.nvim_win_is_valid(float_win) then
+			vim.api.nvim_win_close(float_win, true)
+		end
+		vim.b.diagnostic_hover_win = nil
+	end
+	vim.notify("diagnostic hover=" .. tostring(vim.g.diagnostic_hover_enabled))
+end, { desc = "Toggle diagnostic hover" })
 
 ----------------------------------------------------------------
 -- HASKELL TYPED HOLE HIGHLIGHT

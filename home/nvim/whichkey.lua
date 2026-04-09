@@ -23,6 +23,8 @@ _G.ftmap = ftmap
 
 -- Haskell
 ftmap("haskell", "<leader>gh", "<cmd>SmartGhcid<cr>", "Haskell: ghcid")
+ftmap("haskell", "<leader>rr", "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'refactor', 'quickfix' } } })<cr>", "Haskell: refactors")
+ftmap("haskell", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", "Haskell: rename")
 
 ftmap("haskell", "<leader>uh", function()
 	local diags = vim.diagnostic.get(0)

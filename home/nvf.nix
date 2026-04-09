@@ -14,6 +14,7 @@
       extraLuaFiles = [
         ./nvim/theme.lua
         ./nvim/extraConfig.lua
+        ./nvim/session.lua
         ./nvim/whichkey.lua
         ./nvim/trouble.lua
       ];
