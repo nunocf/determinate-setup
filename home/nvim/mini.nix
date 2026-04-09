@@ -1,3 +1,2 @@
 {
-  ai.enable = true;
 }

@@ -13,10 +13,10 @@
       };
       extraLuaFiles = [
         ./nvim/theme.lua
-        ./nvim/extraConfig.lua
-        ./nvim/session.lua
-        ./nvim/whichkey.lua
-        ./nvim/trouble.lua
+        ./nvim/config/core.lua
+        ./nvim/config/session.lua
+        ./nvim/config/filetypes.lua
+        ./nvim/config/diagnostics.lua
       ];
 
       options = import ./nvim/options.nix;
@@ -48,11 +48,7 @@
           haskell
           lua
           bash
-
-          elixir
-          heex
-          eex
-          erlang
+          ruby
 
           html
           css
@@ -123,39 +119,6 @@
         };
         nvim-web-devicons.enable = true;
       };
-      ui.noice = {
-        enable = true;
-        setupOpts = {
-          notify.enabled = false;
-          lsp = {
-            signature.enabled = true;
-            override = {
-              "vim.lsp.util.convert_input_to_markdown_lines" = true;
-              "vim.lsp.util.stylize_markdown" = true;
-            };
-          };
-
-          routes = [
-            {
-              filter = {
-                event = "msg_show";
-                any = [
-                  {find = "%d+L, %d+B";}
-                  {find = "; after #%d+";}
-                  {find = "; before #%d+";}
-                ];
-              };
-              view = "mini";
-            }
-          ];
-
-          presets = {
-            bottom_search = true;
-            command_palette = true;
-            long_message_to_split = true;
-          };
-        };
-      };
 
       terminal.toggleterm = {
         enable = true;
@@ -181,7 +144,6 @@
         };
       };
       statusline.lualine = import ./nvim/lualine.nix;
-      tabline.nvimBufferline = import ./nvim/bufferline.nix;
       utility = {
         motion.flash-nvim = import ./nvim/flash.nix;
         surround.enable = true;
@@ -213,8 +175,6 @@
       };
 
       mini = import ./nvim/mini.nix;
-
-      notes.todo-comments.enable = true;
     };
   };
 }

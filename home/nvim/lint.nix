@@ -5,12 +5,10 @@
 
   linters_by_ft = {
     nix = [ "statix" "deadnix" ];
-    elixir = [ "credo" ];
-    eelixir = [ "credo" ];
-    heex = [ "credo" ];
     sh = [ "shellcheck" ];
     bash = [ "shellcheck" ];
     lua = [ "luacheck" ];
+    ruby = [ "ruby" ];
     javascript = [ "eslint_d" ];
     javascriptreact = [ "eslint_d" ];
     typescript = [ "eslint_d" ];
@@ -28,12 +26,11 @@
     markdownlint-cli2.cmd = "markdownlint-cli2";
     hlint.cmd = "hlint";
 
-    credo = {
-      cmd = "mix";
-      args = [ "credo" "--format" "flycheck" ];
+    ruby = {
+      cmd = "ruby";
+      args = [ "-wc" "$FILENAME" ];
       stdin = false;
       append_fname = false;
-      required_files = [ "mix.exs" ".credo.exs" ];
     };
 
     eslint_d = {

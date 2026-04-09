@@ -1,9 +1,34 @@
 ----------------------------------------------------------------
--- DIAGNOSTICS / HLS READABILITY
+-- DIAGNOSTICS, THEME LINKS, AND HASKELL UTILITIES
 ----------------------------------------------------------------
+
+local function fix_snacks_links()
+	local map = {
+		Error = "DiagnosticSignError",
+		Warn = "DiagnosticSignWarn",
+		Info = "DiagnosticSignInfo",
+		Hint = "DiagnosticSignHint",
+	}
+
+	for level, sign in pairs(map) do
+		vim.api.nvim_set_hl(0, "SnacksNotifierBorder" .. level, { link = sign })
+		vim.api.nvim_set_hl(0, "SnacksNotifierTitle" .. level, { link = sign })
+		vim.api.nvim_set_hl(0, "SnacksNotifierFooter" .. level, { link = sign })
+	end
+
+	vim.api.nvim_set_hl(0, "SnacksPickerDir", { link = "Directory" })
+	vim.api.nvim_set_hl(0, "SnacksPickerPath", { link = "Directory" })
+	vim.api.nvim_set_hl(0, "SnacksPickerDim", { link = "Directory" })
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", { callback = fix_snacks_links })
+fix_snacks_links()
+
 vim.diagnostic.config({
 	severity_sort = true,
-
+	signs = true,
+	underline = true,
+	update_in_insert = false,
 	float = {
 		border = "rounded",
 		source = "if_many",
@@ -12,20 +37,10 @@ vim.diagnostic.config({
 		wrap = true,
 		max_width = 100,
 	},
-
-	virtual_text = {
-		spacing = 2,
-		prefix = "●",
-		wrap = true,
-	},
+	virtual_text = false,
 })
 
 vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "ErrorMsg" })
-
-----------------------------------------------------------------
--- FLOAT ON CURSOR HOLD (VERY NICE FOR HLS)
-----------------------------------------------------------------
-vim.o.updatetime = 300
 
 vim.g.diagnostic_hover_enabled = false
 
@@ -49,16 +64,12 @@ vim.api.nvim_create_autocmd("CursorHold", {
 			return
 		end
 
-		local _, winid = vim.diagnostic.open_float(nil, {
-			focus = false,
-			scope = "cursor",
-			close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertEnter", "WinLeave" },
-		})
+		local _, winid = vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
 		vim.b.diagnostic_hover_win = winid
-		end,
+	end,
 })
 
-vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "WinLeave", "BufLeave" }, {
+vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "BufLeave" }, {
 	callback = function()
 		local float_win = vim.b.diagnostic_hover_win
 		if float_win and vim.api.nvim_win_is_valid(float_win) then
@@ -80,9 +91,6 @@ vim.keymap.set("n", "<leader>ux", function()
 	vim.notify("diagnostic hover=" .. tostring(vim.g.diagnostic_hover_enabled))
 end, { desc = "Toggle diagnostic hover" })
 
-----------------------------------------------------------------
--- HASKELL TYPED HOLE HIGHLIGHT
-----------------------------------------------------------------
 vim.api.nvim_set_hl(0, "HaskellHole", { link = "DiagnosticError" })
 
 vim.api.nvim_create_autocmd("BufEnter", {
@@ -92,9 +100,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 
-----------------------------------------------------------------
--- TARGET-AWARE SMART GHCID LAUNCHER
-----------------------------------------------------------------
 local ghcid_open = false
 
 local function detect_cabal_target()
@@ -105,12 +110,11 @@ local function detect_cabal_target()
 
 	local cabal = cabal_files[1]
 	local lines = vim.fn.readfile(cabal)
-
 	local preferred = { "library", "executable", "test-suite" }
 
 	for _, want in ipairs(preferred) do
-		for _, l in ipairs(lines) do
-			local name = l:match("^%s*" .. want .. "%s+([%w%-%_]+)")
+		for _, line in ipairs(lines) do
+			local name = line:match("^%s*" .. want .. "%s+([%w%-%_]+)")
 			if name then
 				if want == "library" then
 					return "lib:" .. name
@@ -132,18 +136,19 @@ local function smart_ghcid()
 		return
 	end
 
-	local cwd = vim.fn.getcwd()
-
+	local cwd = _G.project_root and _G.project_root() or vim.fn.getcwd()
 	local function exists(file)
 		return vim.fn.filereadable(cwd .. "/" .. file) == 1
 	end
 
 	local cmd
-
 	if exists("stack.yaml") then
 		cmd = 'ghcid -c "stack repl"'
-	elseif #vim.fn.glob("*.cabal", false, true) > 0 then
+	elseif #vim.fn.glob(cwd .. "/*.cabal", false, true) > 0 then
+		local prev = vim.fn.getcwd()
+		vim.cmd.lcd(cwd)
 		local target = detect_cabal_target()
+		vim.cmd.lcd(prev)
 
 		if target then
 			cmd = 'ghcid -c "cabal repl ' .. target .. '"'
@@ -155,7 +160,7 @@ local function smart_ghcid()
 	end
 
 	ghcid_open = true
-	vim.cmd("ToggleTerm direction=float size=20 cmd=" .. cmd)
+	vim.cmd("ToggleTerm direction=float dir=" .. vim.fn.fnameescape(cwd) .. " size=20 cmd=" .. cmd)
 end
 
 vim.api.nvim_create_user_command("SmartGhcid", smart_ghcid, {})

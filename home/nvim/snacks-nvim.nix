@@ -7,12 +7,9 @@
     notifier.enable = true;
     indent.enable = true;
     scope.enable = true;
-    scroll.enable = true;
     statuscolumn.enable = false;
-    words.enable = true;
     picker.enable = true;
     explorer.enable = true;
-    image.enable = true;
     lazygit.enable = true;
     input.enable = true;
   };

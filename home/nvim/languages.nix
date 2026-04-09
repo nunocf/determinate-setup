@@ -2,7 +2,7 @@
   nix.enable = true;
   markdown.enable = true;
   haskell.enable = true;
-  elixir.enable = true;
+  ruby.enable = true;
 
   lua = {
     enable = true;

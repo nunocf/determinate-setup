@@ -18,10 +18,8 @@
       nix = [ "alejandra" ];
       haskell = [ "fourmolu" ];
       cabal = [ "cabal_fmt" ];
-      elixir = [ "mix_format" ];
-      eelixir = [ "mix_format" ];
-      heex = [ "mix_format" ];
       lua = [ "stylua" ];
+      ruby = [ "rubocop" ];
       sh = [ "shfmt" ];
       bash = [ "shfmt" ];
       javascript = [ "prettierd" ];
@@ -44,16 +42,15 @@
       shfmt.command = lib.getExe pkgs.shfmt;
       prettierd.command = "prettierd";
       fourmolu.command = "fourmolu";
+      rubocop = {
+        command = "rubocop";
+        args = [ "-A" "--stdin" "$FILENAME" ];
+        stdin = true;
+      };
       cabal_fmt = {
         command = "cabal-fmt";
         args = [ "--inplace" "$FILENAME" ];
         stdin = false;
-      };
-      mix_format = {
-        command = "mix";
-        args = [ "format" "$FILENAME" ];
-        stdin = false;
-        required_cwd = true;
       };
     };
   };

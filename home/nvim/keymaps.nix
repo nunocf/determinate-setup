@@ -3,7 +3,7 @@
     key = "<leader><leader>";
     mode = "n";
     action = "<cmd>lua Snacks.dashboard()<cr>";
-    desc = "Command palette";
+    desc = "Dashboard";
   }
   ############################################################
   # FILES / SEARCH
@@ -134,7 +134,7 @@
   ############################################################
 
   {
-    key = "<leader>xn";
+    key = "]e";
     mode = "n";
     silent = true;
     action = ''
@@ -159,7 +159,7 @@
   }
 
   {
-    key = "<leader>xp";
+    key = "[e";
     mode = "n";
     silent = true;
     action = ''
@@ -463,7 +463,17 @@
     key = "<leader>ac";
     mode = "n";
     silent = true;
-    action = "<cmd>ToggleTerm direction=vertical size=80 cmd='codex'<CR>";
+    action = ''
+      function()
+        local codex = vim.fn.exepath("codex")
+        if codex == "" then
+          vim.notify("codex not found in PATH", vim.log.levels.ERROR)
+          return
+        end
+
+        vim.cmd("ToggleTerm direction=vertical size=80 cmd=" .. vim.fn.fnameescape(codex))
+      end
+    '';
     desc = "Open Codex";
   }
 ]

@@ -1,8 +1,7 @@
 ----------------------------------------------------------------
--- NVF / HASKELL-TOOLS: CLEAN LEGACY KEYS + ENABLE HLS HLINT DIAGNOSTICS/ACTIONS
+-- CORE: PROJECT ROOT, FORMAT TOGGLES, EDITOR TWEAKS
 ----------------------------------------------------------------
 
--- Clean up NVF's legacy haskell-tools keys *before* the plugin reads vim.g.haskell_tools
 do
 	local ht = vim.g.haskell_tools
 	if type(ht) ~= "table" then
@@ -12,8 +11,6 @@ do
 		ht.hls = {}
 	end
 
-	-- These keys trigger warnings like:
-	-- .haskell_tools: { "hls.root_dir", "hls.enable", "hls.filetypes" }
 	ht.hls.root_dir = nil
 	ht.hls.enable = nil
 	ht.hls.filetypes = nil
@@ -21,9 +18,6 @@ do
 	vim.g.haskell_tools = ht
 end
 
--- Enable HLS hlint diagnostics + code actions
--- IMPORTANT: diagnosticsOn controls whether hlint hints appear as diagnostics (underlines/signs/etc).
--- codeActionsOn controls whether "Apply hint: ..." appears in code actions.
 do
 	local ht = vim.g.haskell_tools
 	if type(ht) ~= "table" then
@@ -56,74 +50,48 @@ do
 	vim.g.haskell_tools = ht
 end
 
-----------------------------------------------------------------
--- NIX: FORCE vim-nix indent (avoid TS indentexpr quirks)
-----------------------------------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "nix",
 	callback = function()
-		-- Clear TS indentexpr if set
 		vim.bo.indentexpr = ""
 		vim.b.did_indent = nil
-
-		-- Load the nix indent script (provided by vim-nix)
 		vim.cmd("silent! runtime! indent/nix.vim")
 	end,
 })
 
-----------------------------------------------------------------
--- GENERAL: DON’T AUTO-CONTINUE COMMENTS ON NEWLINE
-----------------------------------------------------------------
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()
-		vim.opt_local.formatoptions:remove({ "c", "r", "o" }) -- no auto comment on Enter/o/O
-		vim.opt_local.formatoptions:append({ "j" }) -- remove comment leader when possible
+		vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+		vim.opt_local.formatoptions:append({ "j" })
 	end,
 })
 
-----------------------------------------------------------------
--- PASTE MODE TOGGLE
-----------------------------------------------------------------
-vim.keymap.set("n", "<leader>up", function()
-	vim.opt.paste = not vim.opt.paste:get()
-	vim.notify("paste=" .. tostring(vim.opt.paste:get()))
-end, { desc = "Toggle paste mode" })
-
-----------------------------------------------------------------
--- TREESITTER: DISABLE INDENT MODULE (GUARD AGAINST ACCIDENTAL ENABLE)
-----------------------------------------------------------------
 pcall(function()
 	require("nvim-treesitter.configs").setup({ indent = { enable = false } })
 end)
 
-----------------------------------------------------------------
--- HTML: FILETYPE-SPECIFIC INDENT TWEAKS
-----------------------------------------------------------------
 vim.g.html_indent_autotags = "html,body,head"
 vim.g.html_indent_script1 = "inc"
 vim.g.html_indent_style1 = "inc"
 
-----------------------------------------------------------------
--- FORMAT-ON-SAVE TOGGLE
-----------------------------------------------------------------
 vim.g.disable_autoformat = false
 
-----------------------------------------------------------------
--- ROOT / CWD HELPERS
-----------------------------------------------------------------
-local function project_root()
+local function project_root(bufnr)
 	local markers = {
 		".git",
 		"flake.nix",
 		"package.json",
-		"mix.exs",
+		"tsconfig.json",
+		"Gemfile",
+		".ruby-version",
 		"Cargo.toml",
 		"*.cabal",
 		"stack.yaml",
 	}
 
-	local path = vim.api.nvim_buf_get_name(0)
+	bufnr = bufnr or 0
+	local path = vim.api.nvim_buf_get_name(bufnr)
 	local start = path ~= "" and vim.fs.dirname(path) or vim.fn.getcwd()
 	local found = vim.fs.find(markers, { upward = true, path = start })[1]
 
@@ -165,3 +133,8 @@ vim.keymap.set("n", "<leader>uF", function()
 
 	vim.lsp.buf.format({ async = true })
 end, { desc = "Format buffer now" })
+
+vim.keymap.set("n", "<leader>up", function()
+	vim.opt.paste = not vim.opt.paste:get()
+	vim.notify("paste=" .. tostring(vim.opt.paste:get()))
+end, { desc = "Toggle paste mode" })

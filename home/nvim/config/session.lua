@@ -40,13 +40,11 @@ end
 
 local function session_save()
 	if not has_real_buffers() then
-		vim.notify("session skipped: no real buffers")
 		return
 	end
 
 	local path = session_name()
 	vim.cmd("silent! mksession! " .. vim.fn.fnameescape(path))
-	vim.notify("session saved")
 end
 
 local function session_load()
@@ -103,6 +101,7 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 		if vim.fn.argc() == 0 and not has_real_buffers() then
 			return
 		end
+
 		session_save()
 	end,
 })

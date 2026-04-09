@@ -21,7 +21,7 @@ Key pieces:
 - `home/nvim/lint.nix` for `nvim-lint` integration
 - `home/nvim/formatters.nix` for `conform.nvim`
 - `home/nvim/keymaps.nix` for declarative mappings
-- `home/nvim/*.lua` for targeted runtime tweaks that are awkward to express in Nix
+- `home/nvim/config/*.lua` for targeted runtime behavior split by concern
 
 Most formatter/linter binaries are expected to come from project dev shells rather than this base config.
 

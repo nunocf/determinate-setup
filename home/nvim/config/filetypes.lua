@@ -1,6 +1,7 @@
 ----------------------------------------------------------------
--- FILETYPE-AWARE MAP HELPER
+-- FILETYPE HELPERS AND LOCAL MAPPINGS
 ----------------------------------------------------------------
+
 local function ftmap(ft, lhs, rhs, desc)
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = ft,
@@ -15,13 +16,13 @@ local function ftmap(ft, lhs, rhs, desc)
 	})
 end
 
-_G.ftmap = ftmap
+local function ftopt(ft, callback)
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = ft,
+		callback = callback,
+	})
+end
 
-----------------------------------------------------------------
--- FILETYPE-SPECIFIC MAPPINGS
-----------------------------------------------------------------
-
--- Haskell
 ftmap("haskell", "<leader>gh", "<cmd>SmartGhcid<cr>", "Haskell: ghcid")
 ftmap("haskell", "<leader>rr", "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'refactor', 'quickfix' } } })<cr>", "Haskell: refactors")
 ftmap("haskell", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>", "Haskell: rename")
@@ -38,17 +39,40 @@ ftmap("haskell", "<leader>uh", function()
 	end
 end, "Haskell: next hole")
 
--- Nix
 ftmap("nix", "<leader>nn", "<cmd>!nix fmt<cr>", "Nix: format")
+ftmap("ruby", "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<cr>", "Ruby: rename")
+ftmap("ruby", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", "Ruby: code action")
 
--- Markdown
-ftmap("markdown", "<leader>mw", function()
-	vim.opt.wrap = not vim.opt.wrap:get()
-end, "Markdown: toggle wrap")
+ftopt("markdown", function()
+	vim.opt_local.wrap = true
+	vim.opt_local.spell = true
+	vim.opt_local.linebreak = true
+	vim.opt_local.textwidth = 100
+	vim.keymap.set("n", "<leader>mw", function()
+		vim.opt_local.wrap = not vim.opt_local.wrap:get()
+	end, { desc = "Markdown: toggle wrap", silent = true, noremap = true, buffer = true })
+end)
 
-----------------------------------------------------------------
--- STATIC WHICH-KEY GROUPS
-----------------------------------------------------------------
+ftopt("gitcommit", function()
+	vim.opt_local.spell = true
+	vim.opt_local.wrap = true
+	vim.opt_local.textwidth = 72
+end)
+
+ftopt({ "typescript", "typescriptreact", "javascript", "javascriptreact", "tsx" }, function()
+	vim.opt_local.shiftwidth = 2
+	vim.opt_local.tabstop = 2
+	vim.opt_local.expandtab = true
+	vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
+end)
+
+ftopt("ruby", function()
+	vim.opt_local.shiftwidth = 2
+	vim.opt_local.tabstop = 2
+	vim.opt_local.expandtab = true
+	vim.opt_local.iskeyword:append("?")
+	vim.opt_local.iskeyword:append("!")
+end)
 
 local function wk_add_groups(buf)
 	local ok, wk = pcall(require, "which-key")
