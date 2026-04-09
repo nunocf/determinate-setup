@@ -1,9 +1,20 @@
 [
+  # Leader key legend
+  # q = quit/session/home
+  # f = files/find
+  # g = git/build
+  # l = lsp navigation
+  # c = code/change/actions
+  # x = diagnostics/lists
+  # w = windows
+  # u = utilities/toggles
+  # s = surface/ui
+  # a = apps/agents
   {
-    key = "<leader><leader>";
+    key = "<leader>qh";
     mode = "n";
     action = "<cmd>lua Snacks.dashboard()<cr>";
-    desc = "Dashboard";
+    desc = "Home dashboard";
   }
   ############################################################
   # FILES / SEARCH
@@ -40,6 +51,12 @@
     desc = "Buffers";
   }
   {
+    key = "<leader>/";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.lines()<cr>";
+    desc = "Search buffer lines";
+  }
+  {
     key = "<leader>fr";
     mode = "n";
     action = "<cmd>lua Snacks.picker.recent()<cr>";
@@ -56,6 +73,12 @@
     mode = "n";
     action = "<cmd>lua Snacks.picker.resume()<cr>";
     desc = "Resume picker";
+  }
+  {
+    key = "<leader>fe";
+    mode = "n";
+    action = "<cmd>lua Snacks.explorer()<cr>";
+    desc = "Explorer";
   }
 
   ############################################################
@@ -117,10 +140,22 @@
     desc = "Toggle line blame";
   }
   {
+    key = "<leader>gu";
+    mode = "n";
+    action = "<cmd>Gitsigns undo_stage_hunk<cr>";
+    desc = "Undo stage hunk";
+  }
+  {
     key = "<leader>gd";
     mode = "n";
     action = "<cmd>Gitsigns preview_hunk<cr>";
     desc = "Preview hunk";
+  }
+  {
+    key = "<leader>gD";
+    mode = "n";
+    action = "<cmd>Gitsigns diffthis<cr>";
+    desc = "Diff this";
   }
   {
     key = "<leader>gp";
@@ -213,6 +248,12 @@
     desc = "Definition";
   }
   {
+    key = "<leader>lD";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.declaration()<cr>";
+    desc = "Declaration";
+  }
+  {
     key = "<leader>lr";
     mode = "n";
     action = "<cmd>lua Snacks.picker.lsp_references()<cr>";
@@ -229,6 +270,12 @@
     mode = "n";
     action = "<cmd>lua Snacks.picker.lsp_implementations()<cr>";
     desc = "Implementation";
+  }
+  {
+    key = "<leader>lt";
+    mode = "n";
+    action = "<cmd>lua vim.lsp.buf.type_definition()<cr>";
+    desc = "Type definition";
   }
   {
     key = "<leader>ls";
@@ -284,7 +331,7 @@
     desc = "Code action (rewrite/quickfix)";
   }
   {
-    key = "<leader>ts";
+    key = "<leader>ct";
     mode = "n";
     action = "<cmd>lua vim.lsp.buf.code_action({ context = { only = { 'refactor', 'quickfix' } } })<cr>";
     desc = "Type/signature actions";
@@ -324,6 +371,107 @@
     action = "<cmd>bprevious<cr>";
     desc = "Previous buffer";
   }
+  {
+    key = "<S-h>";
+    mode = "n";
+    action = "<cmd>bprevious<cr>";
+    desc = "Previous buffer";
+  }
+  {
+    key = "<S-l>";
+    mode = "n";
+    action = "<cmd>bnext<cr>";
+    desc = "Next buffer";
+  }
+
+  ############################################################
+  # CLIPBOARD
+  ############################################################
+
+  {
+    key = "y";
+    mode = [ "n" "v" ];
+    action = ''"+y'';
+    desc = "Yank to system clipboard";
+  }
+  {
+    key = "Y";
+    mode = "n";
+    action = ''"+Y'';
+    desc = "Yank line to system clipboard";
+  }
+  {
+    key = "p";
+    mode = "n";
+    action = ''"+p'';
+    desc = "Paste from system clipboard";
+  }
+  {
+    key = "P";
+    mode = "n";
+    action = ''"+P'';
+    desc = "Paste before from system clipboard";
+  }
+  {
+    key = "p";
+    mode = "v";
+    action = ''"_d"+P'';
+    desc = "Paste over selection from system clipboard";
+  }
+  {
+    key = "P";
+    mode = "v";
+    action = ''"_d"+P'';
+    desc = "Paste over selection from system clipboard";
+  }
+  {
+    key = "d";
+    mode = [ "n" "v" ];
+    action = ''"_d'';
+    desc = "Delete without yanking";
+  }
+  {
+    key = "D";
+    mode = "n";
+    action = ''"_D'';
+    desc = "Delete to end without yanking";
+  }
+  {
+    key = "c";
+    mode = [ "n" "v" ];
+    action = ''"_c'';
+    desc = "Change without yanking";
+  }
+  {
+    key = "C";
+    mode = "n";
+    action = ''"_C'';
+    desc = "Change to end without yanking";
+  }
+  {
+    key = "x";
+    mode = [ "n" "v" ];
+    action = ''"_x'';
+    desc = "Delete char without yanking";
+  }
+  {
+    key = "X";
+    mode = "n";
+    action = ''"_X'';
+    desc = "Backspace char without yanking";
+  }
+  {
+    key = "s";
+    mode = [ "n" "v" ];
+    action = ''"_s'';
+    desc = "Substitute without yanking";
+  }
+  {
+    key = "S";
+    mode = [ "n" "v" ];
+    action = ''"_S'';
+    desc = "Substitute line without yanking";
+  }
 
   ############################################################
   # WINDOWS
@@ -348,10 +496,105 @@
     desc = "Close window";
   }
   {
+    key = "<C-h>";
+    mode = "n";
+    action = "<C-w>h";
+    desc = "Window left";
+  }
+  {
+    key = "<C-j>";
+    mode = "n";
+    action = "<C-w>j";
+    desc = "Window down";
+  }
+  {
+    key = "<C-k>";
+    mode = "n";
+    action = "<C-w>k";
+    desc = "Window up";
+  }
+  {
+    key = "<C-l>";
+    mode = "n";
+    action = "<C-w>l";
+    desc = "Window right";
+  }
+  {
     key = "<leader>ww";
     mode = "n";
     action = "<C-W>w";
     desc = "Next window";
+  }
+  {
+    key = "<leader>w=";
+    mode = "n";
+    action = "<C-W>=";
+    desc = "Balance windows";
+  }
+  {
+    key = "<leader>w,";
+    mode = "n";
+    action = "<cmd>vertical resize -5<cr>";
+    desc = "Window narrower";
+  }
+  {
+    key = "<leader>w.";
+    mode = "n";
+    action = "<cmd>vertical resize +5<cr>";
+    desc = "Window wider";
+  }
+  {
+    key = "<leader>w-";
+    mode = "n";
+    action = "<cmd>resize -3<cr>";
+    desc = "Window shorter";
+  }
+  {
+    key = "<leader>w+";
+    mode = "n";
+    action = "<cmd>resize +3<cr>";
+    desc = "Window taller";
+  }
+
+  ############################################################
+  # LISTS
+  ############################################################
+
+  {
+    key = "]q";
+    mode = "n";
+    action = "<cmd>cnext<cr>";
+    desc = "Next quickfix";
+  }
+  {
+    key = "[q";
+    mode = "n";
+    action = "<cmd>cprev<cr>";
+    desc = "Previous quickfix";
+  }
+  {
+    key = "]l";
+    mode = "n";
+    action = "<cmd>lnext<cr>";
+    desc = "Next location";
+  }
+  {
+    key = "[l";
+    mode = "n";
+    action = "<cmd>lprev<cr>";
+    desc = "Previous location";
+  }
+  {
+    key = "<leader>xq";
+    mode = "n";
+    action = "<cmd>copen<cr>";
+    desc = "Quickfix list";
+  }
+  {
+    key = "<leader>xl";
+    mode = "n";
+    action = "<cmd>lopen<cr>";
+    desc = "Location list";
   }
 
   ############################################################
@@ -376,7 +619,7 @@
   ############################################################
 
   {
-    key = "<leader>sn";
+    key = "<leader>sh";
     mode = "n";
     action = "<cmd>Noice history<cr>";
     desc = "Noice history";
@@ -391,12 +634,6 @@
     mode = "n";
     action = "<cmd>qa<cr>";
     desc = "Quit all";
-  }
-  {
-    key = "<leader>qr";
-    mode = "n";
-    action = "<cmd>lua Snacks.dashboard()<cr>";
-    desc = "Return to dashboard";
   }
   {
     key = "<leader>qs";
@@ -436,15 +673,27 @@
     key = ">";
     mode = "v";
   }
-
-  # stop highlighting with <CR>
   {
-    action = "<cmd>nohl<CR>";
-    key = "<CR>";
+    key = "j";
     mode = "n";
-    desc = "Clear search highlight";
-    noremap = true;
+    action = "v:count == 0 ? 'gj' : 'j'";
+    desc = "Down by display line";
+    expr = true;
   }
+  {
+    key = "k";
+    mode = "n";
+    action = "v:count == 0 ? 'gk' : 'k'";
+    desc = "Up by display line";
+    expr = true;
+  }
+  {
+    key = "<Esc>";
+    mode = "t";
+    action = "<C-\\><C-n>";
+    desc = "Terminal normal mode";
+  }
+
   {
     key = "K";
     mode = "n";
@@ -456,6 +705,14 @@
     mode = "n";
     action = "<cmd>Oil --float<cr>";
     desc = "Oil (float)";
+    silent = true;
+    noremap = true;
+  }
+  {
+    key = "_";
+    mode = "n";
+    action = "<cmd>Oil<cr>";
+    desc = "Oil (cwd)";
     silent = true;
     noremap = true;
   }

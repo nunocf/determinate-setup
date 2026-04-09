@@ -12,15 +12,22 @@
   splitbelow = true;
   splitright = true;
   updatetime = 50;
+  timeoutlen = 300;
   ignorecase = true;
   smartcase = true;
+  incsearch = true;
+  wrapscan = false;
   swapfile = false;
   autoread = true;
   backup = false;
   undofile = true;
   signcolumn = "yes";
+  number = true;
+  relativenumber = true;
   scrolloff = 10;
+  cursorline = true;
   showmode = false;
   cmdheight = 0;
+  splitkeep = "screen";
   backspace = "indent,eol,start";
 }

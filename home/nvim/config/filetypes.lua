@@ -81,16 +81,17 @@ local function wk_add_groups(buf)
 	end
 
 	wk.add({
+		{ "<leader>a", group = "Apps/Agents" },
 		{ "<leader>f", group = "Files" },
 		{ "<leader>g", group = "Git/Build" },
-		{ "<leader>x", group = "Diagnostics" },
+		{ "<leader>x", group = "Diagnostics/Lists" },
 		{ "<leader>l", group = "LSP" },
-		{ "<leader>c", group = "Code" },
+		{ "<leader>c", group = "Code/Change" },
 		{ "<leader>b", group = "Buffers" },
 		{ "<leader>w", group = "Windows" },
-		{ "<leader>s", group = "UI/Search" },
-		{ "<leader>u", group = "Toggles/Utils" },
-		{ "<leader>q", group = "Quit" },
+		{ "<leader>s", group = "Surface/UI" },
+		{ "<leader>u", group = "Utilities/Toggles" },
+		{ "<leader>q", group = "Quit/Session/Home" },
 		{ "<leader>t", group = "Terminal" },
 		{ "<leader>m", group = "Markdown" },
 		{ "<leader>n", group = "Nix" },

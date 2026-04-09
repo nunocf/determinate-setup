@@ -31,11 +31,6 @@
       languages = import ./nvim/languages.nix;
       diagnostics.nvim-lint = import ./nvim/lint.nix { inherit pkgs lib; };
 
-      clipboard = {
-        enable = true;
-        registers = "unnamedplus";
-      };
-
       treesitter = {
         enable = true;
         fold = true;

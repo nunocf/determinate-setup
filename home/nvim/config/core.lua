@@ -71,6 +71,17 @@ pcall(function()
 	require("nvim-treesitter.configs").setup({ indent = { enable = false } })
 end)
 
+pcall(function()
+	local autopairs = require("nvim-autopairs")
+	autopairs.setup({
+		check_ts = true,
+		enable_check_bracket_line = false,
+		disable_filetype = { "TelescopePrompt", "spectre_panel", "snacks_picker_input" },
+		fast_wrap = {},
+		map_cr = true,
+	})
+end)
+
 vim.g.html_indent_autotags = "html,body,head"
 vim.g.html_indent_script1 = "inc"
 vim.g.html_indent_style1 = "inc"
@@ -138,6 +149,33 @@ vim.keymap.set("n", "<leader>up", function()
 	vim.opt.paste = not vim.opt.paste:get()
 	vim.notify("paste=" .. tostring(vim.opt.paste:get()))
 end, { desc = "Toggle paste mode" })
+
+do
+	local search_group = vim.api.nvim_create_augroup("search_highlight_qol", { clear = true })
+
+	local function clear_search_highlight()
+		if vim.v.hlsearch == 1 then
+			vim.schedule(function()
+				pcall(vim.cmd, "nohlsearch")
+			end)
+		end
+	end
+
+	vim.api.nvim_create_autocmd("CursorMoved", {
+		group = search_group,
+		callback = clear_search_highlight,
+	})
+
+	vim.api.nvim_create_autocmd("InsertEnter", {
+		group = search_group,
+		callback = clear_search_highlight,
+	})
+
+	vim.keymap.set("n", "<Esc>", function()
+		clear_search_highlight()
+		return "<Esc>"
+	end, { expr = true, desc = "Escape and clear search highlight" })
+end
 
 do
 	local codex_terminal
