@@ -49,14 +49,13 @@ vim.api.nvim_create_autocmd("CursorHold", {
 			return
 		end
 
-		vim.diagnostic.open_float(nil, {
+		local _, winid = vim.diagnostic.open_float(nil, {
 			focus = false,
 			scope = "cursor",
 			close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertEnter", "WinLeave" },
-		}, function(_, winid)
-			vim.b.diagnostic_hover_win = winid
 		})
-	end,
+		vim.b.diagnostic_hover_win = winid
+		end,
 })
 
 vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter", "WinLeave", "BufLeave" }, {
