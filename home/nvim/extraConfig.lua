@@ -122,4 +122,4 @@ vim.keymap.set("n", "<leader>uF", function()
 	end
 
 	vim.lsp.buf.format({ async = true })
-end, { desc = "Format buffer" })
+end, { desc = "Format buffer now" })

@@ -13,13 +13,25 @@
     key = "<leader>ff";
     mode = "n";
     action = "<cmd>lua Snacks.picker.files()<cr>";
-    desc = "Find files";
+    desc = "Files";
+  }
+  {
+    key = "<leader>fF";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.files({ cwd = vim.fn.getcwd() })<cr>";
+    desc = "Files (cwd)";
   }
   {
     key = "<leader>fg";
     mode = "n";
     action = "<cmd>lua Snacks.picker.grep()<cr>";
-    desc = "Live grep";
+    desc = "Grep";
+  }
+  {
+    key = "<leader>fw";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.grep_word()<cr>";
+    desc = "Word under cursor";
   }
   {
     key = "<leader>fb";
@@ -32,6 +44,12 @@
     mode = "n";
     action = "<cmd>lua Snacks.picker.recent()<cr>";
     desc = "Recent files";
+  }
+  {
+    key = "<leader>fp";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.resume()<cr>";
+    desc = "Resume picker";
   }
 
   ############################################################
@@ -87,10 +105,22 @@
     desc = "Blame line";
   }
   {
+    key = "<leader>gB";
+    mode = "n";
+    action = "<cmd>Gitsigns toggle_current_line_blame<cr>";
+    desc = "Toggle line blame";
+  }
+  {
     key = "<leader>gd";
     mode = "n";
     action = "<cmd>Gitsigns preview_hunk<cr>";
     desc = "Preview hunk";
+  }
+  {
+    key = "<leader>gp";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.git_status()<cr>";
+    desc = "Git status";
   }
 
   ############################################################
@@ -109,6 +139,18 @@
     '';
     desc = "Next error";
   }
+  {
+    key = "]d";
+    mode = "n";
+    silent = true;
+    action = ''
+      function()
+        vim.diagnostic.goto_next()
+        vim.diagnostic.open_float(nil,{focus=false})
+      end
+    '';
+    desc = "Next diagnostic";
+  }
 
   {
     key = "<leader>xp";
@@ -121,6 +163,18 @@
       end
     '';
     desc = "Previous error";
+  }
+  {
+    key = "[d";
+    mode = "n";
+    silent = true;
+    action = ''
+      function()
+        vim.diagnostic.goto_prev()
+        vim.diagnostic.open_float(nil,{focus=false})
+      end
+    '';
+    desc = "Previous diagnostic";
   }
 
   {
@@ -232,8 +286,8 @@
   {
     key = "<leader>cf";
     mode = "n";
-    action = "<cmd>lua vim.lsp.buf.format()<cr>";
-    desc = "Format";
+    action = "<cmd>lua require('conform').format({ async = true, lsp_format = 'never' })<cr>";
+    desc = "Format buffer";
   }
   {
     key = "<leader>cS";
@@ -303,6 +357,12 @@
     mode = "n";
     action = "<cmd>checkhealth<cr>";
     desc = "Check health";
+  }
+  {
+    key = "<leader>ur";
+    mode = "n";
+    action = "<cmd>edit!<cr>";
+    desc = "Reload buffer";
   }
 
   ############################################################
