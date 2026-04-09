@@ -182,6 +182,15 @@
       statusline.lualine = import ./nvim/lualine.nix;
       tabline.nvimBufferline = import ./nvim/bufferline.nix;
       utility = {
+        gitsigns = {
+          enable = true;
+          setupOpts = {
+            current_line_blame = false;
+            signcolumn = true;
+            numhl = false;
+            linehl = false;
+          };
+        };
         motion.flash-nvim = import ./nvim/flash.nix;
         surround.enable = true;
         sleuth.enable = true;

@@ -25,7 +25,7 @@
     deadnix.cmd = lib.getExe pkgs.deadnix;
     shellcheck.cmd = lib.getExe pkgs.shellcheck;
     luacheck.cmd = lib.getExe pkgs.luajitPackages.luacheck;
-    markdownlint-cli2.cmd = lib.getExe pkgs.nodePackages.markdownlint-cli2;
+    markdownlint-cli2.cmd = "markdownlint-cli2";
     hlint.cmd = "hlint";
 
     credo = {
@@ -37,7 +37,7 @@
     };
 
     eslint_d = {
-      cmd = lib.getExe pkgs.nodePackages.eslint_d;
+      cmd = "eslint_d";
       required_files = [
         "eslint.config.js"
         "eslint.config.mjs"
@@ -52,7 +52,7 @@
     };
 
     stylelint = {
-      cmd = lib.getExe pkgs.nodePackages.stylelint;
+      cmd = "stylelint";
       required_files = [
         "stylelint.config.js"
         "stylelint.config.cjs"
@@ -63,6 +63,7 @@
         ".stylelintrc.json"
         ".stylelintrc.yaml"
         ".stylelintrc.yml"
+        "package.json"
       ];
     };
   };

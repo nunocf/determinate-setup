@@ -50,6 +50,48 @@
     action = "<cmd>LazyGit<cr>";
     desc = "LazyGit";
   }
+  {
+    key = "]h";
+    mode = "n";
+    action = "<cmd>Gitsigns next_hunk<cr>";
+    desc = "Next hunk";
+  }
+  {
+    key = "[h";
+    mode = "n";
+    action = "<cmd>Gitsigns prev_hunk<cr>";
+    desc = "Previous hunk";
+  }
+  {
+    key = "<leader>gs";
+    mode = "n";
+    action = "<cmd>Gitsigns stage_hunk<cr>";
+    desc = "Stage hunk";
+  }
+  {
+    key = "<leader>gr";
+    mode = "n";
+    action = "<cmd>Gitsigns reset_hunk<cr>";
+    desc = "Reset hunk";
+  }
+  {
+    key = "<leader>gS";
+    mode = "n";
+    action = "<cmd>Gitsigns stage_buffer<cr>";
+    desc = "Stage buffer";
+  }
+  {
+    key = "<leader>gb";
+    mode = "n";
+    action = "<cmd>Gitsigns blame_line<cr>";
+    desc = "Blame line";
+  }
+  {
+    key = "<leader>gd";
+    mode = "n";
+    action = "<cmd>Gitsigns preview_hunk<cr>";
+    desc = "Preview hunk";
+  }
 
   ############################################################
   # DIAGNOSTICS / ERRORS

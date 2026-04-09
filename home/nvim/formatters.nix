@@ -35,7 +35,7 @@
       alejandra.command = lib.getExe pkgs.alejandra;
       stylua.command = lib.getExe pkgs.stylua;
       shfmt.command = lib.getExe pkgs.shfmt;
-      prettierd.command = lib.getExe pkgs.prettierd;
+      prettierd.command = "prettierd";
       fourmolu.command = "fourmolu";
       cabal_fmt = {
         command = "cabal-fmt";
