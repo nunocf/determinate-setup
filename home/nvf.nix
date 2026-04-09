@@ -18,32 +18,7 @@
         ./nvim/trouble.lua
       ];
 
-      options = {
-        tabstop = 2;
-        shiftwidth = 2;
-        expandtab = true;
-        autoindent = true;
-        smartindent = true;
-        copyindent = true;
-        preserveindent = true;
-        breakindent = true;
-        smarttab = true;
-        mouse = "a";
-        splitbelow = true;
-        splitright = true;
-        updatetime = 50;
-        ignorecase = true;
-        smartcase = true;
-        swapfile = false;
-        autoread = true;
-        backup = false;
-        undofile = true;
-        signcolumn = "yes";
-        scrolloff = 10;
-        showmode = false;
-        cmdheight = 0;
-        backspace = "indent,eol,start";
-      };
+      options = import ./nvim/options.nix;
 
       globals.mapleader = ",";
 
@@ -51,132 +26,9 @@
       viAlias = true;
       vimAlias = true;
 
-      lsp = {
-        enable = true;
-        trouble = {
-          enable = true;
-
-          setupOpts = {
-            focus = true;
-
-            win = {
-              position = "right";
-            };
-
-            multiline = true;
-
-            warn_no_results = false;
-
-            modes = {
-              diagnostics = {
-                auto_open = false;
-                auto_close = true;
-              };
-            };
-          };
-        };
-
-        formatOnSave = false;
-      };
-
-      languages = {
-        nix.enable = true;
-        markdown.enable = true;
-        haskell.enable = true;
-
-        lua = {
-          enable = true;
-          lsp = {
-            lazydev.enable = true;
-            # pick the server using the enum NVF wants
-            servers = ["lua-language-server"];
-          };
-        };
-
-        html.enable = true;
-        css.enable = true;
-        bash.enable = true;
-
-        ts.enable = true;
-      };
-      diagnostics.nvim-lint = {
-        enable = true;
-        lint_after_save = true;
-
-        linters_by_ft = {
-          # nix
-          nix = [
-            "statix"
-            "deadnix"
-          ];
-
-          # haskell
-          # haskell = ["hlint"];
-
-          # shell
-          sh = ["shellcheck"];
-          bash = ["shellcheck"];
-
-          # lua (optional but useful)
-          lua = ["luacheck"];
-
-          # web / ts
-          javascript = ["eslint_d"];
-          javascriptreact = ["eslint_d"];
-          typescript = ["eslint_d"];
-          typescriptreact = ["eslint_d"];
-
-          # css (optional but great if you use stylelint)
-          css = ["stylelint"];
-          scss = ["stylelint"];
-
-          # markdown (optional)
-          markdown = ["markdownlint-cli2"];
-        };
-
-        linters = {
-          statix.cmd = lib.getExe pkgs.statix;
-          deadnix.cmd = lib.getExe pkgs.deadnix;
-          shellcheck.cmd = lib.getExe pkgs.shellcheck;
-
-          # If this attr isn't present in your nixpkgs, use pkgs.luajitPackages.luacheck
-          luacheck.cmd = lib.getExe pkgs.luajitPackages.luacheck;
-
-          markdownlint-cli2.cmd = lib.getExe pkgs.nodePackages.markdownlint-cli2;
-          hlint.cmd = "hlint";
-
-          eslint_d = {
-            cmd = lib.getExe pkgs.nodePackages.eslint_d;
-
-            required_files = [
-              "eslint.config.js"
-              "eslint.config.mjs"
-              "eslint.config.cjs"
-              ".eslintrc"
-              ".eslintrc.js"
-              ".eslintrc.cjs"
-              ".eslintrc.json"
-              ".eslintrc.yaml"
-              ".eslintrc.yml"
-            ];
-          };
-
-          stylelint = {
-            cmd = lib.getExe pkgs.nodePackages.stylelint;
-            required_files = [
-              "stylelint.config.js"
-              "stylelint.config.cjs"
-              "stylelint.config.mjs"
-              ".stylelintrc"
-              ".stylelintrc.js"
-              ".stylelintrc.cjs"
-              ".stylelintrc.json"
-              ".stylelintrc.yaml"
-              ".stylelintrc.yml"
-            ];
-          };
-        };
-      };
+      lsp = import ./nvim/lsp.nix;
+      languages = import ./nvim/languages.nix;
+      diagnostics.nvim-lint = import ./nvim/lint.nix { inherit pkgs lib; };
 
       clipboard = {
         enable = true;
@@ -195,6 +47,11 @@
           haskell
           lua
           bash
+
+          elixir
+          heex
+          eex
+          erlang
 
           html
           css
@@ -218,60 +75,7 @@
         ];
       };
 
-      formatter.conform-nvim = {
-        enable = true;
-        setupOpts = {
-          format_on_save = {
-            timeout_ms = 2000;
-            lsp_format = "never";
-          };
-
-          formatters_by_ft = {
-            # nix
-            nix = ["alejandra"];
-
-            # haskell
-            haskell = ["fourmolu"];
-            cabal = ["cabal_fmt"];
-
-            # lua
-            lua = ["stylua"];
-
-            # shell
-            sh = ["shfmt"];
-            bash = ["shfmt"];
-
-            javascript = ["prettierd"];
-            javascriptreact = ["prettierd"];
-            typescript = ["prettierd"];
-            typescriptreact = ["prettierd"];
-            tsx = ["prettierd"];
-
-            html = ["prettierd"];
-            css = ["prettierd"];
-            scss = ["prettierd"];
-
-            # docs/config
-            json = ["prettierd"];
-            jsonc = ["prettierd"];
-            yaml = ["prettierd"];
-            markdown = ["prettierd"];
-          };
-
-          formatters = {
-            alejandra.command = lib.getExe pkgs.alejandra;
-            stylua.command = lib.getExe pkgs.stylua;
-            shfmt.command = lib.getExe pkgs.shfmt;
-            prettierd.command = lib.getExe pkgs.prettierd;
-            fourmolu.command = "fourmolu";
-            cabal_fmt = {
-              command = "cabal-fmt";
-              args = ["--inplace" "$FILENAME"];
-              stdin = false;
-            };
-          };
-        };
-      };
+      formatter.conform-nvim = import ./nvim/formatters.nix { inherit pkgs lib; };
 
       autopairs.nvim-autopairs.enable = true;
 
@@ -282,7 +86,7 @@
         setupOpts = {
           snippets.preset = "default";
 
-          sources.default = ["lsp" "snippets" "path" "buffer"];
+          sources.default = [];
 
           completion = {
             accept.auto_brackets.enabled = true;

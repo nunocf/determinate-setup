@@ -32,4 +32,10 @@
     };
     ignores = ["**/.DS_STORE"];
   };
+  programs.gh = {
+    enable = true;
+    settings = {
+      browser = "open";
+    };
+  };
 }

@@ -1,0 +1,53 @@
+{ pkgs, lib, ... }:
+{
+  enable = true;
+  setupOpts = {
+    format_on_save = {
+      timeout_ms = 2000;
+      lsp_format = "never";
+    };
+
+    formatters_by_ft = {
+      nix = [ "alejandra" ];
+      haskell = [ "fourmolu" ];
+      cabal = [ "cabal_fmt" ];
+      elixir = [ "mix_format" ];
+      eelixir = [ "mix_format" ];
+      heex = [ "mix_format" ];
+      lua = [ "stylua" ];
+      sh = [ "shfmt" ];
+      bash = [ "shfmt" ];
+      javascript = [ "prettierd" ];
+      javascriptreact = [ "prettierd" ];
+      typescript = [ "prettierd" ];
+      typescriptreact = [ "prettierd" ];
+      tsx = [ "prettierd" ];
+      html = [ "prettierd" ];
+      css = [ "prettierd" ];
+      scss = [ "prettierd" ];
+      json = [ "prettierd" ];
+      jsonc = [ "prettierd" ];
+      yaml = [ "prettierd" ];
+      markdown = [ "prettierd" ];
+    };
+
+    formatters = {
+      alejandra.command = lib.getExe pkgs.alejandra;
+      stylua.command = lib.getExe pkgs.stylua;
+      shfmt.command = lib.getExe pkgs.shfmt;
+      prettierd.command = lib.getExe pkgs.prettierd;
+      fourmolu.command = "fourmolu";
+      cabal_fmt = {
+        command = "cabal-fmt";
+        args = [ "--inplace" "$FILENAME" ];
+        stdin = false;
+      };
+      mix_format = {
+        command = "mix";
+        args = [ "format" "$FILENAME" ];
+        stdin = false;
+        required_cwd = true;
+      };
+    };
+  };
+}

@@ -22,6 +22,7 @@
       # programming languages
       nodejs
       tree-sitter
+      codex
 
       # misc
       nil
@@ -31,6 +32,7 @@
       ffmpeg
       ollama
       fourmolu
+      defaultbrowser
 
       # fonts
       nerd-fonts.fira-code

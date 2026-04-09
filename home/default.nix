@@ -1,6 +1,7 @@
 {
   primaryUser,
   pkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -21,11 +22,15 @@
       EDITOR = "nvim";
       TERMINAL = "kitty";
       PAGER = "less";
-      PATH = ''${pkgs.neovim}/bin:$PATH'';
+      BROWSER = "open";
     };
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
-    file.".config/nvf/init.lua".text = "";
+    activation = {
+      setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        /usr/bin/open -a "Arc" --args --make-default-browser
+      '';
+    };
   };
 }

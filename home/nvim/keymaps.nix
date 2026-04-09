@@ -303,4 +303,11 @@
     silent = true;
     noremap = true;
   }
+  {
+    key = "<leader>ac";
+    mode = "n";
+    silent = true;
+    action = "<cmd>ToggleTerm direction=vertical size=80 cmd='codex'<CR>";
+    desc = "Open Codex";
+  }
 ]
