@@ -155,7 +155,7 @@
   {
     key = "<leader>lr";
     mode = "n";
-    action = "<cmd>lua vim.lsp.buf.references()<cr>";
+    action = "<cmd>lua Snacks.picker.lsp_references()<cr>";
     desc = "References";
   }
   {
@@ -167,8 +167,32 @@
   {
     key = "<leader>li";
     mode = "n";
-    action = "<cmd>lua vim.lsp.buf.implementation()<cr>";
+    action = "<cmd>lua Snacks.picker.lsp_implementations()<cr>";
     desc = "Implementation";
+  }
+  {
+    key = "<leader>ls";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.lsp_symbols()<cr>";
+    desc = "Document symbols";
+  }
+  {
+    key = "<leader>lS";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.lsp_workspace_symbols()<cr>";
+    desc = "Workspace symbols";
+  }
+  {
+    key = "<leader>lq";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.diagnostics_buffer()<cr>";
+    desc = "Buffer diagnostics";
+  }
+  {
+    key = "<leader>lQ";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.diagnostics()<cr>";
+    desc = "Workspace diagnostics";
   }
 
   ############################################################

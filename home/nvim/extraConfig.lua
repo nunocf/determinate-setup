@@ -103,3 +103,23 @@ end)
 vim.g.html_indent_autotags = "html,body,head"
 vim.g.html_indent_script1 = "inc"
 vim.g.html_indent_style1 = "inc"
+
+----------------------------------------------------------------
+-- FORMAT-ON-SAVE TOGGLE
+----------------------------------------------------------------
+vim.g.disable_autoformat = false
+
+vim.keymap.set("n", "<leader>uf", function()
+	vim.g.disable_autoformat = not vim.g.disable_autoformat
+	vim.notify("format on save=" .. tostring(not vim.g.disable_autoformat))
+end, { desc = "Toggle format on save" })
+
+vim.keymap.set("n", "<leader>uF", function()
+	local ok, conform = pcall(require, "conform")
+	if ok then
+		conform.format({ async = true, lsp_format = "never" })
+		return
+	end
+
+	vim.lsp.buf.format({ async = true })
+end, { desc = "Format buffer" })

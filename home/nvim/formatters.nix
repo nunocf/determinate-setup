@@ -5,6 +5,13 @@
     format_on_save = {
       timeout_ms = 2000;
       lsp_format = "never";
+      quiet = false;
+      format_after_save = false;
+      condition = ''
+        function(_, bufnr)
+          return not vim.g.disable_autoformat and not vim.b[bufnr].disable_autoformat
+        end
+      '';
     };
 
     formatters_by_ft = {
