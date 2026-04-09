@@ -138,3 +138,35 @@ vim.keymap.set("n", "<leader>up", function()
 	vim.opt.paste = not vim.opt.paste:get()
 	vim.notify("paste=" .. tostring(vim.opt.paste:get()))
 end, { desc = "Toggle paste mode" })
+
+do
+	local codex_terminal
+
+	local function toggle_codex()
+		local ok, terminal = pcall(require, "toggleterm.terminal")
+		if not ok then
+			vim.notify("toggleterm is not available", vim.log.levels.ERROR)
+			return
+		end
+
+		if not codex_terminal then
+			codex_terminal = terminal.Terminal:new({
+				cmd = "codex",
+				direction = "vertical",
+				size = 80,
+				hidden = true,
+				close_on_exit = false,
+				on_open = function()
+					vim.cmd.startinsert()
+				end,
+				on_close = function()
+					vim.cmd.stopinsert()
+				end,
+			})
+		end
+
+		codex_terminal:toggle()
+	end
+
+	_G.toggle_codex = toggle_codex
+end

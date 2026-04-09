@@ -463,7 +463,7 @@
     key = "<leader>ac";
     mode = "n";
     silent = true;
-    action = "<cmd>TermExec direction=vertical size=80 cmd='codex'<CR>";
+    action = "<cmd>lua toggle_codex()<CR>";
     desc = "Toggle Codex";
   }
 ]
