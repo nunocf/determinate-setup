@@ -2,7 +2,7 @@
   {
     key = "<leader><leader>";
     mode = "n";
-    action = "<cmd>LeaderDashboard<cr>";
+    action = "<cmd>lua Snacks.dashboard()<cr>";
     desc = "Command palette";
   }
   ############################################################
