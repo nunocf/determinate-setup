@@ -390,7 +390,7 @@
 
   {
     key = "y";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"+y'';
     desc = "Yank to system clipboard";
   }
@@ -426,7 +426,7 @@
   }
   {
     key = "d";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"_d'';
     desc = "Delete without yanking";
   }
@@ -438,7 +438,7 @@
   }
   {
     key = "c";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"_c'';
     desc = "Change without yanking";
   }
@@ -450,7 +450,7 @@
   }
   {
     key = "x";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"_x'';
     desc = "Delete char without yanking";
   }
@@ -462,13 +462,13 @@
   }
   {
     key = "s";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"_s'';
     desc = "Substitute without yanking";
   }
   {
     key = "S";
-    mode = [ "n" "v" ];
+    mode = ["n" "v"];
     action = ''"_S'';
     desc = "Substitute line without yanking";
   }

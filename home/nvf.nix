@@ -34,7 +34,7 @@
       treesitter = {
         enable = true;
         fold = true;
-        # textobjects.enable = true;
+        textobjects.enable = true;
         # autotagHtml = true;
         autotagHtml = true;
         addDefaultGrammars = false;
