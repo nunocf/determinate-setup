@@ -463,17 +463,7 @@
     key = "<leader>ac";
     mode = "n";
     silent = true;
-    action = ''
-      function()
-        local codex = vim.fn.exepath("codex")
-        if codex == "" then
-          vim.notify("codex not found in PATH", vim.log.levels.ERROR)
-          return
-        end
-
-        vim.cmd("ToggleTerm direction=vertical size=80 cmd=" .. vim.fn.fnameescape(codex))
-      end
-    '';
-    desc = "Open Codex";
+    action = "<cmd>TermExec direction=vertical size=80 cmd='codex'<CR>";
+    desc = "Toggle Codex";
   }
 ]

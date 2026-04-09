@@ -160,7 +160,7 @@ local function smart_ghcid()
 	end
 
 	ghcid_open = true
-	vim.cmd("ToggleTerm direction=float dir=" .. vim.fn.fnameescape(cwd) .. " size=20 cmd=" .. cmd)
+	vim.cmd("ToggleTerm direction=float dir=" .. vim.fn.fnameescape(cwd) .. " size=20 cmd=" .. vim.fn.shellescape(cmd))
 end
 
 vim.api.nvim_create_user_command("SmartGhcid", smart_ghcid, {})
