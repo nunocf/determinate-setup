@@ -34,6 +34,7 @@
       fourmolu
       defaultbrowser
       alejandra
+      stylua
 
       # fonts
       nerd-fonts.fira-code
