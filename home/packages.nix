@@ -35,6 +35,8 @@
       defaultbrowser
       alejandra
       stylua
+      prettierd
+      nodePackages.markdownlint-cli2
 
       # fonts
       nerd-fonts.fira-code
