@@ -33,6 +33,7 @@
       ollama
       fourmolu
       defaultbrowser
+      alejandra
 
       # fonts
       nerd-fonts.fira-code

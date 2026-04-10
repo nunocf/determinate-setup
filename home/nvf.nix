@@ -3,6 +3,8 @@
   lib,
   ...
 }: {
+  home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
+
   programs.nvf = {
     enable = true;
     settings.vim = {
@@ -41,6 +43,7 @@
         grammars = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           nix
           haskell
+          sql
           lua
           bash
           ruby
