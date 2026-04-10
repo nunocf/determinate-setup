@@ -4,53 +4,20 @@
 -- that is not a clean fit for current nvf module options.
 ----------------------------------------------------------------
 
-do
-	local ht = vim.g.haskell_tools
-	if type(ht) ~= "table" then
-		ht = {}
-	end
+	do
+		local ht = vim.g.haskell_tools
+		if type(ht) ~= "table" then
+			ht = {}
+		end
 	if type(ht.hls) ~= "table" then
 		ht.hls = {}
 	end
 
-	ht.hls.root_dir = nil
 	ht.hls.enable = nil
 	ht.hls.filetypes = nil
 
-	vim.g.haskell_tools = ht
-end
-
-do
-	local ht = vim.g.haskell_tools
-	if type(ht) ~= "table" then
-		ht = {}
+		vim.g.haskell_tools = ht
 	end
-	if type(ht.hls) ~= "table" then
-		ht.hls = {}
-	end
-	if type(ht.hls.settings) ~= "table" then
-		ht.hls.settings = {}
-	end
-
-	local hs = ht.hls.settings.haskell
-	if type(hs) ~= "table" then
-		hs = {}
-		ht.hls.settings.haskell = hs
-	end
-
-	if type(hs.plugin) ~= "table" then
-		hs.plugin = {}
-	end
-	if type(hs.plugin.hlint) ~= "table" then
-		hs.plugin.hlint = {}
-	end
-
-	hs.plugin.hlint.globalOn = true
-	hs.plugin.hlint.diagnosticsOn = true
-	hs.plugin.hlint.codeActionsOn = true
-
-	vim.g.haskell_tools = ht
-end
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "nix",

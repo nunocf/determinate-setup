@@ -60,6 +60,13 @@
         )
       end
     end
+
+    do
+      vim.g.haskell_tools = vim.g.haskell_tools or {}
+      vim.g.haskell_tools.hls = vim.g.haskell_tools.hls or {}
+      vim.g.haskell_tools.hls.enable = false
+      vim.g.haskell_tools.hls.filetypes = { "haskell", "lhaskell" }
+    end
   '';
 in {
   home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;

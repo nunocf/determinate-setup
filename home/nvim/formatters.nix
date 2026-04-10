@@ -4,10 +4,7 @@
   ...
 }: let
   optionalFormatter = condition: name: lib.optional condition name;
-  shellOnlyCommand = binary: ''
-    exec ${binary} "$@"
-  '';
-  shellFirstCommand = fallback: binary: ''
+  shellFirstCommand = binary: fallback: ''
     if command -v ${binary} >/dev/null 2>&1; then
       exec ${binary} "$@"
     else
@@ -61,30 +58,56 @@ in {
     formatters = {
       alejandra = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.alejandra) "alejandra") "sh" "--"];
+        args = [
+          "-c"
+          (shellFirstCommand "alejandra" (lib.getExe pkgs.alejandra))
+          "sh"
+          "--"
+        ];
         stdin = true;
       };
       stylua = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.stylua) "stylua") "sh" "--stdin-filepath" "$FILENAME" "-"];
+        args = [
+          "-c"
+          (shellFirstCommand "stylua" (lib.getExe pkgs.stylua))
+          "sh"
+          "--stdin-filepath"
+          "$FILENAME"
+          "-"
+        ];
         stdin = true;
       };
       shfmt = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.shfmt) "shfmt") "sh"];
+        args = ["-c" (shellFirstCommand "shfmt" (lib.getExe pkgs.shfmt)) "sh"];
         stdin = true;
       };
       prettierd = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.prettierd) "prettierd") "sh" "$FILENAME"];
+        args = [
+          "-c"
+          (shellFirstCommand "prettierd" (lib.getExe pkgs.prettierd))
+          "sh"
+          "$FILENAME"
+        ];
         stdin = true;
       };
       fourmolu = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.fourmolu) "fourmolu") "sh" "--stdin-input-file" "$FILENAME"];
-        cwd = ''
-          require("conform.util").root_file({ "fourmolu.yaml", "cabal.project", "package.yaml", "*.cabal", "flake.nix", ".git" })
-        '';
+        args = [
+          "-c"
+          ''
+            if command -v fourmolu >/dev/null 2>&1; then
+              exec fourmolu --stdin-input-file "$FILENAME"
+            else
+              exec ${lib.getExe pkgs.fourmolu} --stdin-input-file "$FILENAME"
+            fi
+          ''
+          "sh"
+          "--"
+        ];
+        cwd = null;
         stdin = true;
       };
       rubocop = {
@@ -105,10 +128,14 @@ in {
       };
       cabal_fmt = {
         command = "sh";
-        args = ["-c" (shellOnlyCommand "cabal-fmt") "sh" "--inplace" "$FILENAME"];
-        cwd = ''
-          require("conform.util").root_file({ "cabal.project", "package.yaml", "*.cabal", "flake.nix", ".git" })
-        '';
+        args = [
+          "-c"
+          ''
+            exec cabal-fmt --inplace "$FILENAME"
+          ''
+          "sh"
+        ];
+        cwd = null;
         stdin = false;
       };
     };
