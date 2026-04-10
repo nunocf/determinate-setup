@@ -3,7 +3,9 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  inherit (lib.generators) mkLuaInline;
+in {
   home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
   home.file.".config/lazygit/config.yml".text = ''
     gui:
@@ -154,6 +156,181 @@
           };
         };
         nvim-web-devicons.enable = true;
+      };
+
+      ui.noice = {
+        enable = true;
+        setupOpts = {
+          lsp = {
+            progress.enabled = true;
+            signature.enabled = true;
+            hover.enabled = true;
+          };
+          presets = {
+            bottom_search = true;
+            command_palette = true;
+            long_message_to_split = true;
+            inc_rename = false;
+            lsp_doc_border = true;
+          };
+          notify.enabled = true;
+        };
+      };
+
+      tabline.nvimBufferline = {
+        enable = true;
+        setupOpts = {
+          options = {
+            mode = "buffers";
+            themable = true;
+            separator_style = "thin";
+            diagnostics = "nvim_lsp";
+            always_show_bufferline = true;
+            enforce_regular_tabs = false;
+            hover.enabled = true;
+            indicator = {
+              style = "icon";
+              icon = "▎";
+            };
+            numbers = "ordinal";
+            show_buffer_close_icons = true;
+            show_close_icon = false;
+            color_icons = true;
+            close_command = "bdelete! %d";
+            right_mouse_command = "bdelete! %d";
+            left_mouse_command = "buffer %d";
+            middle_mouse_command = "bdelete! %d";
+            buffer_close_icon = "󰅖";
+            modified_icon = "●";
+            close_icon = "";
+            left_trunc_marker = "";
+            right_trunc_marker = "";
+            tab_size = 22;
+            max_name_length = 20;
+            truncate_names = true;
+            diagnostics_indicator = mkLuaInline ''
+              function(count, level)
+                local icon = level:match("error") and " " or " "
+                return " " .. icon .. count
+              end
+            '';
+            offsets = [
+              {
+                filetype = "oil";
+                text = "Files";
+                highlight = "Directory";
+                text_align = "left";
+              }
+            ];
+          };
+          highlights = {
+            fill = {
+              bg = "#232a2e";
+            };
+            background = {
+              fg = "#7a8478";
+              bg = "#272e33";
+            };
+            buffer_selected = {
+              fg = "#d3c6aa";
+              bg = "#3a464c";
+              bold = true;
+              italic = false;
+            };
+            buffer_visible = {
+              fg = "#9da9a0";
+              bg = "#2e383c";
+            };
+            separator = {
+              fg = "#232a2e";
+              bg = "#272e33";
+            };
+            separator_visible = {
+              fg = "#232a2e";
+              bg = "#2e383c";
+            };
+            separator_selected = {
+              fg = "#232a2e";
+              bg = "#3a464c";
+            };
+            indicator_selected = {
+              fg = "#a7c080";
+              bg = "#3a464c";
+            };
+            modified = {
+              fg = "#dbbc7f";
+              bg = "#272e33";
+            };
+            modified_visible = {
+              fg = "#dbbc7f";
+              bg = "#2e383c";
+            };
+            modified_selected = {
+              fg = "#dbbc7f";
+              bg = "#3a464c";
+            };
+            duplicate_selected = {
+              fg = "#7fbbb3";
+              bg = "#3a464c";
+              italic = true;
+            };
+            duplicate_visible = {
+              fg = "#7fbbb3";
+              bg = "#2e383c";
+              italic = true;
+            };
+            diagnostic_selected = {
+              bg = "#3a464c";
+            };
+            diagnostic_visible = {
+              bg = "#2e383c";
+            };
+            hint_selected = {
+              fg = "#83c092";
+              bg = "#3a464c";
+            };
+            hint_visible = {
+              fg = "#83c092";
+              bg = "#2e383c";
+            };
+            info_selected = {
+              fg = "#7fbbb3";
+              bg = "#3a464c";
+            };
+            info_visible = {
+              fg = "#7fbbb3";
+              bg = "#2e383c";
+            };
+            warning_selected = {
+              fg = "#dbbc7f";
+              bg = "#3a464c";
+            };
+            warning_visible = {
+              fg = "#dbbc7f";
+              bg = "#2e383c";
+            };
+            error_selected = {
+              fg = "#e67e80";
+              bg = "#3a464c";
+            };
+            error_visible = {
+              fg = "#e67e80";
+              bg = "#2e383c";
+            };
+            close_button = {
+              fg = "#7a8478";
+              bg = "#272e33";
+            };
+            close_button_visible = {
+              fg = "#9da9a0";
+              bg = "#2e383c";
+            };
+            close_button_selected = {
+              fg = "#d699b6";
+              bg = "#3a464c";
+            };
+          };
+        };
       };
 
       terminal.toggleterm = {
