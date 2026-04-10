@@ -4,20 +4,16 @@
 -- that is not a clean fit for current nvf module options.
 ----------------------------------------------------------------
 
-	do
-		local ht = vim.g.haskell_tools
-		if type(ht) ~= "table" then
-			ht = {}
-		end
-	if type(ht.hls) ~= "table" then
-		ht.hls = {}
-	end
-
-	ht.hls.enable = nil
-	ht.hls.filetypes = nil
-
-		vim.g.haskell_tools = ht
-	end
+do
+	vim.g.haskell_tools = {
+		hls = {
+			cmd = {
+				"haskell-language-server-wrapper",
+				"--lsp",
+			},
+		},
+	}
+end
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "nix",

@@ -40,7 +40,6 @@ ftmap("haskell", "<leader>uh", function()
 	for _, d in ipairs(diags) do
 		if d.message:match("hole") and d.lnum > cur then
 			vim.api.nvim_win_set_cursor(0, { d.lnum + 1, d.col or 0 })
-			vim.diagnostic.open_float(nil, { focus = false })
 			return
 		end
 	end

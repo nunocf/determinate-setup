@@ -169,53 +169,33 @@
   ############################################################
 
   {
-    key = "]e";
+    key = "<leader>xn";
     mode = "n";
     silent = true;
-    action = ''
-      function()
-        vim.diagnostic.goto_next({severity=vim.diagnostic.severity.ERROR})
-        vim.diagnostic.open_float(nil,{focus=false})
-      end
-    '';
-    desc = "Next error";
+    action = "<cmd>lua vim.diagnostic.jump({count = 1, float = _G.diagnostic_float_opts()})<cr>";
+    desc = "Next diagnostic";
   }
   {
-    key = "]d";
+    key = "<leader>xp";
     mode = "n";
     silent = true;
-    action = ''
-      function()
-        vim.diagnostic.goto_next()
-        vim.diagnostic.open_float(nil,{focus=false})
-      end
-    '';
-    desc = "Next diagnostic";
+    action = "<cmd>lua vim.diagnostic.jump({count = -1, float = _G.diagnostic_float_opts()})<cr>";
+    desc = "Previous diagnostic";
   }
 
   {
-    key = "[e";
+    key = "<leader>xN";
     mode = "n";
     silent = true;
-    action = ''
-      function()
-        vim.diagnostic.goto_prev({severity=vim.diagnostic.severity.ERROR})
-        vim.diagnostic.open_float(nil,{focus=false})
-      end
-    '';
-    desc = "Previous error";
+    action = "<cmd>lua vim.diagnostic.jump({count = 1, severity = vim.diagnostic.severity.ERROR, float = _G.diagnostic_float_opts()})<cr>";
+    desc = "Next error";
   }
   {
-    key = "[d";
+    key = "<leader>xP";
     mode = "n";
     silent = true;
-    action = ''
-      function()
-        vim.diagnostic.goto_prev()
-        vim.diagnostic.open_float(nil,{focus=false})
-      end
-    '';
-    desc = "Previous diagnostic";
+    action = "<cmd>lua vim.diagnostic.jump({count = -1, severity = vim.diagnostic.severity.ERROR, float = _G.diagnostic_float_opts()})<cr>";
+    desc = "Previous error";
   }
 
   {
@@ -233,7 +213,7 @@
   {
     key = "<leader>xd";
     mode = "n";
-    action = "<cmd>lua vim.diagnostic.open_float(nil, { focus = false, scope = 'cursor' })<cr>";
+    action = "<cmd>lua (function() local diags = vim.diagnostic.get(0); if vim.tbl_isempty(diags) then vim.notify('No diagnostics in this buffer'); return end; local cursor = vim.api.nvim_win_get_cursor(0); local line = cursor[1] - 1; local line_diags = vim.diagnostic.get(0, { lnum = line }); local target = line_diags[1] or diags[1]; vim.diagnostic.jump({ diagnostic = target, float = _G.diagnostic_float_opts() }) end)()<cr>";
     desc = "Diagnostic (cursor)";
   }
 

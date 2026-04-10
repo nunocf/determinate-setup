@@ -32,11 +32,13 @@
       ffmpeg
       ollama
       fourmolu
+      statix
       defaultbrowser
       alejandra
       stylua
+      pgformatter
       prettierd
-      nodePackages.markdownlint-cli2
+      markdownlint-cli2
 
       # fonts
       nerd-fonts.fira-code

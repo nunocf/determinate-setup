@@ -8,21 +8,20 @@
     sh -c 'if command -v ${binary} >/dev/null 2>&1; then exec ${binary} "$@"; else exec ${lib.getExe' package binary} "$@"; fi' sh
   '';
   statixEnabled = pkgs ? statix;
-  deadnixEnabled = pkgs ? deadnix;
   shellcheckEnabled = pkgs ? shellcheck;
   luacheckEnabled = pkgs.luajitPackages ? luacheck;
   rubyEnabled = pkgs ? ruby;
-  markdownlintEnabled = pkgs.nodePackages ? markdownlint-cli2;
+  markdownlintEnabled = pkgs ? markdownlint-cli2;
   hlintEnabled = pkgs ? hlint;
-  eslintEnabled = pkgs.nodePackages ? eslint_d;
-  stylelintEnabled = pkgs.nodePackages ? stylelint;
-  markdownlintCmd = shellFirstCmd pkgs.nodePackages.markdownlint-cli2 "markdownlint-cli2";
+  eslintEnabled = pkgs ? eslint_d;
+  stylelintEnabled = pkgs ? stylelint;
+  markdownlintCmd = shellFirstCmd pkgs.markdownlint-cli2 "markdownlint-cli2";
 in {
   enable = true;
   lint_after_save = true;
 
   linters_by_ft = {
-    nix = optionalLinter statixEnabled "statix" ++ optionalLinter deadnixEnabled "deadnix";
+    nix = optionalLinter statixEnabled "statix";
     sh = optionalLinter shellcheckEnabled "shellcheck";
     bash = optionalLinter shellcheckEnabled "shellcheck";
     lua = optionalLinter luacheckEnabled "luacheck";
@@ -38,10 +37,6 @@ in {
   };
 
   linters = {
-    statix.cmd = "sh";
-    statix.args = ["-c" (shellFirstCmd pkgs.statix "statix") "sh"];
-    deadnix.cmd = "sh";
-    deadnix.args = ["-c" (shellFirstCmd pkgs.deadnix "deadnix") "sh"];
     shellcheck.cmd = "sh";
     shellcheck.args = ["-c" (shellFirstCmd pkgs.shellcheck "shellcheck") "sh"];
     luacheck.cmd = "sh";
@@ -59,7 +54,7 @@ in {
 
     eslint_d = {
       cmd = "sh";
-      args = ["-c" (shellFirstCmd pkgs.nodePackages.eslint_d "eslint_d") "sh"];
+      args = ["-c" (shellFirstCmd pkgs.eslint_d "eslint_d") "sh"];
       required_files = [
         "eslint.config.js"
         "eslint.config.mjs"
@@ -75,7 +70,7 @@ in {
 
     stylelint = {
       cmd = "sh";
-      args = ["-c" (shellFirstCmd pkgs.nodePackages.stylelint "stylelint") "sh"];
+      args = ["-c" (shellFirstCmd pkgs.stylelint "stylelint") "sh"];
       required_files = [
         "stylelint.config.js"
         "stylelint.config.cjs"

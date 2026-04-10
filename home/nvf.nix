@@ -60,16 +60,30 @@
         )
       end
     end
-
-    do
-      vim.g.haskell_tools = vim.g.haskell_tools or {}
-      vim.g.haskell_tools.hls = vim.g.haskell_tools.hls or {}
-      vim.g.haskell_tools.hls.enable = false
-      vim.g.haskell_tools.hls.filetypes = { "haskell", "lhaskell" }
+  '';
+  dropbarLua = pkgs.writeText "nvf-dropbar.lua" ''
+    local ok, dropbar = pcall(require, "dropbar")
+    if not ok then
+      return
     end
+
+    local sources = require("dropbar.sources")
+
+    dropbar.setup({
+      bar = {
+        sources = function(buf, _)
+          if vim.bo[buf].buftype == "terminal" then
+            return { sources.terminal }
+          end
+
+          return { sources.path }
+        end,
+      },
+    })
   '';
 in {
   home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
+  home.file.".config/nvim/after/queries/nix/injections.scm".source = ./nvim/queries/nix/injections.scm;
   home.file.".config/lazygit/config.yml".text = ''
     gui:
       border: rounded
@@ -122,6 +136,10 @@ in {
         ./nvim/config/filetypes.lua
         ./nvim/config/diagnostics.lua
         lspPathFirstLua
+        dropbarLua
+      ];
+      startPlugins = [
+        pkgs.vimPlugins."dropbar-nvim"
       ];
 
       highlight = {
@@ -166,10 +184,21 @@ in {
           bold = true;
         };
         FloatBorder = {
-          fg = "#7a8478";
-          bg = "NONE";
+          fg = "#a7c080";
+          bg = "#2d353b";
         };
-        NormalFloat = {bg = "NONE";};
+        NormalFloat = {
+          fg = "#d3c6aa";
+          bg = "#2d353b";
+        };
+        DiagnosticFloating = {
+          fg = "#d3c6aa";
+          bg = "#2d353b";
+        };
+        DiagnosticFloatingBorder = {
+          fg = "#a7c080";
+          bg = "#2d353b";
+        };
         DiagnosticVirtualTextError = {link = "ErrorMsg";};
         HaskellHole = {link = "DiagnosticError";};
         RainbowDelimiterRed = {fg = "#d699b6";};
@@ -254,12 +283,13 @@ in {
           update_in_insert = false;
           virtual_text = false;
           float = {
-            border = "rounded";
+            border = "single";
             source = "if_many";
             focusable = false;
-            style = "minimal";
+            header = "";
             wrap = true;
-            max_width = 100;
+            width = 72;
+            max_width = 84;
           };
         };
         nvim-lint = import ./nvim/lint.nix {inherit pkgs lib;};
@@ -403,6 +433,11 @@ in {
             themable = true;
             separator_style = "thin";
             diagnostics = "nvim_lsp";
+            diagnostics_indicator = mkLuaInline ''
+              function()
+                return ""
+              end
+            '';
             always_show_bufferline = true;
             enforce_regular_tabs = false;
             hover.enabled = true;
@@ -411,7 +446,7 @@ in {
               icon = "▎";
             };
             numbers = "none";
-            show_buffer_close_icons = true;
+            show_buffer_close_icons = false;
             show_close_icon = false;
             color_icons = true;
             close_command = "bdelete! %d";
@@ -419,23 +454,16 @@ in {
             left_mouse_command = "buffer %d";
             middle_mouse_command = "bdelete! %d";
             buffer_close_icon = "󰅖";
-            modified_icon = "●";
-            close_icon = "";
+            modified_icon = "";
+            close_icon = "󰅖";
             left_trunc_marker = "";
             right_trunc_marker = "";
-            tab_size = 22;
-            max_name_length = 20;
+            max_name_length = 22;
             truncate_names = true;
-            diagnostics_indicator = mkLuaInline ''
-              function(count, level)
-                local icon = level:match("error") and " " or " "
-                return " " .. icon .. count
-              end
-            '';
             offsets = [
               {
                 filetype = "oil";
-                text = "Files";
+                text = "Explorer";
                 highlight = "Directory";
                 text_align = "left";
               }
@@ -497,44 +525,6 @@ in {
               bg = "#2e383c";
               italic = true;
             };
-            diagnostic_selected = {
-              bg = "#3a464c";
-            };
-            diagnostic_visible = {
-              bg = "#2e383c";
-            };
-            hint_selected = {
-              fg = "#83c092";
-              bg = "#3a464c";
-            };
-            hint_visible = {
-              fg = "#83c092";
-              bg = "#2e383c";
-            };
-            info_selected = {
-              fg = "#7fbbb3";
-              bg = "#3a464c";
-            };
-            info_visible = {
-              fg = "#7fbbb3";
-              bg = "#2e383c";
-            };
-            warning_selected = {
-              fg = "#dbbc7f";
-              bg = "#3a464c";
-            };
-            warning_visible = {
-              fg = "#dbbc7f";
-              bg = "#2e383c";
-            };
-            error_selected = {
-              fg = "#e67e80";
-              bg = "#3a464c";
-            };
-            error_visible = {
-              fg = "#e67e80";
-              bg = "#2e383c";
-            };
             close_button = {
               fg = "#7a8478";
               bg = "#272e33";
@@ -583,8 +573,8 @@ in {
         setupOpts = {
           preset = "modern";
           icons = {
-            breadcrumb = "»";
-            separator = "➜";
+            breadcrumb = "";
+            separator = "";
             group = "+";
           };
           win.border = "rounded";

@@ -24,8 +24,7 @@ vim.api.nvim_create_autocmd("CursorHold", {
 			return
 		end
 
-		local _, winid = vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
-		vim.b.diagnostic_hover_win = winid
+		vim.b.diagnostic_hover_win = open_styled_diagnostic_float()
 	end,
 })
 
@@ -57,6 +56,36 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.fn.matchadd("HaskellHole", "_")
 	end,
 })
+
+vim.diagnostic.config({
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "",
+			[vim.diagnostic.severity.WARN] = "",
+			[vim.diagnostic.severity.INFO] = "",
+			[vim.diagnostic.severity.HINT] = "󰌵",
+		},
+	},
+})
+
+_G.diagnostic_float_opts = function()
+	return {
+		border = "single",
+		source = "if_many",
+		focusable = false,
+		header = "",
+		wrap = true,
+		width = 72,
+		max_width = 84,
+	}
+end
+
+_G.open_styled_diagnostic_float = function()
+	local _, winid = vim.diagnostic.open_float(nil, vim.tbl_extend("force", {
+		scope = "cursor",
+	}, _G.diagnostic_float_opts()))
+	return winid
+end
 
 local ghcid_open = false
 

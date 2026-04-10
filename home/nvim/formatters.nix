@@ -18,6 +18,7 @@
   rubocopEnabled = pkgs ? rubocop;
   shfmtEnabled = pkgs ? shfmt;
   prettierdEnabled = pkgs ? prettierd;
+  pgFormatterEnabled = pkgs ? pgformatter;
 in {
   enable = true;
   setupOpts = {
@@ -34,10 +35,11 @@ in {
     };
 
     formatters_by_ft = {
-      nix = optionalFormatter alejandraEnabled "alejandra";
+      nix = optionalFormatter alejandraEnabled "alejandra" ++ [ "injected" ];
       haskell = optionalFormatter fourmoluEnabled "fourmolu";
       cabal = optionalFormatter cabalFmtEnabled "cabal_fmt";
       lua = optionalFormatter styluaEnabled "stylua";
+      sql = optionalFormatter pgFormatterEnabled "pg_format";
       ruby = optionalFormatter rubocopEnabled "rubocop";
       sh = optionalFormatter shfmtEnabled "shfmt";
       bash = optionalFormatter shfmtEnabled "shfmt";
