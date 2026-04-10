@@ -5,10 +5,14 @@
 }: let
   optionalFormatter = condition: name: lib.optional condition name;
   shellOnlyCommand = binary: ''
-    sh -c 'exec ${binary} "$@"' sh
+    exec ${binary} "$@"
   '';
   shellFirstCommand = fallback: binary: ''
-    sh -c 'if command -v ${binary} >/dev/null 2>&1; then exec ${binary} "$@"; else exec ${fallback} "$@"; fi' sh
+    if command -v ${binary} >/dev/null 2>&1; then
+      exec ${binary} "$@"
+    else
+      exec ${fallback} "$@"
+    fi
   '';
   alejandraEnabled = pkgs ? alejandra;
   fourmoluEnabled = pkgs ? fourmolu;
@@ -57,23 +61,31 @@ in {
     formatters = {
       alejandra = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.alejandra) "alejandra") "sh"];
+        args = ["-c" (shellFirstCommand (lib.getExe pkgs.alejandra) "alejandra") "sh" "--"];
+        stdin = true;
       };
       stylua = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.stylua) "stylua") "sh"];
+        args = ["-c" (shellFirstCommand (lib.getExe pkgs.stylua) "stylua") "sh" "--stdin-filepath" "$FILENAME" "-"];
+        stdin = true;
       };
       shfmt = {
         command = "sh";
         args = ["-c" (shellFirstCommand (lib.getExe pkgs.shfmt) "shfmt") "sh"];
+        stdin = true;
       };
       prettierd = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.prettierd) "prettierd") "sh"];
+        args = ["-c" (shellFirstCommand (lib.getExe pkgs.prettierd) "prettierd") "sh" "$FILENAME"];
+        stdin = true;
       };
       fourmolu = {
         command = "sh";
-        args = ["-c" (shellFirstCommand (lib.getExe pkgs.fourmolu) "fourmolu") "sh"];
+        args = ["-c" (shellFirstCommand (lib.getExe pkgs.fourmolu) "fourmolu") "sh" "--stdin-input-file" "$FILENAME"];
+        cwd = ''
+          require("conform.util").root_file({ "fourmolu.yaml", "cabal.project", "package.yaml", "*.cabal", "flake.nix", ".git" })
+        '';
+        stdin = true;
       };
       rubocop = {
         command = "sh";
@@ -94,6 +106,9 @@ in {
       cabal_fmt = {
         command = "sh";
         args = ["-c" (shellOnlyCommand "cabal-fmt") "sh" "--inplace" "$FILENAME"];
+        cwd = ''
+          require("conform.util").root_file({ "cabal.project", "package.yaml", "*.cabal", "flake.nix", ".git" })
+        '';
         stdin = false;
       };
     };

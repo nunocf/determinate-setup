@@ -13,6 +13,9 @@
   luacheckEnabled = pkgs.luajitPackages ? luacheck;
   rubyEnabled = pkgs ? ruby;
   markdownlintEnabled = pkgs.nodePackages ? markdownlint-cli2;
+  hlintEnabled = pkgs ? hlint;
+  eslintEnabled = pkgs.nodePackages ? eslint_d;
+  stylelintEnabled = pkgs.nodePackages ? stylelint;
   markdownlintCmd = shellFirstCmd pkgs.nodePackages.markdownlint-cli2 "markdownlint-cli2";
 in {
   enable = true;
@@ -24,12 +27,13 @@ in {
     bash = optionalLinter shellcheckEnabled "shellcheck";
     lua = optionalLinter luacheckEnabled "luacheck";
     ruby = optionalLinter rubyEnabled "ruby";
-    javascript = ["eslint_d"];
-    javascriptreact = ["eslint_d"];
-    typescript = ["eslint_d"];
-    typescriptreact = ["eslint_d"];
-    css = ["stylelint"];
-    scss = ["stylelint"];
+    haskell = optionalLinter hlintEnabled "hlint";
+    javascript = optionalLinter eslintEnabled "eslint_d";
+    javascriptreact = optionalLinter eslintEnabled "eslint_d";
+    typescript = optionalLinter eslintEnabled "eslint_d";
+    typescriptreact = optionalLinter eslintEnabled "eslint_d";
+    css = optionalLinter stylelintEnabled "stylelint";
+    scss = optionalLinter stylelintEnabled "stylelint";
     markdown = optionalLinter markdownlintEnabled "markdownlint-cli2";
   };
 
@@ -54,7 +58,8 @@ in {
     };
 
     eslint_d = {
-      cmd = "eslint_d";
+      cmd = "sh";
+      args = ["-c" (shellFirstCmd pkgs.nodePackages.eslint_d "eslint_d") "sh"];
       required_files = [
         "eslint.config.js"
         "eslint.config.mjs"
@@ -69,7 +74,8 @@ in {
     };
 
     stylelint = {
-      cmd = "stylelint";
+      cmd = "sh";
+      args = ["-c" (shellFirstCmd pkgs.nodePackages.stylelint "stylelint") "sh"];
       required_files = [
         "stylelint.config.js"
         "stylelint.config.cjs"
