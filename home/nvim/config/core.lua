@@ -15,6 +15,58 @@ do
 	}
 end
 
+do
+	local ns = vim.api.nvim_create_namespace("nix_injected_lua_background")
+	local hl_group = "NixInjectedLuaBackground"
+
+	local function update_injected_background(bufnr)
+		if vim.bo[bufnr].filetype ~= "nix" then
+			return
+		end
+
+		local ok, parser = pcall(vim.treesitter.get_parser, bufnr, "nix")
+		if not ok then
+			return
+		end
+
+		local tree = parser:parse()[1]
+		if not tree then
+			return
+		end
+
+		local query = vim.treesitter.query.get("nix", "injections")
+		if not query then
+			return
+		end
+
+		vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+
+		for id, node in query:iter_captures(tree:root(), bufnr, 0, -1) do
+			if query.captures[id] == "nix.lua.background" then
+				local start_row, start_col, end_row, end_col = node:range()
+				vim.api.nvim_buf_set_extmark(bufnr, ns, start_row, start_col, {
+					end_row = end_row,
+					end_col = end_col,
+					hl_group = hl_group,
+					hl_mode = "combine",
+				})
+			end
+		end
+	end
+
+	local group = vim.api.nvim_create_augroup("nix_injected_lua_background", {
+		clear = true,
+	})
+
+	vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "TextChangedI", "InsertLeave" }, {
+		group = group,
+		pattern = "*.nix",
+		callback = function(args)
+			update_injected_background(args.buf)
+		end,
+	})
+end
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "nix",
 	callback = function()
@@ -79,14 +131,25 @@ vim.keymap.set("n", "<leader>uf", function()
 	vim.notify("format on save=" .. tostring(not vim.g.disable_autoformat))
 end, { desc = "Toggle format on save" })
 
-vim.keymap.set("n", "<leader>uF", function()
+local function format_buffer_now()
 	local ok, conform = pcall(require, "conform")
 	if ok then
-		conform.format({ async = true, lsp_format = "never" })
+		local opts = { async = true, lsp_format = "never" }
+		if vim.bo.filetype == "nix" then
+			opts.formatters = { "alejandra", "injected" }
+		end
+
+		conform.format(opts)
 		return
 	end
 
 	vim.lsp.buf.format({ async = true })
+end
+
+_G.format_buffer_now = format_buffer_now
+
+vim.keymap.set("n", "<leader>uF", function()
+	format_buffer_now()
 end, { desc = "Format buffer now" })
 
 vim.keymap.set("n", "<leader>up", function()

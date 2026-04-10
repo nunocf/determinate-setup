@@ -13,77 +13,82 @@
   # - Keep this behavior stable to avoid unrelated global config changes breaking project tooling.
   lspPathFirstLua = pkgs.writeText "nvf-lsp-path-first.lua" ''
     local function path_first_cmd(binary, fallback, extra)
-      local cmd = vim.fn.exepath(binary)
-      if cmd == nil or cmd == "" then
-        cmd = fallback
-      end
+    	local cmd = vim.fn.exepath(binary)
 
-      local argv = { cmd }
-      if extra then
-        vim.list_extend(argv, extra)
-      end
-      return argv
+    	if cmd == nil or cmd == "" then
+    		cmd = fallback
+    	end
+
+    	local argv = { cmd }
+    	if extra then
+    		vim.list_extend(argv, extra)
+    	end
+    	return argv
     end
 
     -- Add future server overrides here to keep LSP resolution shell-first.
     local lsp_fallbacks = {
-      ["lua-language-server"] = {
-        binary = "lua-language-server",
-        fallback = "${pkgs.lua-language-server}/bin/lua-language-server",
-      },
-      ["marksman"] = {
-        binary = "marksman",
-        fallback = "${pkgs.marksman}/bin/marksman",
-        extra = { "server" },
-      },
-      ["nil"] = {
-        binary = "nil",
-        fallback = "${pkgs.nil}/bin/nil",
-      },
+    	["lua-language-server"] = {
+    		binary = "lua-language-server",
+    		fallback = "${pkgs.lua-language-server}/bin/lua-language-server",
+    	},
+    	["marksman"] = {
+    		binary = "marksman",
+    		fallback = "${pkgs.marksman}/bin/marksman",
+    		extra = { "server" },
+    	},
+    	["nil"] = {
+    		binary = "nil",
+    		fallback = "${pkgs.nil}/bin/nil",
+    	},
     }
 
     do
-      local config = vim.lsp.config
-      for server_name, spec in pairs(lsp_fallbacks) do
-        if config[server_name] then
-          config[server_name].cmd = path_first_cmd(spec.binary, spec.fallback, spec.extra)
-        end
-      end
+    	local config = vim.lsp.config
+    	for server_name, spec in pairs(lsp_fallbacks) do
+    		if config[server_name] then
+    			config[server_name].cmd = path_first_cmd(spec.binary, spec.fallback, spec.extra)
+    		end
+    	end
     end
 
     do
-      if vim.g.haskell_tools and vim.g.haskell_tools.hls then
-        vim.g.haskell_tools.hls.cmd = path_first_cmd(
-          "haskell-language-server-wrapper",
-          "${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper",
-          { "--lsp" }
-        )
-      end
+    	if vim.g.haskell_tools and vim.g.haskell_tools.hls then
+    		vim.g.haskell_tools.hls.cmd = path_first_cmd(
+    			"haskell-language-server-wrapper",
+    			"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper",
+    			{ "--lsp" }
+    		)
+    	end
     end
+
+
   '';
   dropbarLua = pkgs.writeText "nvf-dropbar.lua" ''
     local ok, dropbar = pcall(require, "dropbar")
     if not ok then
-      return
+    	return
     end
 
     local sources = require("dropbar.sources")
 
     dropbar.setup({
-      bar = {
-        sources = function(buf, _)
-          if vim.bo[buf].buftype == "terminal" then
-            return { sources.terminal }
-          end
+    	bar = {
+    		sources = function(buf, _)
+    			if vim.bo[buf].buftype == "terminal" then
+    				return { sources.terminal }
+    			end
 
-          return { sources.path }
-        end,
-      },
+    			return { sources.path }
+    		end,
+    	},
     })
+
+
   '';
 in {
-  home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
-  home.file.".config/nvim/after/queries/nix/injections.scm".source = ./nvim/queries/nix/injections.scm;
+  home.file.".config/nvim/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
+  home.file.".config/nvim/queries/nix/injections.scm".source = ./nvim/queries/nix/injections.scm;
   home.file.".config/lazygit/config.yml".text = ''
     gui:
       border: rounded
@@ -138,6 +143,7 @@ in {
         lspPathFirstLua
         dropbarLua
       ];
+      additionalRuntimePaths = ["~/.config/nvim"];
       startPlugins = [
         pkgs.vimPlugins."dropbar-nvim"
       ];
@@ -201,6 +207,7 @@ in {
         };
         DiagnosticVirtualTextError = {link = "ErrorMsg";};
         HaskellHole = {link = "DiagnosticError";};
+        NixInjectedLuaBackground = {bg = "#273036";};
         RainbowDelimiterRed = {fg = "#d699b6";};
         RainbowDelimiterYellow = {fg = "#dbbc7f";};
         RainbowDelimiterBlue = {fg = "#7fbbb3";};
@@ -225,14 +232,31 @@ in {
       autocmds = [
         {
           event = ["FileType"];
-          pattern = ["markdown"];
+          pattern = ["bash" "css" "haskell" "html" "javascript" "javascriptreact" "jsonc" "lua" "nix" "ruby" "scss" "sh" "tsx" "typescript" "typescriptreact" "yaml"];
           callback = mkLuaInline ''
             function()
-              vim.opt_local.wrap = true
-              vim.opt_local.spell = true
-              vim.opt_local.linebreak = true
-              vim.opt_local.textwidth = 100
+            	if vim.bo.buftype ~= "" then
+            		return
+            	end
+
+            	vim.opt_local.spell = true
             end
+
+
+          '';
+        }
+        {
+          event = ["BufReadPost" "BufNewFile"];
+          pattern = ["*.md" "*.markdown" "*.mkd"];
+          callback = mkLuaInline ''
+            function()
+            	vim.opt_local.wrap = true
+            	vim.opt_local.spell = true
+            	vim.opt_local.linebreak = true
+            	vim.opt_local.textwidth = 100
+            end
+
+
           '';
         }
         {
@@ -240,10 +264,15 @@ in {
           pattern = ["gitcommit"];
           callback = mkLuaInline ''
             function()
-              vim.opt_local.spell = true
-              vim.opt_local.wrap = true
-              vim.opt_local.textwidth = 72
+            	if vim.bo.buftype ~= "" or vim.bo.filetype == "" then
+            		return
+            	end
+
+            	vim.opt_local.wrap = true
+            	vim.opt_local.textwidth = 72
             end
+
+
           '';
         }
         {
@@ -251,11 +280,13 @@ in {
           pattern = ["typescript" "typescriptreact" "javascript" "javascriptreact" "tsx"];
           callback = mkLuaInline ''
             function()
-              vim.opt_local.shiftwidth = 2
-              vim.opt_local.tabstop = 2
-              vim.opt_local.expandtab = true
-              vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
+            	vim.opt_local.shiftwidth = 2
+            	vim.opt_local.tabstop = 2
+            	vim.opt_local.expandtab = true
+            	vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
             end
+
+
           '';
         }
         {
@@ -263,12 +294,14 @@ in {
           pattern = ["ruby"];
           callback = mkLuaInline ''
             function()
-              vim.opt_local.shiftwidth = 2
-              vim.opt_local.tabstop = 2
-              vim.opt_local.expandtab = true
-              vim.opt_local.iskeyword:append("?")
-              vim.opt_local.iskeyword:append("!")
+            	vim.opt_local.shiftwidth = 2
+            	vim.opt_local.tabstop = 2
+            	vim.opt_local.expandtab = true
+            	vim.opt_local.iskeyword:append("?")
+            	vim.opt_local.iskeyword:append("!")
             end
+
+
           '';
         }
       ];
@@ -301,6 +334,9 @@ in {
       treesitter = {
         enable = true;
         fold = false;
+        highlight = {
+          enable = true;
+        };
         textobjects.enable = true;
         # autotagHtml = true;
         autotagHtml = true;
@@ -430,113 +466,43 @@ in {
         setupOpts = {
           options = {
             mode = "buffers";
-            themable = true;
-            separator_style = "thin";
-            diagnostics = "nvim_lsp";
-            diagnostics_indicator = mkLuaInline ''
-              function()
-                return ""
-              end
-            '';
-            always_show_bufferline = true;
-            enforce_regular_tabs = false;
-            hover.enabled = true;
+            numbers = "none";
+            close_command = "bdelete! %d";
+            middle_mouse_command = "bdelete! %d";
+            left_mouse_command = "buffer %d";
+            right_mouse_command = "bdelete! %d";
             indicator = {
               style = "icon";
               icon = "▎";
             };
-            numbers = "none";
-            show_buffer_close_icons = false;
-            show_close_icon = false;
-            color_icons = true;
-            close_command = "bdelete! %d";
-            right_mouse_command = "bdelete! %d";
-            left_mouse_command = "buffer %d";
-            middle_mouse_command = "bdelete! %d";
             buffer_close_icon = "󰅖";
-            modified_icon = "";
             close_icon = "󰅖";
+            modified_icon = "●";
             left_trunc_marker = "";
-            right_trunc_marker = "";
             max_name_length = 22;
+            max_prefix_length = 15;
+            tab_size = 18;
+            themable = true;
+            diagnostics = "nvim_lsp";
+            diagnostics_update_in_insert = false;
+            diagnostics_indicator = mkLuaInline ''
+              function(count, level, diagnostics_dict, context)
+              	return "(" .. count .. ")"
+              end
+
+
+            '';
+            color_icons = true;
+            show_buffer_icons = true;
+            show_buffer_close_icons = true;
+            show_close_icon = true;
+            show_tab_indicators = true;
+            persist_buffer_sort = true;
+            always_show_bufferline = true;
+            enforce_regular_tabs = false;
+            sort_by = "directory";
+            hover.enabled = true;
             truncate_names = true;
-            offsets = [
-              {
-                filetype = "oil";
-                text = "Explorer";
-                highlight = "Directory";
-                text_align = "left";
-              }
-            ];
-          };
-          highlights = {
-            fill = {
-              bg = "#232a2e";
-            };
-            background = {
-              fg = "#7a8478";
-              bg = "#272e33";
-            };
-            buffer_selected = {
-              fg = "#d3c6aa";
-              bg = "#3a464c";
-              bold = true;
-              italic = false;
-            };
-            buffer_visible = {
-              fg = "#9da9a0";
-              bg = "#2e383c";
-            };
-            separator = {
-              fg = "#232a2e";
-              bg = "#272e33";
-            };
-            separator_visible = {
-              fg = "#232a2e";
-              bg = "#2e383c";
-            };
-            separator_selected = {
-              fg = "#232a2e";
-              bg = "#3a464c";
-            };
-            indicator_selected = {
-              fg = "#a7c080";
-              bg = "#3a464c";
-            };
-            modified = {
-              fg = "#dbbc7f";
-              bg = "#272e33";
-            };
-            modified_visible = {
-              fg = "#dbbc7f";
-              bg = "#2e383c";
-            };
-            modified_selected = {
-              fg = "#dbbc7f";
-              bg = "#3a464c";
-            };
-            duplicate_selected = {
-              fg = "#7fbbb3";
-              bg = "#3a464c";
-              italic = true;
-            };
-            duplicate_visible = {
-              fg = "#7fbbb3";
-              bg = "#2e383c";
-              italic = true;
-            };
-            close_button = {
-              fg = "#7a8478";
-              bg = "#272e33";
-            };
-            close_button_visible = {
-              fg = "#9da9a0";
-              bg = "#2e383c";
-            };
-            close_button_selected = {
-              fg = "#d699b6";
-              bg = "#3a464c";
-            };
           };
         };
       };

@@ -1,10 +1,12 @@
+; extends
+
 ; Highlight Lua in inline Nix strings that are actually Lua code.
 ((apply_expression
-   function: (variable_expression
-     (identifier) @_func)
+   function: (variable_expression) @_func
    argument: (indented_string_expression
-     (string_fragment) @injection.content))
+     (string_fragment) @injection.content @nix.lua.background))
  (#match? @_func "^mkLuaInline$")
+ (#set! injection.combined)
  (#set! injection.language "lua"))
 
 ; Highlight file contents written out via writeText based on the target filename.
@@ -16,9 +18,10 @@
      argument: (string_expression
        (string_fragment) @injection.filename))
    argument: (indented_string_expression
-     (string_fragment) @injection.content))
+     (string_fragment) @injection.content @nix.lua.background))
  (#match? @_func "^writeText$")
  (#match? @injection.filename "\\.lua$")
+ (#set! injection.combined)
  (#set! injection.language "lua"))
 
 ((apply_expression

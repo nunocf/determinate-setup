@@ -3,6 +3,7 @@
   lib,
   ...
 }: let
+  mkLuaInline = lib.generators.mkLuaInline;
   optionalFormatter = condition: name: lib.optional condition name;
   shellFirstCommand = binary: fallback: ''
     if command -v ${binary} >/dev/null 2>&1; then
@@ -35,7 +36,7 @@ in {
     };
 
     formatters_by_ft = {
-      nix = optionalFormatter alejandraEnabled "alejandra" ++ [ "injected" ];
+      nix = optionalFormatter alejandraEnabled "alejandra";
       haskell = optionalFormatter fourmoluEnabled "fourmolu";
       cabal = optionalFormatter cabalFmtEnabled "cabal_fmt";
       lua = optionalFormatter styluaEnabled "stylua";
@@ -58,6 +59,50 @@ in {
     };
 
     formatters = {
+      stylua_injected = {
+        format = mkLuaInline ''
+          function(self, ctx, lines, callback)
+            local stylua = "${lib.getExe pkgs.stylua}"
+
+            local function split_lines(text)
+              text = text:gsub("\r", "")
+              return vim.split(text, "\n", { plain = true })
+            end
+
+            local function run_stylua(input)
+              local result = vim.system(
+                { stylua, "--stdin-filepath", ctx.filename, "-" },
+                { stdin = input, text = true }
+              ):wait()
+
+              if result.code == 0 then
+                return split_lines(result.stdout or "")
+              end
+
+              return nil, result.stderr or "stylua failed"
+            end
+
+            local text = table.concat(lines, "\n")
+            local formatted, err = run_stylua(text)
+            if formatted then
+              callback(nil, formatted)
+              return
+            end
+
+            local wrapped = "return " .. text:gsub("^%s*\n+", "")
+            formatted, err = run_stylua(wrapped)
+            if formatted then
+              if formatted[1] then
+                formatted[1] = formatted[1]:gsub("^return%s+", "", 1)
+              end
+              callback(nil, formatted)
+              return
+            end
+
+            callback(nil, lines)
+          end
+        '';
+      };
       alejandra = {
         command = "sh";
         args = [
@@ -79,6 +124,14 @@ in {
           "-"
         ];
         stdin = true;
+      };
+      injected = {
+        options = {
+          ignore_errors = true;
+          lang_to_formatters = {
+            lua = ["stylua_injected"];
+          };
+        };
       };
       shfmt = {
         command = "sh";

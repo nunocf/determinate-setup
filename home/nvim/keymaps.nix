@@ -319,7 +319,7 @@
   {
     key = "<leader>cf";
     mode = "n";
-    action = "<cmd>lua require('conform').format({ async = true, lsp_format = 'never' })<cr>";
+    action = "<cmd>lua format_buffer_now()<cr>";
     desc = "Format buffer";
   }
   {
