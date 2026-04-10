@@ -1,5 +1,7 @@
 ----------------------------------------------------------------
 -- CORE: PROJECT ROOT, FORMAT TOGGLES, EDITOR TWEAKS
+-- This file remains because it holds runtime-dependent custom logic
+-- that is not a clean fit for current nvf module options.
 ----------------------------------------------------------------
 
 do
@@ -66,27 +68,6 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.formatoptions:append({ "j" })
 	end,
 })
-
-pcall(function()
-	require("nvim-treesitter.configs").setup({ indent = { enable = false } })
-end)
-
-pcall(function()
-	local autopairs = require("nvim-autopairs")
-	autopairs.setup({
-		check_ts = true,
-		enable_check_bracket_line = false,
-		disable_filetype = { "TelescopePrompt", "spectre_panel", "snacks_picker_input" },
-		fast_wrap = {},
-		map_cr = true,
-	})
-end)
-
-vim.g.html_indent_autotags = "html,body,head"
-vim.g.html_indent_script1 = "inc"
-vim.g.html_indent_style1 = "inc"
-
-vim.g.disable_autoformat = false
 
 local function project_root(bufnr)
 	local markers = {

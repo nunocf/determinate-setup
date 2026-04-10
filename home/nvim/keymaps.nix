@@ -724,13 +724,6 @@
     expr = true;
   }
   {
-    key = "<Esc>";
-    mode = "t";
-    action = "<C-\\><C-n>";
-    desc = "Terminal normal mode";
-  }
-
-  {
     key = "K";
     mode = "n";
     action = "<cmd>lua vim.lsp.buf.hover()<cr>";

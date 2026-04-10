@@ -1,48 +1,8 @@
 ----------------------------------------------------------------
 -- DIAGNOSTICS, THEME LINKS, AND HASKELL UTILITIES
+-- This file remains because it contains interactive diagnostic and
+-- terminal workflow logic that depends on runtime/editor state.
 ----------------------------------------------------------------
-
-local function fix_snacks_links()
-	local map = {
-		Error = "DiagnosticSignError",
-		Warn = "DiagnosticSignWarn",
-		Info = "DiagnosticSignInfo",
-		Hint = "DiagnosticSignHint",
-	}
-
-	for level, sign in pairs(map) do
-		vim.api.nvim_set_hl(0, "SnacksNotifierBorder" .. level, { link = sign })
-		vim.api.nvim_set_hl(0, "SnacksNotifierTitle" .. level, { link = sign })
-		vim.api.nvim_set_hl(0, "SnacksNotifierFooter" .. level, { link = sign })
-	end
-
-	vim.api.nvim_set_hl(0, "SnacksPickerDir", { link = "Directory" })
-	vim.api.nvim_set_hl(0, "SnacksPickerPath", { link = "Directory" })
-	vim.api.nvim_set_hl(0, "SnacksPickerDim", { link = "Directory" })
-end
-
-vim.api.nvim_create_autocmd("ColorScheme", { callback = fix_snacks_links })
-fix_snacks_links()
-
-vim.diagnostic.config({
-	severity_sort = true,
-	signs = true,
-	underline = true,
-	update_in_insert = false,
-	float = {
-		border = "rounded",
-		source = "if_many",
-		focusable = false,
-		style = "minimal",
-		wrap = true,
-		max_width = 100,
-	},
-	virtual_text = false,
-})
-
-vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { link = "ErrorMsg" })
-
-vim.g.diagnostic_hover_enabled = false
 
 vim.api.nvim_create_autocmd("CursorHold", {
 	callback = function()
@@ -90,8 +50,6 @@ vim.keymap.set("n", "<leader>ux", function()
 	end
 	vim.notify("diagnostic hover=" .. tostring(vim.g.diagnostic_hover_enabled))
 end, { desc = "Toggle diagnostic hover" })
-
-vim.api.nvim_set_hl(0, "HaskellHole", { link = "DiagnosticError" })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = "*.hs",

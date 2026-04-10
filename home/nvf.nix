@@ -5,6 +5,62 @@
   ...
 }: let
   inherit (lib.generators) mkLuaInline;
+  # Editor tool policy:
+  # - Prefer executables inherited from the shell/flake dev environment.
+  # - Fall back to Nix-provided package paths only when the shell does not provide them.
+  # - For version-sensitive project tools (for example `cabal-fmt`), do not reference
+  #   Nix package attrs here at evaluation time; let the project shell provide them.
+  # - Keep this behavior stable to avoid unrelated global config changes breaking project tooling.
+  lspPathFirstLua = pkgs.writeText "nvf-lsp-path-first.lua" ''
+    local function path_first_cmd(binary, fallback, extra)
+      local cmd = vim.fn.exepath(binary)
+      if cmd == nil or cmd == "" then
+        cmd = fallback
+      end
+
+      local argv = { cmd }
+      if extra then
+        vim.list_extend(argv, extra)
+      end
+      return argv
+    end
+
+    -- Add future server overrides here to keep LSP resolution shell-first.
+    local lsp_fallbacks = {
+      ["lua-language-server"] = {
+        binary = "lua-language-server",
+        fallback = "${pkgs.lua-language-server}/bin/lua-language-server",
+      },
+      ["marksman"] = {
+        binary = "marksman",
+        fallback = "${pkgs.marksman}/bin/marksman",
+        extra = { "server" },
+      },
+      ["nil"] = {
+        binary = "nil",
+        fallback = "${pkgs.nil}/bin/nil",
+      },
+    }
+
+    do
+      local config = vim.lsp.config
+      for server_name, spec in pairs(lsp_fallbacks) do
+        if config[server_name] then
+          config[server_name].cmd = path_first_cmd(spec.binary, spec.fallback, spec.extra)
+        end
+      end
+    end
+
+    do
+      if vim.g.haskell_tools and vim.g.haskell_tools.hls then
+        vim.g.haskell_tools.hls.cmd = path_first_cmd(
+          "haskell-language-server-wrapper",
+          "${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper",
+          { "--lsp" }
+        )
+      end
+    end
+  '';
 in {
   home.file.".config/nvim/after/queries/haskell/injections.scm".source = ./nvim/queries/haskell/injections.scm;
   home.file.".config/lazygit/config.yml".text = ''
@@ -54,28 +110,160 @@ in {
         style = "hard";
       };
       extraLuaFiles = [
-        ./nvim/theme.lua
         ./nvim/config/core.lua
         ./nvim/config/session.lua
         ./nvim/config/filetypes.lua
         ./nvim/config/diagnostics.lua
+        lspPathFirstLua
       ];
+
+      highlight = {
+        SnacksNotifierBorderError = {link = "DiagnosticSignError";};
+        SnacksNotifierTitleError = {link = "DiagnosticSignError";};
+        SnacksNotifierFooterError = {link = "DiagnosticSignError";};
+        SnacksNotifierBorderWarn = {link = "DiagnosticSignWarn";};
+        SnacksNotifierTitleWarn = {link = "DiagnosticSignWarn";};
+        SnacksNotifierFooterWarn = {link = "DiagnosticSignWarn";};
+        SnacksNotifierBorderInfo = {link = "DiagnosticSignInfo";};
+        SnacksNotifierTitleInfo = {link = "DiagnosticSignInfo";};
+        SnacksNotifierFooterInfo = {link = "DiagnosticSignInfo";};
+        SnacksNotifierBorderHint = {link = "DiagnosticSignHint";};
+        SnacksNotifierTitleHint = {link = "DiagnosticSignHint";};
+        SnacksNotifierFooterHint = {link = "DiagnosticSignHint";};
+        SnacksPickerDir = {link = "Directory";};
+        SnacksPickerPath = {link = "Directory";};
+        SnacksPickerDim = {link = "Directory";};
+        Visual = {bg = "#374145";};
+        Search = {
+          fg = "#272e33";
+          bg = "#dbbc7f";
+        };
+        IncSearch = {
+          fg = "#272e33";
+          bg = "#e69875";
+          bold = true;
+        };
+        CurSearch = {
+          fg = "#272e33";
+          bg = "#e69875";
+          bold = true;
+        };
+        CursorLine = {bg = "#2f383e";};
+        CursorLineNr = {
+          fg = "#d3c6aa";
+          bold = true;
+        };
+        PmenuSel = {
+          fg = "#d3c6aa";
+          bg = "#374145";
+          bold = true;
+        };
+        FloatBorder = {
+          fg = "#7a8478";
+          bg = "NONE";
+        };
+        NormalFloat = {bg = "NONE";};
+        DiagnosticVirtualTextError = {link = "ErrorMsg";};
+        HaskellHole = {link = "DiagnosticError";};
+        RainbowDelimiterRed = {fg = "#d699b6";};
+        RainbowDelimiterYellow = {fg = "#dbbc7f";};
+        RainbowDelimiterBlue = {fg = "#7fbbb3";};
+        RainbowDelimiterOrange = {fg = "#e69875";};
+        RainbowDelimiterGreen = {fg = "#a7c080";};
+        RainbowDelimiterViolet = {fg = "#7a8478";};
+        RainbowDelimiterCyan = {fg = "#83c092";};
+      };
 
       options = import ./nvim/options.nix;
 
-      globals.mapleader = ",";
+      globals = {
+        mapleader = ",";
+        html_indent_autotags = "html,body,head";
+        html_indent_script1 = "inc";
+        html_indent_style1 = "inc";
+        disable_autoformat = false;
+        diagnostic_hover_enabled = false;
+      };
 
       keymaps = import ./nvim/keymaps.nix;
+      autocmds = [
+        {
+          event = ["FileType"];
+          pattern = ["markdown"];
+          callback = mkLuaInline ''
+            function()
+              vim.opt_local.wrap = true
+              vim.opt_local.spell = true
+              vim.opt_local.linebreak = true
+              vim.opt_local.textwidth = 100
+            end
+          '';
+        }
+        {
+          event = ["FileType"];
+          pattern = ["gitcommit"];
+          callback = mkLuaInline ''
+            function()
+              vim.opt_local.spell = true
+              vim.opt_local.wrap = true
+              vim.opt_local.textwidth = 72
+            end
+          '';
+        }
+        {
+          event = ["FileType"];
+          pattern = ["typescript" "typescriptreact" "javascript" "javascriptreact" "tsx"];
+          callback = mkLuaInline ''
+            function()
+              vim.opt_local.shiftwidth = 2
+              vim.opt_local.tabstop = 2
+              vim.opt_local.expandtab = true
+              vim.lsp.inlay_hint.enable(true, { bufnr = 0 })
+            end
+          '';
+        }
+        {
+          event = ["FileType"];
+          pattern = ["ruby"];
+          callback = mkLuaInline ''
+            function()
+              vim.opt_local.shiftwidth = 2
+              vim.opt_local.tabstop = 2
+              vim.opt_local.expandtab = true
+              vim.opt_local.iskeyword:append("?")
+              vim.opt_local.iskeyword:append("!")
+            end
+          '';
+        }
+      ];
       viAlias = true;
       vimAlias = true;
 
+      diagnostics = {
+        config = {
+          severity_sort = true;
+          signs = true;
+          underline = true;
+          update_in_insert = false;
+          virtual_text = false;
+          float = {
+            border = "rounded";
+            source = "if_many";
+            focusable = false;
+            style = "minimal";
+            wrap = true;
+            max_width = 100;
+          };
+        };
+        nvim-lint = import ./nvim/lint.nix {inherit pkgs lib;};
+      };
+
       lsp = import ./nvim/lsp.nix;
       languages = import ./nvim/languages.nix;
-      diagnostics.nvim-lint = import ./nvim/lint.nix {inherit pkgs lib;};
 
       treesitter = {
         enable = true;
-        fold = true;
+        fold = false;
         textobjects.enable = true;
         # autotagHtml = true;
         autotagHtml = true;
@@ -112,7 +300,16 @@ in {
 
       formatter.conform-nvim = import ./nvim/formatters.nix {inherit pkgs lib;};
 
-      autopairs.nvim-autopairs.enable = true;
+      autopairs.nvim-autopairs = {
+        enable = true;
+        setupOpts = {
+          check_ts = true;
+          enable_check_bracket_line = false;
+          disable_filetype = ["TelescopePrompt" "spectre_panel" "snacks_picker_input"];
+          fast_wrap = {};
+          map_cr = true;
+        };
+      };
 
       autocomplete.blink-cmp = {
         enable = true;
@@ -155,6 +352,20 @@ in {
             cursorline.enable = true;
           };
         };
+        rainbow-delimiters = {
+          enable = true;
+          setupOpts = {
+            highlight = [
+              "RainbowDelimiterRed"
+              "RainbowDelimiterYellow"
+              "RainbowDelimiterBlue"
+              "RainbowDelimiterOrange"
+              "RainbowDelimiterGreen"
+              "RainbowDelimiterViolet"
+              "RainbowDelimiterCyan"
+            ];
+          };
+        };
         nvim-web-devicons.enable = true;
       };
 
@@ -192,7 +403,7 @@ in {
               style = "icon";
               icon = "▎";
             };
-            numbers = "ordinal";
+            numbers = "none";
             show_buffer_close_icons = true;
             show_close_icon = false;
             color_icons = true;
@@ -346,6 +557,22 @@ in {
 
       binds.whichKey = {
         enable = true;
+        register = {
+          "<leader>a" = "Apps/Agents";
+          "<leader>f" = "Files";
+          "<leader>g" = "Git/Build";
+          "<leader>x" = "Diagnostics/Lists";
+          "<leader>l" = "LSP";
+          "<leader>c" = "Code/Change";
+          "<leader>b" = "Buffers";
+          "<leader>w" = "Windows";
+          "<leader>s" = "Surface/UI";
+          "<leader>u" = "Utilities/Toggles";
+          "<leader>q" = "Quit/Session/Home";
+          "<leader>t" = "Terminal";
+          "<leader>m" = "Markdown";
+          "<leader>n" = "Nix";
+        };
         setupOpts = {
           preset = "modern";
           icons = {

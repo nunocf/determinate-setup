@@ -1,5 +1,7 @@
 ----------------------------------------------------------------
 -- LIGHTWEIGHT SESSION PERSISTENCE
+-- This file remains because it implements custom project-scoped
+-- session behavior beyond the standard declarative nvf options.
 ----------------------------------------------------------------
 
 local session_dir = vim.fn.stdpath("state") .. "/sessions"
@@ -79,7 +81,6 @@ end
 vim.opt.sessionoptions = {
 	"buffers",
 	"curdir",
-	"folds",
 	"globals",
 	"help",
 	"localoptions",
