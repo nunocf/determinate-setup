@@ -8,7 +8,7 @@
     enable = true;
     lsp = {
       lazydev.enable = true;
-      servers = [ "lua-language-server" ];
+      servers = ["lua-language-server"];
     };
   };
 

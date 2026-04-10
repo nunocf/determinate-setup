@@ -3,8 +3,7 @@
   primaryUser,
   nvf,
   ...
-}:
-{
+}: {
   networking.hostName = "my-macbook";
 
   # host-specific homebrew casks
@@ -15,8 +14,8 @@
   # host-specific home-manager configuration
   home-manager.users.${primaryUser} = {
     imports = [
-	nvf.homeManagerModules.default
-	];
+      nvf.homeManagerModules.default
+    ];
     home.packages = with pkgs; [
       graphite-cli
     ];

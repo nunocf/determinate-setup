@@ -1,21 +1,24 @@
-{ pkgs, lib, ... }:
 {
+  pkgs,
+  lib,
+  ...
+}: {
   enable = true;
   lint_after_save = true;
 
   linters_by_ft = {
-    nix = [ "statix" "deadnix" ];
-    sh = [ "shellcheck" ];
-    bash = [ "shellcheck" ];
-    lua = [ "luacheck" ];
-    ruby = [ "ruby" ];
-    javascript = [ "eslint_d" ];
-    javascriptreact = [ "eslint_d" ];
-    typescript = [ "eslint_d" ];
-    typescriptreact = [ "eslint_d" ];
-    css = [ "stylelint" ];
-    scss = [ "stylelint" ];
-    markdown = [ "markdownlint-cli2" ];
+    nix = ["statix" "deadnix"];
+    sh = ["shellcheck"];
+    bash = ["shellcheck"];
+    lua = ["luacheck"];
+    ruby = ["ruby"];
+    javascript = ["eslint_d"];
+    javascriptreact = ["eslint_d"];
+    typescript = ["eslint_d"];
+    typescriptreact = ["eslint_d"];
+    css = ["stylelint"];
+    scss = ["stylelint"];
+    markdown = ["markdownlint-cli2"];
   };
 
   linters = {
@@ -28,7 +31,7 @@
 
     ruby = {
       cmd = "ruby";
-      args = [ "-wc" "$FILENAME" ];
+      args = ["-wc" "$FILENAME"];
       stdin = false;
       append_fname = false;
     };

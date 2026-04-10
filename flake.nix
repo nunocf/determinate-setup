@@ -14,35 +14,31 @@
 
     # declarative homebrew management
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    
+
     nvf.url = "github:notashelf/nvf";
     nvf.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    {
-      self,
-      darwin,
-      nixpkgs,
-      home-manager,
-      nix-homebrew,
-      nvf,
-      ...
-    }@inputs:
-    let
-      primaryUser = "nunocf";
-    in
-    {
-      # build darwin flake using:
-      # $ darwin-rebuild build --flake .#<name>
-      darwinConfigurations."my-macbook" = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          ./darwin
-          ./hosts/my-macbook/configuration.nix
-        ];
-        specialArgs = { inherit inputs self primaryUser nvf; };
-      };
-
+  outputs = {
+    self,
+    darwin,
+    nixpkgs,
+    home-manager,
+    nix-homebrew,
+    nvf,
+    ...
+  } @ inputs: let
+    primaryUser = "nunocf";
+  in {
+    # build darwin flake using:
+    # $ darwin-rebuild build --flake .#<name>
+    darwinConfigurations."my-macbook" = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      modules = [
+        ./darwin
+        ./hosts/my-macbook/configuration.nix
+      ];
+      specialArgs = {inherit inputs self primaryUser nvf;};
     };
+  };
 }

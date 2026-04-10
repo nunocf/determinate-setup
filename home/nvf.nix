@@ -31,7 +31,7 @@
 
       lsp = import ./nvim/lsp.nix;
       languages = import ./nvim/languages.nix;
-      diagnostics.nvim-lint = import ./nvim/lint.nix { inherit pkgs lib; };
+      diagnostics.nvim-lint = import ./nvim/lint.nix {inherit pkgs lib;};
 
       treesitter = {
         enable = true;
@@ -70,7 +70,7 @@
         ];
       };
 
-      formatter.conform-nvim = import ./nvim/formatters.nix { inherit pkgs lib; };
+      formatter.conform-nvim = import ./nvim/formatters.nix {inherit pkgs lib;};
 
       autopairs.nvim-autopairs.enable = true;
 

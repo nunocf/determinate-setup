@@ -1,5 +1,8 @@
-{ pkgs, lib, ... }:
 {
+  pkgs,
+  lib,
+  ...
+}: {
   enable = true;
   setupOpts = {
     format_on_save = {
@@ -15,25 +18,25 @@
     };
 
     formatters_by_ft = {
-      nix = [ "alejandra" ];
-      haskell = [ "fourmolu" ];
-      cabal = [ "cabal_fmt" ];
-      lua = [ "stylua" ];
-      ruby = [ "rubocop" ];
-      sh = [ "shfmt" ];
-      bash = [ "shfmt" ];
-      javascript = [ "prettierd" ];
-      javascriptreact = [ "prettierd" ];
-      typescript = [ "prettierd" ];
-      typescriptreact = [ "prettierd" ];
-      tsx = [ "prettierd" ];
-      html = [ "prettierd" ];
-      css = [ "prettierd" ];
-      scss = [ "prettierd" ];
-      json = [ "prettierd" ];
-      jsonc = [ "prettierd" ];
-      yaml = [ "prettierd" ];
-      markdown = [ "prettierd" ];
+      nix = ["alejandra"];
+      haskell = ["fourmolu"];
+      cabal = ["cabal_fmt"];
+      lua = ["stylua"];
+      ruby = ["rubocop"];
+      sh = ["shfmt"];
+      bash = ["shfmt"];
+      javascript = ["prettierd"];
+      javascriptreact = ["prettierd"];
+      typescript = ["prettierd"];
+      typescriptreact = ["prettierd"];
+      tsx = ["prettierd"];
+      html = ["prettierd"];
+      css = ["prettierd"];
+      scss = ["prettierd"];
+      json = ["prettierd"];
+      jsonc = ["prettierd"];
+      yaml = ["prettierd"];
+      markdown = ["prettierd"];
     };
 
     formatters = {
@@ -44,12 +47,12 @@
       fourmolu.command = "fourmolu";
       rubocop = {
         command = "rubocop";
-        args = [ "-A" "--stdin" "$FILENAME" ];
+        args = ["-A" "--stdin" "$FILENAME"];
         stdin = true;
       };
       cabal_fmt = {
         command = "cabal-fmt";
-        args = [ "--inplace" "$FILENAME" ];
+        args = ["--inplace" "$FILENAME"];
         stdin = false;
       };
     };
