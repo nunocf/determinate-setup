@@ -1,5 +1,7 @@
+; extends
+
 ((quasiquote
-  (quoter) @injection.language
+  (quoter) @_name
   (quasiquote_body) @injection.content)
-  (#match? @injection.language "^TH\..*Statement$")
+  (#match? @_name "^TH\..*Statement$")
   (#set! injection.language "sql"))

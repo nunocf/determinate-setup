@@ -5,6 +5,7 @@
   ...
 }: let
   inherit (lib.generators) mkLuaInline;
+  inherit (lib.hm.dag) entryAfter;
   # Editor tool policy:
   # - Prefer executables inherited from the shell/flake dev environment.
   # - Fall back to Nix-provided package paths only when the shell does not provide them.
@@ -51,17 +52,6 @@
     		end
     	end
     end
-
-    do
-    	if vim.g.haskell_tools and vim.g.haskell_tools.hls then
-    		vim.g.haskell_tools.hls.cmd = path_first_cmd(
-    			"haskell-language-server-wrapper",
-    			"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper",
-    			{ "--lsp" }
-    		)
-    	end
-    end
-
 
   '';
   dropbarLua = pkgs.writeText "nvf-dropbar.lua" ''
@@ -143,6 +133,37 @@ in {
         lspPathFirstLua
         dropbarLua
       ];
+      luaConfigRC.haskell-tools-cleanup = entryAfter ["haskell-tools-nvim"] ''
+        local wrapper = vim.fn.exepath("haskell-language-server-wrapper")
+        if wrapper ~= "" then
+          local ht = vim.g.haskell_tools
+          if type(ht) ~= "table" then
+            ht = {}
+          end
+          if type(ht.hls) ~= "table" then
+            ht.hls = {}
+          end
+
+          ht.hls.root_dir = nil
+          ht.hls.enable = nil
+          ht.hls.filetypes = nil
+
+          if type(ht.tools) ~= "table" then
+            ht.tools = {}
+          end
+          if type(ht.tools.hover) ~= "table" then
+            ht.tools.hover = {}
+          end
+          ht.tools.hover.enable = nil
+
+          ht.hls.cmd = {
+            wrapper,
+            "--lsp",
+          }
+
+          vim.g.haskell_tools = ht
+        end
+      '';
       additionalRuntimePaths = ["~/.config/nvim"];
       startPlugins = [
         pkgs.vimPlugins."dropbar-nvim"
@@ -206,6 +227,7 @@ in {
           bg = "#2d353b";
         };
         DiagnosticVirtualTextError = {link = "ErrorMsg";};
+        DiagnosticInfo = {fg = "#7fbbb3";};
         HaskellHole = {link = "DiagnosticError";};
         NixInjectedLuaBackground = {bg = "#273036";};
         RainbowDelimiterRed = {fg = "#d699b6";};
@@ -232,6 +254,21 @@ in {
       autocmds = [
         {
           event = ["FileType"];
+          pattern = ["*"];
+          callback = mkLuaInline ''
+            function()
+            	if vim.bo.buftype ~= "" then
+            		return
+            	end
+
+            	vim.opt_local.spell = false
+            end
+
+
+          '';
+        }
+        {
+          event = ["FileType"];
           pattern = ["bash" "css" "haskell" "html" "javascript" "javascriptreact" "jsonc" "lua" "nix" "ruby" "scss" "sh" "tsx" "typescript" "typescriptreact" "yaml"];
           callback = mkLuaInline ''
             function()
@@ -250,6 +287,10 @@ in {
           pattern = ["*.md" "*.markdown" "*.mkd"];
           callback = mkLuaInline ''
             function()
+            	if vim.bo.buftype ~= "" then
+            		return
+            	end
+
             	vim.opt_local.wrap = true
             	vim.opt_local.spell = true
             	vim.opt_local.linebreak = true
