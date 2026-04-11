@@ -317,7 +317,19 @@
     desc = "Type/signature actions";
   }
   {
-    key = "<leader>cf";
+    key = "dd";
+    mode = "n";
+    action = ''"+dd'';
+    desc = "Delete line to system clipboard";
+  }
+  {
+    key = "d";
+    mode = ["n" "v"];
+    action = ''"+d'';
+    desc = "Delete to system clipboard";
+  }
+  {
+    key = "<leader>cF";
     mode = "n";
     action = "<cmd>lua format_buffer_now()<cr>";
     desc = "Format buffer";
@@ -443,38 +455,38 @@
   {
     key = "d";
     mode = ["n" "v"];
-    action = ''"_d'';
-    desc = "Delete without yanking";
+    action = ''"+d'';
+    desc = "Delete to system clipboard";
   }
   {
     key = "D";
     mode = "n";
-    action = ''"_D'';
-    desc = "Delete to end without yanking";
+    action = ''"+D'';
+    desc = "Delete to end to system clipboard";
   }
   {
     key = "c";
     mode = ["n" "v"];
-    action = ''"_c'';
-    desc = "Change without yanking";
+    action = ''"+c'';
+    desc = "Change to system clipboard";
   }
   {
     key = "C";
     mode = "n";
-    action = ''"_C'';
-    desc = "Change to end without yanking";
+    action = ''"+C'';
+    desc = "Change to end to system clipboard";
   }
   {
     key = "x";
     mode = ["n" "v"];
-    action = ''"_x'';
-    desc = "Delete char without yanking";
+    action = ''"+x'';
+    desc = "Delete char to system clipboard";
   }
   {
     key = "X";
     mode = "n";
-    action = ''"_X'';
-    desc = "Backspace char without yanking";
+    action = ''"+X'';
+    desc = "Backspace char to system clipboard";
   }
   {
     key = "s";
