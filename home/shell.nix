@@ -19,7 +19,7 @@ _: {
       ls = "ls --color=auto -F";
       la = "ls -la";
       ".." = "cd ..";
-      "nix-switch" = "sudo darwin-rebuild switch --flake ~/.config/nix";
+      "nix-switch" = "cd ~/.config/nix && nix flake check && sudo darwin-rebuild switch --flake ~/.config/nix";
     };
 
     initContent = ''
