@@ -12,7 +12,6 @@
   luacheckEnabled = pkgs.luajitPackages ? luacheck;
   rubyEnabled = pkgs ? ruby;
   markdownlintEnabled = pkgs ? markdownlint-cli2;
-  hlintEnabled = pkgs ? hlint;
   eslintEnabled = pkgs ? eslint_d;
   stylelintEnabled = pkgs ? stylelint;
   markdownlintCmd = shellFirstCmd pkgs.markdownlint-cli2 "markdownlint-cli2";
@@ -26,7 +25,6 @@ in {
     bash = optionalLinter shellcheckEnabled "shellcheck";
     lua = optionalLinter luacheckEnabled "luacheck";
     ruby = optionalLinter rubyEnabled "ruby";
-    haskell = optionalLinter hlintEnabled "hlint";
     javascript = optionalLinter eslintEnabled "eslint_d";
     javascriptreact = optionalLinter eslintEnabled "eslint_d";
     typescript = optionalLinter eslintEnabled "eslint_d";
@@ -42,8 +40,6 @@ in {
     luacheck.cmd = "sh";
     luacheck.args = ["-c" (shellFirstCmd pkgs.luajitPackages.luacheck "luacheck") "sh"];
     markdownlint-cli2.cmd = markdownlintCmd;
-    hlint.cmd = "sh";
-    hlint.args = ["-c" (shellFirstCmd pkgs.hlint "hlint") "sh"];
 
     ruby = {
       cmd = "ruby";
