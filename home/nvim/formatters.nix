@@ -130,6 +130,7 @@ in {
           ignore_errors = true;
           lang_to_formatters = {
             lua = ["stylua_injected"];
+            sql = ["pg_format"];
           };
         };
       };
@@ -154,9 +155,9 @@ in {
           "-c"
           ''
             if command -v fourmolu >/dev/null 2>&1; then
-              exec fourmolu --stdin-input-file "$FILENAME"
+              exec fourmolu --ghc-opt=-XImportQualifiedPost --stdin-input-file "$FILENAME"
             else
-              exec ${lib.getExe pkgs.fourmolu} --stdin-input-file "$FILENAME"
+              exec ${lib.getExe pkgs.fourmolu} --ghc-opt=-XImportQualifiedPost --stdin-input-file "$FILENAME"
             fi
           ''
           "sh"
