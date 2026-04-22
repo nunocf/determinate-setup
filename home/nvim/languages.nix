@@ -15,5 +15,5 @@
   html.enable = true;
   css.enable = true;
   bash.enable = true;
-  ts.enable = true;
+  typescript.enable = true;
 }
