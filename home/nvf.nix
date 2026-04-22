@@ -616,6 +616,7 @@ in {
           numhl = false;
           linehl = false;
         };
+        vim.assistant.codecompanion-nvim = import ./nvim/code-companion.nix;
       };
 
       mini = import ./nvim/mini.nix;
