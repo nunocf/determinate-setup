@@ -302,26 +302,54 @@ do
 
 	local function clear_search_highlight()
 		if vim.v.hlsearch == 1 then
-			vim.schedule(function()
-				pcall(vim.cmd, "nohlsearch")
-			end)
+			pcall(vim.cmd, "nohlsearch")
 		end
 	end
-
-	vim.api.nvim_create_autocmd("CursorMoved", {
-		group = search_group,
-		callback = clear_search_highlight,
-	})
 
 	vim.api.nvim_create_autocmd("InsertEnter", {
 		group = search_group,
 		callback = clear_search_highlight,
 	})
 
+	vim.keymap.set("n", "<CR>", function()
+		clear_search_highlight()
+		return "<CR>"
+	end, { expr = true, desc = "Enter and clear search highlight" })
+
+	vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result and recenter" })
+	vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result and recenter" })
+
 	vim.keymap.set("n", "<Esc>", function()
 		clear_search_highlight()
 		return "<Esc>"
 	end, { expr = true, desc = "Escape and clear search highlight" })
+end
+
+do
+	local function codecompanion_cmdline(lhs, rhs)
+		vim.cmd.cnoreabbrev(("<expr> %s getcmdtype() == ':' && getcmdline() == '%s' && &filetype == 'codecompanion' ? '%s' : '%s'"):format(
+			lhs,
+			lhs,
+			rhs,
+			lhs
+		))
+	end
+
+	for _, cmd in ipairs({ "q", "q!", "quit", "quit!", "wq", "wq!", "x", "x!" }) do
+		codecompanion_cmdline(cmd, "CodeCompanionChat Toggle")
+	end
+
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "codecompanion",
+		callback = function(args)
+			local name = vim.api.nvim_buf_get_name(args.buf)
+			if name:match("%[CodeCompanion%]") then
+				pcall(vim.api.nvim_buf_set_name, args.buf, "Codex")
+			end
+
+			vim.wo.winbar = " Codex "
+		end,
+	})
 end
 
 do

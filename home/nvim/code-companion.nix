@@ -26,39 +26,37 @@ in {
     };
 
     adapters = mkLuaInline ''
-      function()
-        return {
-          acp = {
-            opts = {
-              show_presets = false,
-            },
-            codex = function()
+      {
+        acp = {
+          opts = {
+            show_presets = false,
+          },
+          codex = function()
               return require("codecompanion.adapters").extend("codex", {
                 defaults = {
-                  auth_method = "openai-api-key",
+                  auth_method = "chatgpt",
                   session_config_options = {
                     model = "gpt-5.4",
                   },
                 },
-              })
-            end,
-          },
-          http = {
-            openai_responses = function()
-              return require("codecompanion.adapters").extend("openai_responses", {
-                env = {
-                  api_key = "OPENAI_API_KEY",
+            })
+          end,
+        },
+        http = {
+          openai_responses = function()
+            return require("codecompanion.adapters").extend("openai_responses", {
+              env = {
+                api_key = "OPENAI_API_KEY",
+              },
+              schema = {
+                model = {
+                  default = "gpt-5.4-nano",
                 },
-                schema = {
-                  model = {
-                    default = "gpt-5.4-mini",
-                  },
-                },
-              })
-            end,
-          },
-        }
-      end
+              },
+            })
+          end,
+        },
+      }
     '';
 
     interactions = {
@@ -71,7 +69,7 @@ in {
       inline = {
         adapter = {
           name = "openai_responses";
-          model = "gpt-5.4-mini";
+          model = "gpt-5.4-nano";
         };
 
         keymaps = {

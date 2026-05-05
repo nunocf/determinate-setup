@@ -26,6 +26,8 @@ _: {
       export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
       export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
       export FZF_DEFAULT_OPTS='--height 60% --layout=reverse --border=rounded --preview-window=right,60%,border-left --color=fg:#d3c6aa,bg:-1,hl:#a7c080,fg+:#d3c6aa,bg+:#2f383e,hl+:#83c092,info:#7fbbb3,prompt:#e69875,pointer:#e67e80,marker:#dbbc7f,spinner:#a7c080,header:#7a8478,border:#7a8478,gutter:-1'
+
+      export OPENAI_API_KEY="$(security find-generic-password -a "$USER" -s openai-api-key -w)"
     '';
   };
 

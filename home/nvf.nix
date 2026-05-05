@@ -432,7 +432,13 @@ in {
         setupOpts = {
           snippets.preset = "default";
 
-          sources.default = [];
+          sources.default = [
+            "lsp"
+            "path"
+            "snippets"
+            "buffer"
+            "codecompanion"
+          ];
 
           completion = {
             accept.auto_brackets.enabled = true;
@@ -616,10 +622,10 @@ in {
           numhl = false;
           linehl = false;
         };
-        vim.assistant.codecompanion-nvim = import ./nvim/code-companion.nix;
       };
 
       mini = import ./nvim/mini.nix;
+      assistant.codecompanion-nvim = import ./nvim/code-companion.nix {inherit lib;};
     };
   };
 }

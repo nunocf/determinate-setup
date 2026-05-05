@@ -16,7 +16,7 @@
   ignorecase = true;
   smartcase = true;
   incsearch = true;
-  wrapscan = false;
+  wrapscan = true;
   swapfile = false;
   autoread = true;
   backup = false;
@@ -26,6 +26,7 @@
   relativenumber = true;
   scrolloff = 10;
   cursorline = true;
+  confirm = true;
   showmode = false;
   cmdheight = 0;
   splitkeep = "screen";

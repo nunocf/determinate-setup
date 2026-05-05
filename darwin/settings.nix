@@ -51,6 +51,7 @@
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
         NSAutomaticWindowAnimationsEnabled = false;
+        ApplePressAndHoldEnabled = true;
       };
     };
   };

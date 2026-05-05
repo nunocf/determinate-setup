@@ -741,7 +741,35 @@
     key = "<leader>ac";
     mode = "n";
     silent = true;
+    action = "<cmd>CodeCompanionChat Toggle<CR>";
+    desc = "CodeCompanion chat";
+  }
+  {
+    key = "<leader>ab";
+    mode = "n";
+    silent = true;
+    action = "<cmd>CodeCompanionChat #{buffer}<CR>";
+    desc = "Chat with buffer";
+  }
+  {
+    key = "<leader>aa";
+    mode = "n";
+    silent = true;
+    action = "<cmd>CodeCompanionActions<CR>";
+    desc = "CodeCompanion actions";
+  }
+  {
+    key = "<leader>ai";
+    mode = ["n" "v"];
+    silent = true;
+    action = "<cmd>CodeCompanion<CR>";
+    desc = "CodeCompanion inline";
+  }
+  {
+    key = "<leader>at";
+    mode = "n";
+    silent = true;
     action = "<cmd>lua toggle_codex()<CR>";
-    desc = "Toggle Codex";
+    desc = "Codex terminal";
   }
 ]
