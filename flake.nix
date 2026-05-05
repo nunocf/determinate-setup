@@ -30,7 +30,12 @@
   } @ inputs: let
     primaryUser = "nunocf";
     system = "aarch64-darwin";
-    pkgs = import nixpkgs {inherit system;};
+    mkPkgs = system:
+      import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    pkgs = mkPkgs system;
     treesitterNixInjections =
       pkgs.runCommand "treesitter-nix-injections" {
         nativeBuildInputs = [pkgs.neovim];
@@ -164,7 +169,41 @@
         ./darwin
         ./hosts/my-macbook/configuration.nix
       ];
-      specialArgs = {inherit inputs self primaryUser nvf;};
+      specialArgs = {
+        inherit inputs self primaryUser nvf;
+        machineProfile = {
+          browserApp = "Arc";
+          defaultTerminal = "kitty";
+          enableDefaultBrowserActivation = true;
+          enableOpenAIKeyExport = true;
+          gitEmail = "nunogcferreira@gmail.com";
+          gitName = "nunocf";
+          githubUser = primaryUser;
+          homeConfigurationName = "my-macbook";
+          managesSystem = true;
+        };
+      };
+    };
+    homeConfigurations."work-macbook" = home-manager.lib.homeManagerConfiguration {
+      pkgs = mkPkgs system;
+      modules = [
+        ./home
+        ./hosts/work-macbook/home.nix
+      ];
+      extraSpecialArgs = {
+        inherit inputs self primaryUser nvf;
+        machineProfile = {
+          browserApp = null;
+          defaultTerminal = "kitty";
+          enableDefaultBrowserActivation = false;
+          enableOpenAIKeyExport = false;
+          gitEmail = null;
+          gitName = null;
+          githubUser = primaryUser;
+          homeConfigurationName = "work-macbook";
+          managesSystem = false;
+        };
+      };
     };
     checks.${system} = {
       treesitter-nix-injections = treesitterNixInjections;

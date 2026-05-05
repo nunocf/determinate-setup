@@ -2,6 +2,7 @@
   primaryUser,
   pkgs,
   lib,
+  machineProfile ? {},
   ...
 }: {
   imports = [
@@ -20,16 +21,16 @@
     sessionVariables = {
       # shared environment variables
       EDITOR = "nvim";
-      TERMINAL = "kitty";
+      TERMINAL = machineProfile.defaultTerminal or "kitty";
       PAGER = "less";
       BROWSER = "open";
     };
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
-    activation = {
+    activation = lib.mkIf (machineProfile.enableDefaultBrowserActivation or false) {
       setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        /usr/bin/open -a "Arc" --args --make-default-browser
+        /usr/bin/open -a "${machineProfile.browserApp}" --args --make-default-browser
       '';
     };
   };

@@ -1,14 +1,24 @@
-{primaryUser, ...}: {
+{
+  primaryUser,
+  machineProfile ? {},
+  lib,
+  ...
+}: let
+  gitIdentity =
+    lib.optionalAttrs (machineProfile.gitName or null != null) {
+      name = machineProfile.gitName;
+    }
+    // lib.optionalAttrs (machineProfile.gitEmail or null != null) {
+      email = machineProfile.gitEmail;
+    };
+in {
   programs.git = {
     enable = true;
 
     lfs.enable = true;
 
     settings = {
-      user = {
-        name = "nunocf";
-        email = "nunogcferreira@gmail.com";
-      };
+      user = gitIdentity;
       alias = {
         aa = "add -all";
         ap = "add --patch";
@@ -23,8 +33,8 @@
         st = "status";
         yoda = "push --force-with-lease";
       };
-      github = {
-        user = primaryUser;
+      github = lib.optionalAttrs (machineProfile.githubUser or null != null) {
+        user = machineProfile.githubUser or primaryUser;
       };
       init = {
         defaultBranch = "master";
