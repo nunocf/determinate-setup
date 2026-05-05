@@ -193,13 +193,13 @@
       extraSpecialArgs = {
         inherit inputs self primaryUser nvf;
         machineProfile = {
-          browserApp = null;
+          browserApp = "Dia";
           defaultTerminal = "kitty";
           enableDefaultBrowserActivation = false;
           enableOpenAIKeyExport = false;
-          gitEmail = null;
-          gitName = null;
-          githubUser = primaryUser;
+          gitEmail = "nferreira@pagerduty.com";
+          gitName = "Nuno Ferreira";
+          githubUser = "nunocf-pagerduty";
           homeConfigurationName = "work-macbook";
           managesSystem = false;
         };
