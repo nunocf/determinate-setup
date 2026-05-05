@@ -30,6 +30,7 @@
   } @ inputs: let
     primaryUser = "nunocf";
     system = "aarch64-darwin";
+    workSettings = import ./hosts/work-macbook/settings.nix;
     mkPkgs = system:
       import nixpkgs {
         inherit system;
@@ -191,7 +192,8 @@
         ./hosts/work-macbook/home.nix
       ];
       extraSpecialArgs = {
-        inherit inputs self primaryUser nvf;
+        inherit inputs self nvf;
+        primaryUser = workSettings.primaryUser;
         machineProfile = {
           browserApp = "Dia";
           defaultTerminal = "kitty";

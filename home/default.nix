@@ -15,8 +15,11 @@
     ./direnv.nix
   ];
 
+  programs.home-manager.enable = true;
+
   home = {
     username = primaryUser;
+    homeDirectory = "/Users/${primaryUser}";
     stateVersion = "25.05";
     sessionVariables = {
       # shared environment variables

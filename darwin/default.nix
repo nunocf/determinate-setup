@@ -3,6 +3,7 @@
   inputs,
   self,
   primaryUser,
+  machineProfile,
   ...
 }: {
   imports = [
@@ -44,7 +45,7 @@
       ];
     };
     extraSpecialArgs = {
-      inherit inputs self primaryUser;
+      inherit inputs self primaryUser machineProfile;
     };
   };
 

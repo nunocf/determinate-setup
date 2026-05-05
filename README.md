@@ -32,14 +32,114 @@ Most formatter/linter binaries are expected to come from project dev shells rath
 darwin-rebuild switch --flake .#my-macbook
 ```
 
+## Fresh Personal Mac Bootstrap
+
+1. Install Xcode Command Line Tools:
+
+   ```bash
+   xcode-select --install
+   ```
+
+2. Install Nix on macOS. This repo expects a standard multi-user install; Determinate's installer is the easiest path:
+
+   ```bash
+   curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+   ```
+
+3. Open a new shell and verify Nix is available:
+
+   ```bash
+   nix --version
+   ```
+
+4. Clone this repo to `~/.config/nix`:
+
+   ```bash
+   git clone <repo-url> ~/.config/nix
+   cd ~/.config/nix
+   ```
+
+5. Bootstrap `nix-darwin` and apply the personal machine config:
+
+   ```bash
+   nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/.config/nix#my-macbook
+   ```
+
+6. Future updates can use either:
+
+   ```bash
+   darwin-rebuild switch --flake ~/.config/nix#my-macbook
+   ```
+
+   or the installed alias:
+
+   ```bash
+   nix-switch
+   ```
+
 For a Jamf-managed machine, apply only the user-level config:
 
 ```bash
-home-manager switch --flake .#work-macbook
+home-manager switch --flake ~/.config/nix#work-macbook
 ```
 
 This target intentionally skips `nix-darwin`, Homebrew ownership, macOS defaults, and default-browser activation.
 It also avoids setting a global Git identity or exporting the OpenAI API key from Keychain by default.
+
+## Fresh Work Mac Bootstrap
+
+1. Install Xcode Command Line Tools:
+
+   ```bash
+   xcode-select --install
+   ```
+
+2. Install Nix on macOS. This repo expects a standard multi-user install; Determinate's installer is the easiest path:
+
+   ```bash
+   curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+   ```
+
+3. Open a new shell and verify Nix is available:
+
+   ```bash
+   nix --version
+   ```
+
+4. Clone this repo to `~/.config/nix`:
+
+   ```bash
+   git clone <repo-url> ~/.config/nix
+   cd ~/.config/nix
+   ```
+
+5. Set the work-machine username in `hosts/work-macbook/settings.nix`:
+
+   ```nix
+   {
+     primaryUser = "your-macos-short-name";
+   }
+   ```
+
+6. Apply the managed-machine Home Manager target:
+
+   ```bash
+   nix run home-manager/master -- switch --flake ~/.config/nix#work-macbook
+   ```
+
+7. Future updates can use either:
+
+   ```bash
+   home-manager switch --flake ~/.config/nix#work-macbook
+   ```
+
+   or the installed alias:
+
+   ```bash
+   hm-switch
+   ```
+
+The `work-macbook` target reads the username from `hosts/work-macbook/settings.nix` and assumes Apple Silicon (`aarch64-darwin`).
 
 ## Notes
 
