@@ -146,6 +146,11 @@ in {
         lspPathFirstLua
         dropbarLua
       ];
+      luaConfigRC.render-markdown = ''
+        require("render-markdown").setup({
+          file_types = { "markdown", "codecompanion" },
+        })
+      '';
       luaConfigRC.haskell-tools-cleanup = entryAfter ["haskell-tools-nvim"] ''
         local wrapper = vim.fn.exepath("haskell-language-server-wrapper")
         if wrapper ~= "" then
@@ -180,6 +185,7 @@ in {
       additionalRuntimePaths = ["~/.config/nvim"];
       startPlugins = [
         pkgs.vimPlugins."dropbar-nvim"
+        pkgs.vimPlugins.render-markdown-nvim
       ];
 
       highlight = {
