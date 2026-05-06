@@ -7,15 +7,13 @@
 }: {
   imports = [
     nvf.homeManagerModules.default
+    ./configuration.nix
   ];
 
   homebrew = {
     enable = true;
-
-    formulae = ["mas"];
-
-    # Massive macOS GUI apps (.dmg/.pkg)
-    casks = [];
+    # casks = [];
+    # formulae = [];
   };
 
   home.packages = with pkgs; [
