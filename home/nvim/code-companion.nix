@@ -1,5 +1,10 @@
-{lib, ...}: let
-  mkLuaInline = lib.generators.mkLuaInline;
+{
+  lib,
+  machineProfile ? {},
+  ...
+}: let
+  inherit (lib.generators) mkLuaInline;
+  isWorkMacbook = (machineProfile.homeConfigurationName or "") == "work-macbook";
 in {
   enable = true;
 
@@ -25,13 +30,26 @@ in {
       inline.layout = "vertical";
     };
 
-    adapters = mkLuaInline ''
-      {
-        acp = {
-          opts = {
-            show_presets = false,
-          },
-          codex = function()
+    adapters = mkLuaInline (
+      if isWorkMacbook
+      then ''
+        {
+          claude_code = function()
+            return require("codecompanion.adapters").extend("claude_code", {
+              env = {
+                api_key = "CLAUDE_CODE_OAUTH_TOKEN",
+              },
+            })
+          end,
+        }
+      ''
+      else ''
+        {
+          acp = {
+            opts = {
+              show_presets = false,
+            },
+            codex = function()
               return require("codecompanion.adapters").extend("codex", {
                 defaults = {
                   auth_method = "chatgpt",
@@ -39,38 +57,46 @@ in {
                     model = "gpt-5.4",
                   },
                 },
-            })
-          end,
-        },
-        http = {
-          openai_responses = function()
-            return require("codecompanion.adapters").extend("openai_responses", {
-              env = {
-                api_key = "OPENAI_API_KEY",
-              },
-              schema = {
-                model = {
-                  default = "gpt-5.4-nano",
+              })
+            end,
+          },
+          http = {
+            openai_responses = function()
+              return require("codecompanion.adapters").extend("openai_responses", {
+                env = {
+                  api_key = "OPENAI_API_KEY",
                 },
-              },
-            })
-          end,
-        },
-      }
-    '';
-
+                schema = {
+                  model = {
+                    default = "gpt-5.4-nano",
+                  },
+                },
+              })
+            end,
+          },
+        }
+      ''
+    );
     interactions = {
-      chat.adapter = {
-        name = "codex";
-        model = "gpt-5.4";
-      };
+      chat.adapter =
+        if isWorkMacbook
+        then {name = "claude_code";}
+        else {
+          name = "codex";
+          model = "gpt-5.4";
+        };
 
       # ACP adapters are for chat sessions. Inline edits use an HTTP adapter.
       inline = {
-        adapter = {
-          name = "openai_responses";
-          model = "gpt-5.4-nano";
-        };
+        adapter =
+          if isWorkMacbook
+          then {
+            name = "claude_code";
+          }
+          else {
+            name = "openai_responses";
+            model = "gpt-5.4-nano";
+          };
 
         keymaps = {
           accept_change.n = "gda";

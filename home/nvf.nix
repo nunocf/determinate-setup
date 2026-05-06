@@ -2,10 +2,22 @@
   config,
   pkgs,
   lib,
+  machineProfile ? {},
   ...
 }: let
   inherit (lib.generators) mkLuaInline;
   inherit (lib.hm.dag) entryAfter;
+  isWorkMacbook = (machineProfile.homeConfigurationName or "") == "work-macbook";
+  # On the work laptop, bake the exact claude binary path in at eval time so
+  # toggle_codex() never falls back to codex (which would hit the OpenAI API
+  # and be blocked by Cloudflare Zero Trust).
+  aiCmdLua = pkgs.writeText "nvf-ai-cmd.lua" (
+    if isWorkMacbook
+    then ''
+      vim.g.ai_override_cmd = "${pkgs.claude-code}/bin/claude"
+    ''
+    else ""
+  );
   # Editor tool policy:
   # - Prefer executables inherited from the shell/flake dev environment.
   # - Fall back to Nix-provided package paths only when the shell does not provide them.
@@ -126,6 +138,7 @@ in {
         style = "hard";
       };
       extraLuaFiles = [
+        aiCmdLua
         ./nvim/config/core.lua
         ./nvim/config/session.lua
         ./nvim/config/filetypes.lua
@@ -269,7 +282,7 @@ in {
         }
         {
           event = ["FileType"];
-          pattern = ["bash" "css" "haskell" "html" "javascript" "javascriptreact" "jsonc" "lua" "nix" "ruby" "scss" "sh" "tsx" "typescript" "typescriptreact" "yaml"];
+          pattern = ["bash" "css" "elixir" "haskell" "heex" "html" "javascript" "javascriptreact" "jsonc" "lua" "nix" "ruby" "scss" "sh" "tsx" "typescript" "typescriptreact" "yaml"];
           callback = mkLuaInline ''
             function()
             	if vim.bo.buftype ~= "" then
@@ -385,6 +398,9 @@ in {
         grammars = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           nix
           haskell
+          elixir
+          heex
+          eex
           sql
           lua
           bash
@@ -625,7 +641,7 @@ in {
       };
 
       mini = import ./nvim/mini.nix;
-      assistant.codecompanion-nvim = import ./nvim/code-companion.nix {inherit lib;};
+      assistant.codecompanion-nvim = import ./nvim/code-companion.nix {inherit lib pkgs machineProfile;};
     };
   };
 }
