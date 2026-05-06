@@ -7,6 +7,7 @@
   shellFirstCmd = package: binary: ''
     sh -c 'if command -v ${binary} >/dev/null 2>&1; then exec ${binary} "$@"; else exec ${lib.getExe' package binary} "$@"; fi' sh
   '';
+  credoEnabled = true;
   statixEnabled = pkgs ? statix;
   shellcheckEnabled = pkgs ? shellcheck;
   luacheckEnabled = pkgs.luajitPackages ? luacheck;
@@ -20,6 +21,7 @@ in {
   lint_after_save = true;
 
   linters_by_ft = {
+    elixir = optionalLinter credoEnabled "credo";
     nix = optionalLinter statixEnabled "statix";
     sh = optionalLinter shellcheckEnabled "shellcheck";
     bash = optionalLinter shellcheckEnabled "shellcheck";
@@ -35,6 +37,10 @@ in {
   };
 
   linters = {
+    credo = {
+      required_files = [".credo.exs"];
+    };
+
     shellcheck.cmd = "sh";
     shellcheck.args = ["-c" (shellFirstCmd pkgs.shellcheck "shellcheck") "sh"];
     luacheck.cmd = "sh";

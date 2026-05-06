@@ -15,6 +15,7 @@
   alejandraEnabled = pkgs ? alejandra;
   fourmoluEnabled = pkgs ? fourmolu;
   cabalFmtEnabled = true;
+  mixEnabled = true;
   styluaEnabled = pkgs ? stylua;
   rubocopEnabled = pkgs ? rubocop;
   shfmtEnabled = pkgs ? shfmt;
@@ -38,6 +39,8 @@ in {
     formatters_by_ft = {
       nix = optionalFormatter alejandraEnabled "alejandra";
       haskell = optionalFormatter fourmoluEnabled "fourmolu";
+      elixir = optionalFormatter mixEnabled "mix";
+      heex = optionalFormatter mixEnabled "mix";
       cabal = optionalFormatter cabalFmtEnabled "cabal_fmt";
       lua = optionalFormatter styluaEnabled "stylua";
       sql = optionalFormatter pgFormatterEnabled "pg_format";

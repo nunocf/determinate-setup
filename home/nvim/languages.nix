@@ -3,6 +3,10 @@
   markdown.enable = true;
   haskell.enable = true;
   ruby.enable = true;
+  elixir = {
+    enable = true;
+    lsp.enable = false;
+  };
 
   lua = {
     enable = true;
