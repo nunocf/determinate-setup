@@ -24,7 +24,7 @@ in {
       diff = {
         enabled = true;
         provider = "inline";
-        close_chat_at = 160;
+        close_chat_at = 0;
       };
 
       inline.layout = "vertical";

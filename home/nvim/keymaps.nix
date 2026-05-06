@@ -745,6 +745,13 @@
     desc = "CodeCompanion chat";
   }
   {
+    key = "<leader>ae";
+    mode = "n";
+    silent = true;
+    action = "<cmd>lua require('edgy').toggle('right')<CR>";
+    desc = "Toggle AI sidebar";
+  }
+  {
     key = "<leader>ab";
     mode = "n";
     silent = true;
@@ -764,6 +771,13 @@
     silent = true;
     action = "<cmd>CodeCompanion<CR>";
     desc = "CodeCompanion inline";
+  }
+  {
+    key = "<leader>ap";
+    mode = ["n" "i"];
+    silent = true;
+    action = "<cmd>PasteImage<CR>";
+    desc = "Paste image from clipboard";
   }
   {
     key = "<leader>at";
