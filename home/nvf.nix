@@ -151,6 +151,33 @@ in {
           file_types = { "markdown", "codecompanion" },
         })
       '';
+      luaConfigRC.img-clip = ''
+        require("img-clip").setup({
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            use_absolute_path = true,
+          },
+        })
+      '';
+      luaConfigRC.edgy-nvim = ''
+        require("edgy").setup({
+          right = {
+            {
+              title = "CodeCompanion",
+              ft = "codecompanion",
+              size = { width = 0.40 },
+            },
+          },
+          animate = { enabled = false },
+        })
+      '';
+      luaConfigRC.vectorcode = ''
+        require("vectorcode").setup()
+      '';
       luaConfigRC.haskell-tools-cleanup = entryAfter ["haskell-tools-nvim"] ''
         local wrapper = vim.fn.exepath("haskell-language-server-wrapper")
         if wrapper ~= "" then
@@ -186,6 +213,10 @@ in {
       startPlugins = [
         pkgs.vimPlugins."dropbar-nvim"
         pkgs.vimPlugins.render-markdown-nvim
+        pkgs.vimPlugins.img-clip-nvim
+        pkgs.vimPlugins.edgy-nvim
+        pkgs.vimPlugins.vectorcode-nvim
+        pkgs.vimPlugins.codecompanion-history-nvim
       ];
 
       highlight = {

@@ -77,6 +77,23 @@ in {
         }
       ''
     );
+    extensions = {
+      history = {
+        enabled = true;
+        opts = {
+          keymap = "gh";
+          auto_save = true;
+          expiration_days = 0;
+          save_on_close = true;
+        };
+      };
+    };
+
+    strategies.chat.tools.vectorcode = {
+      description = "Search the codebase for semantically similar code chunks";
+      opts.num_query = 10;
+    };
+
     interactions = {
       chat.adapter =
         if isWorkMacbook

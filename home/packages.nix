@@ -19,6 +19,7 @@
       tectonic
       mermaid-cli
       fd
+      vectorcode
 
       # programming languages
       nodejs
