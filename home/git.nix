@@ -46,6 +46,7 @@ in {
     enable = true;
     settings = {
       browser = "open";
+      git_protocol = "ssh";
     };
   };
 }

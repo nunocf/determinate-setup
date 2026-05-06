@@ -95,6 +95,26 @@
         "type": "github"
       }
     },
+    "homebrew-hm": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770027735,
+        "narHash": "sha256-IRV+Z3yW5HRNe5YaUatkOe71RPpyJBNg8fU1rkS9yqQ=",
+        "owner": "koalalorenzo",
+        "repo": "home-manager-brew",
+        "rev": "d5d66f9a9b8e169809ca81160f9c732bdc62757b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "koalalorenzo",
+        "repo": "home-manager-brew",
+        "type": "github"
+      }
+    },
     "mnw": {
       "locked": {
         "lastModified": 1770419553,
@@ -195,6 +215,7 @@
       "inputs": {
         "darwin": "darwin",
         "home-manager": "home-manager",
+        "homebrew-hm": "homebrew-hm",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs",
         "nvf": "nvf"

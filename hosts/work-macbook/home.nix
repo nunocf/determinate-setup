@@ -9,10 +9,20 @@
     nvf.homeManagerModules.default
   ];
 
+  homebrew = {
+    enable = true;
+
+    formulae = ["mas"];
+
+    # Massive macOS GUI apps (.dmg/.pkg)
+    casks = [];
+  };
+
   home.packages = with pkgs; [
     dockutil
     graphite-cli
     kitty
+    curl
   ];
 
   home.activation.pinKittyToDock = lib.hm.dag.entryAfter ["writeBoundary"] ''

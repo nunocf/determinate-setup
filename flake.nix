@@ -12,11 +12,17 @@
     darwin.url = "github:lnl7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    # declarative homebrew management
+    # declarative homebrew management (will probably be removed in favour of homebrew-hm)
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     nvf.url = "github:notashelf/nvf";
     nvf.inputs.nixpkgs.follows = "nixpkgs";
+
+    # homebrew via home-manager
+    homebrew-hm = {
+      url = "github:koalalorenzo/home-manager-brew";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -26,6 +32,7 @@
     home-manager,
     nix-homebrew,
     nvf,
+    homebrew-hm,
     ...
   } @ inputs: let
     primaryUser = "nunocf";
@@ -190,10 +197,11 @@
       modules = [
         ./home
         ./hosts/work-macbook/home.nix
+        homebrew-hm.homeManagerModules.default
       ];
       extraSpecialArgs = {
         inherit inputs self nvf;
-        primaryUser = workSettings.primaryUser;
+        inherit (workSettings) primaryUser;
         machineProfile = {
           browserApp = "Dia";
           defaultTerminal = "kitty";
