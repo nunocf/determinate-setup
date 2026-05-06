@@ -3,20 +3,6 @@
   machineProfile ? {},
   ...
 }: let
-  openAIKeyExport = lib.optionalString (machineProfile.enableOpenAIKeyExport or false) ''
-    export OPENAI_API_KEY="$(security find-generic-password -a "$USER" -s openai-api-key -w)"
-  '';
-
-  claudeTokenExport = lib.optionalString (machineProfile.enableClaudeTokenExport or false) ''
-    export CLAUDE_CODE_OAUTH_TOKEN="$(security find-generic-password -a "$USER" -s claude-oauth-token -w)"
-  '';
-
-  rancherExport = ''
-    export PATH="$HOME/.rd/bin:$PATH"
-  '';
-
-  awsExport = "AWS_PROFILE=prod-ro";
-
   aliasSet =
     {
       ls = "ls --color=auto -F";
@@ -46,16 +32,11 @@ in {
 
     shellAliases = aliasSet;
 
-    initContent =
-      ''
-        export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-        export FZF_DEFAULT_OPTS='--height 60% --layout=reverse --border=rounded --preview-window=right,60%,border-left --color=fg:#d3c6aa,bg:-1,hl:#a7c080,fg+:#d3c6aa,bg+:#2f383e,hl+:#83c092,info:#7fbbb3,prompt:#e69875,pointer:#e67e80,marker:#dbbc7f,spinner:#a7c080,header:#7a8478,border:#7a8478,gutter:-1'
-      ''
-      + openAIKeyExport
-      + claudeTokenExport
-      + rancherExport
-      + awsExport;
+    initContent = ''
+      export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+      export FZF_DEFAULT_OPTS='--height 60% --layout=reverse --border=rounded --preview-window=right,60%,border-left --color=fg:#d3c6aa,bg:-1,hl:#a7c080,fg+:#d3c6aa,bg+:#2f383e,hl+:#83c092,info:#7fbbb3,prompt:#e69875,pointer:#e67e80,marker:#dbbc7f,spinner:#a7c080,header:#7a8478,border:#7a8478,gutter:-1'
+    '';
   };
 
   programs.starship = {

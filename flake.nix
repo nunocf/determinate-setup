@@ -183,7 +183,6 @@
           browserApp = "Arc";
           defaultTerminal = "kitty";
           enableDefaultBrowserActivation = true;
-          enableOpenAIKeyExport = true;
           gitEmail = "nunogcferreira@gmail.com";
           gitName = "nunocf";
           githubUser = primaryUser;
@@ -206,7 +205,6 @@
           browserApp = "Dia";
           defaultTerminal = "kitty";
           enableDefaultBrowserActivation = false;
-          enableOpenAIKeyExport = false;
           gitEmail = "nferreira@pagerduty.com";
           gitName = "Nuno Ferreira";
           githubUser = "nunocf-pagerduty";

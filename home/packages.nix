@@ -9,6 +9,7 @@
       tree
       ripgrep
       gh
+      graphite-cli
       zoxide
       less
       fzf
@@ -22,10 +23,6 @@
       # programming languages
       nodejs
       tree-sitter
-
-      # AI
-      codex
-      codex-acp
 
       # misc
       nil
