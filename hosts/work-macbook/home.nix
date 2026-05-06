@@ -15,21 +15,28 @@
     # casks = [];
     # formulae = [];
   };
+  home = {
+    packages = with pkgs; [
+      dockutil
+      graphite-cli
+      kitty
+      curl
+      claude-code
+      claude-agent-acp
+    ];
 
-  home.packages = with pkgs; [
-    dockutil
-    graphite-cli
-    kitty
-    curl
-  ];
+    sessionPath = [
+      "$HOME/.rd/bin"
+    ];
 
-  home.activation.pinKittyToDock = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    kitty_app="${config.home.homeDirectory}/Applications/Home Manager Apps/kitty.app"
+    activation.pinKittyToDock = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      kitty_app="${config.home.homeDirectory}/Applications/Home Manager Apps/kitty.app"
 
-    if [ -d "$kitty_app" ]; then
-      ${pkgs.dockutil}/bin/dockutil --remove kitty --no-restart >/dev/null 2>&1 || true
-      ${pkgs.dockutil}/bin/dockutil --add "$kitty_app" --no-restart
-      /usr/bin/killall Dock >/dev/null 2>&1 || true
-    fi
-  '';
+      if [ -d "$kitty_app" ]; then
+        ${pkgs.dockutil}/bin/dockutil --remove kitty --no-restart >/dev/null 2>&1 || true
+        ${pkgs.dockutil}/bin/dockutil --add "$kitty_app" --no-restart
+        /usr/bin/killall Dock >/dev/null 2>&1 || true
+      fi
+    '';
+  };
 }
