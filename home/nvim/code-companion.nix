@@ -96,13 +96,21 @@ in {
     };
 
     interactions = {
-      chat.adapter =
-        if isWorkMacbook
-        then {name = "claude_code";}
-        else {
-          name = "codex";
-          model = "gpt-5.4";
+      chat = {
+        adapter =
+          if isWorkMacbook
+          then {name = "claude_code";}
+          else {
+            name = "codex";
+            model = "gpt-5.4";
+          };
+        keymaps = {
+          stop.modes = {
+            n = "<C-c>";
+            i = "<C-c>";
+          };
         };
+      };
 
       # ACP adapters are for chat sessions. Inline edits use an HTTP adapter.
       inline = {
