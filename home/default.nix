@@ -13,6 +13,7 @@
     ./zoxide.nix
     ./nvf.nix
     ./direnv.nix
+    ./ssh.nix
   ];
 
   programs.home-manager.enable = true;

@@ -44,6 +44,11 @@ in {
   };
   programs.gh = {
     enable = true;
+    gitCredentialHelper = {
+      enable = true;
+      # This ensures 'gh' handles auth for these specific hosts
+      hosts = ["https://github.com" "https://gist.github.com"];
+    };
     settings = {
       browser = "open";
       git_protocol = "ssh";

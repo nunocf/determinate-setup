@@ -27,6 +27,11 @@
           # Source shell functions
           source ${./shell-functions.sh}
           export OPENAI_API_KEY="$(security find-generic-password -a "$USER" -s openai-api-key -w)"
+
+          if [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+          fi
+
         '';
       };
     };

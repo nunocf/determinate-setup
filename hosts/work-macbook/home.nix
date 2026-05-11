@@ -18,10 +18,6 @@
 
   programs.bash.enable = true;
 
-  programs.zsh.initContent = ''
-    export CLAUDE_CODE_OAUTH_TOKEN="$(security find-generic-password -a "$USER" -s claude-oauth-token -w)"
-    export AWS_PROFILE=prod-ro
-  '';
   home = {
     packages = with pkgs; [
       dockutil
