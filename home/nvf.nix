@@ -419,7 +419,7 @@ in {
         nvim-lint = import ./nvim/lint.nix {inherit pkgs lib;};
       };
 
-      lsp = import ./nvim/lsp.nix;
+      lsp = import ./nvim/lsp.nix {inherit lib;};
       languages = import ./nvim/languages.nix;
 
       treesitter = {

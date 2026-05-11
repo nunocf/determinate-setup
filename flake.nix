@@ -213,6 +213,9 @@
         };
       };
     };
+    # Hostname alias so `home-manager switch --flake ~/.config/nix` auto-detects
+    # the work-macbook profile on this machine without specifying #work-macbook.
+    homeConfigurations."nferreira@nferreira-M0YXMMFJPX" = self.homeConfigurations."work-macbook";
     checks.${system} = {
       treesitter-nix-injections = treesitterNixInjections;
       treesitter-haskell-sql-injections = treesitterHaskellSqlInjections;

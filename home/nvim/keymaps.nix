@@ -23,17 +23,23 @@
   {
     key = "<leader>ff";
     mode = "n";
-    action = "<cmd>lua Snacks.picker.files({ cwd = project_root() })<cr>";
-    desc = "Files (project)";
-  }
-  {
-    key = "<leader>fF";
-    mode = "n";
     action = "<cmd>lua Snacks.picker.files({ cwd = vim.fn.getcwd() })<cr>";
     desc = "Files (cwd)";
   }
   {
+    key = "<leader>fF";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.files({ cwd = project_root() })<cr>";
+    desc = "Files (project)";
+  }
+  {
     key = "<leader>fg";
+    mode = "n";
+    action = "<cmd>lua Snacks.picker.grep({ cwd = vim.fn.getcwd() })<cr>";
+    desc = "Grep (cwd)";
+  }
+  {
+    key = "<leader>fG";
     mode = "n";
     action = "<cmd>lua Snacks.picker.grep({ cwd = project_root() })<cr>";
     desc = "Grep (project)";

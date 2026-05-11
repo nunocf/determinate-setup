@@ -83,13 +83,14 @@ in {
         opts = {
           keymap = "gh";
           auto_save = true;
+          auto_generate_title = false;
           expiration_days = 0;
           save_on_close = true;
         };
       };
     };
 
-    strategies.chat.tools.vectorcode = {
+    interactions.chat.tools.vectorcode = {
       description = "Search the codebase for semantically similar code chunks";
       opts.num_query = 10;
     };

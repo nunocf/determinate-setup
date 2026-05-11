@@ -8,7 +8,7 @@
       ls = "ls --color=auto -F";
       la = "ls -la";
       ".." = "cd ..";
-      hm-switch = "home-manager switch --flake ~/.config/nix#${machineProfile.homeConfigurationName or "work-macbook"}";
+      hm-switch = "home-manager switch --flake ~/.config/nix";
     }
     // lib.optionalAttrs (machineProfile.managesSystem or false) {
       "nix-switch" = "cd ~/.config/nix && nix flake check && sudo darwin-rebuild switch --flake ~/.config/nix";
