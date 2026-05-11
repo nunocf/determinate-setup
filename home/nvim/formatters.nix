@@ -128,6 +128,9 @@ in {
         ];
         stdin = true;
       };
+      mix = {
+        cwd = mkLuaInline ''require("conform.util").root_file({ "mix.lock" })'';
+      };
       injected = {
         options = {
           ignore_errors = true;
