@@ -44,6 +44,7 @@ in {
     enable = true;
     settings = {
       add_newline = false;
+      command_timeout = 1000;
       format = "$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
       fill.symbol = " ";
       character = {

@@ -21,7 +21,7 @@ in {
     settings = {
       user = gitIdentity;
       alias = {
-        aa = "add -all";
+        aa = "add --all";
         ap = "add --patch";
         amend = "commit --amend";
         ci = "commit";
@@ -29,18 +29,62 @@ in {
         dc = "diff --cached";
         di = "diff";
         glog = "log --oneline";
-        publish = "push -u origin HEAD";
         root = "rev-parse --show-toplevel";
         st = "status";
         yoda = "push --force-with-lease";
+        sw = "switch"; # modern replacement for checkout-to-switch
+        swc = "switch -c"; # create and switch in one
+        unstage = "reset HEAD --"; # undo a staged file
+        last = "log -1 HEAD"; # quick look at last commit
+        stack = "log --oneline --graph --all --decorate"; # visualise branches
       };
       github = lib.optionalAttrs (machine.githubUser != null) {
         user = machine.githubUser or primaryUser;
       };
       init = {
-        defaultBranch = "master";
+        defaultBranch = "main";
       };
+      # Rebase
+      rebase.updateRefs = true;
+      rebase.autoStash = true;
+
+      # Pull & push
+      pull.rebase = true;
+      push.autoSetupRemote = true;
+
+      # Merge
+      merge.conflictStyle = "zdiff3";
+      rerere.enabled = true;
+
+      # Diff
+      diff.algorithm = "histogram";
+      diff.colorMoved = "default";
+
+      # Fetch
+      fetch.prune = true;
+      fetch.fsckObjects = true;
+
+      # Commit
+      commit.verbose = true;
+
+      # Branch / tag display
+      branch.sort = "-committerdate";
+      tag.sort = "version:refname";
+      column.ui = "auto";
+
+      # Performance
+      core.fsmonitor = true;
+      core.untrackedCache = true;
+
+      # Safety
+      transfer.fsckObjects = true;
+      receive.fsckObjects = true;
+
+      # Convenience
+      help.autocorrect = "prompt";
+      log.date = "iso";
     };
+
     ignores = ["**/.DS_STORE"];
   };
   programs.gh = {
