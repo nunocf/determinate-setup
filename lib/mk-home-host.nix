@@ -32,6 +32,7 @@ in
 
     extraSpecialArgs = {
       inherit inputs nvf self;
+      inherit (inputs) claude-code;
       inherit (host) primaryUser;
     };
   }
