@@ -1,11 +1,13 @@
 {
+  config,
   primaryUser,
-  pkgs,
   lib,
-  machineProfile ? {},
   ...
-}: {
+}: let
+  machine = config.my.machine;
+in {
   imports = [
+    ./machine-profile.nix
     ./packages.nix
     ./git.nix
     ./shell.nix
@@ -25,16 +27,16 @@
     sessionVariables = {
       # shared environment variables
       EDITOR = "nvim";
-      TERMINAL = machineProfile.defaultTerminal or "kitty";
+      TERMINAL = machine.defaultTerminal;
       PAGER = "less";
       BROWSER = "open";
     };
 
     # create .hushlogin file to suppress login messages
     file.".hushlogin".text = "";
-    activation = lib.mkIf (machineProfile.enableDefaultBrowserActivation or false) {
+    activation = lib.mkIf (machine.enableDefaultBrowserActivation && machine.browserApp != null) {
       setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        /usr/bin/open -a "${machineProfile.browserApp}" --args --make-default-browser
+        /usr/bin/open -a "${machine.browserApp}" --args --make-default-browser
       '';
     };
   };

@@ -1,8 +1,9 @@
 {
+  config,
   lib,
-  machineProfile ? {},
   ...
 }: let
+  machine = config.my.machine;
   aliasSet =
     {
       ls = "ls --color=auto -F";
@@ -10,7 +11,7 @@
       ".." = "cd ..";
       hm-switch = "home-manager switch --flake ~/.config/nix";
     }
-    // lib.optionalAttrs (machineProfile.managesSystem or false) {
+    // lib.optionalAttrs machine.managesSystem {
       "nix-switch" = "cd ~/.config/nix && nix flake check && sudo darwin-rebuild switch --flake ~/.config/nix";
     };
 in {

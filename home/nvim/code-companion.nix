@@ -1,10 +1,9 @@
 {
+  isWorkMacbook,
   lib,
-  machineProfile ? {},
   ...
 }: let
   inherit (lib.generators) mkLuaInline;
-  isWorkMacbook = (machineProfile.homeConfigurationName or "") == "work-macbook";
 in {
   enable = true;
 

@@ -1,5 +1,6 @@
 {
   description = "My system configuration";
+
   inputs = {
     # monorepo w/ recipes ("derivations")
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -30,195 +31,51 @@
     darwin,
     nixpkgs,
     home-manager,
-    nix-homebrew,
-    nvf,
     homebrew-hm,
+    nvf,
     ...
   } @ inputs: let
-    primaryUser = "nunocf";
-    system = "aarch64-darwin";
-    workSettings = import ./hosts/work-macbook/settings.nix;
+    inherit (nixpkgs) lib;
+
+    hosts = import ./lib/hosts.nix;
     mkPkgs = system:
       import nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
-    pkgs = mkPkgs system;
-    treesitterNixInjections =
-      pkgs.runCommand "treesitter-nix-injections" {
-        nativeBuildInputs = [pkgs.neovim];
-      } ''
-        set -euo pipefail
 
-        mkdir -p parser
-        ln -s ${pkgs.vimPlugins.nvim-treesitter.builtGrammars.nix}/parser/nix.so parser/nix.so
+    mkDarwinHost = import ./lib/mk-darwin-host.nix {
+      inherit darwin inputs nvf self;
+    };
+    mkHomeHost = import ./lib/mk-home-host.nix {
+      inherit home-manager homebrew-hm inputs nixpkgs nvf self;
+    };
 
-        cat > check.lua <<'EOF'
-        vim.opt.runtimepath = {
-          vim.env.VIMRUNTIME,
-          vim.fn.getcwd(),
-        }
+    hostsOfType = type: lib.filterAttrs (_: host: host.type == type) hosts;
+    darwinHosts = hostsOfType "darwin";
+    homeHosts = hostsOfType "home";
 
-        local query_text = table.concat(
-          vim.fn.readfile("${./home/nvim/queries/nix/injections.scm}"),
-          "\n"
-        )
-        local query = vim.treesitter.query.parse("nix", query_text)
+    homeConfigurationOutputs = lib.mapAttrs (name: host:
+      mkHomeHost {inherit host name;})
+    homeHosts;
+    homeConfigurationAliases = lib.concatMapAttrs (name: host:
+      lib.genAttrs (host.aliases or []) (_: homeConfigurationOutputs.${name}))
+    homeHosts;
 
-        vim.cmd("edit ${./home/nvf.nix}")
-        vim.bo.filetype = "nix"
-
-        local parser = vim.treesitter.get_parser(0, "nix")
-        local tree = parser:parse()[1]
-
-        local saw_inline_lua = false
-        local saw_written_lua = false
-
-        for cap_id, node in query:iter_captures(tree:root(), 0, 0, -1) do
-          if query.captures[cap_id] == "injection.content" then
-            assert(
-              node:type() == "string_fragment",
-              "injection.content must capture string_fragment"
-            )
-
-            local content = vim.treesitter.get_node_text(node, 0)
-            saw_inline_lua = saw_inline_lua
-              or content:find("vim.opt_local.wrap = true", 1, true) ~= nil
-            saw_written_lua = saw_written_lua
-              or content:find("local function path_first_cmd", 1, true) ~= nil
-          end
-        end
-
-        assert(saw_inline_lua, "missing Lua injection for mkLuaInline")
-        assert(saw_written_lua, "missing Lua injection for writeText")
-        EOF
-
-        nvim --headless -u NONE -i NONE --cmd 'set noswapfile' -S check.lua +qall!
-        touch "$out"
-      '';
-    treesitterHaskellSqlInjections =
-      pkgs.runCommand "treesitter-haskell-sql-injections" {
-        nativeBuildInputs = [pkgs.neovim];
-      } ''
-        set -euo pipefail
-
-        mkdir -p parser
-        ln -s ${pkgs.vimPlugins.nvim-treesitter.builtGrammars.haskell}/parser/haskell.so parser/haskell.so
-        ln -s ${pkgs.vimPlugins.nvim-treesitter.builtGrammars.sql}/parser/sql.so parser/sql.so
-
-        cat > check.lua <<'EOF'
-        vim.opt.runtimepath = {
-          vim.env.VIMRUNTIME,
-          vim.fn.getcwd(),
-        }
-
-        local query_text = table.concat(
-          vim.fn.readfile("${./home/nvim/queries/haskell/injections.scm}"),
-          "\n"
-        )
-        local query = vim.treesitter.query.parse("haskell", query_text)
-
-        vim.cmd("edit sample.hs")
-
-        local sample = table.concat({
-          "{-# LANGUAGE QuasiQuotes #-}",
-          "module Sample where",
-          "import Hasql.TH qualified as TH",
-          "",
-          "maybeQuery = [TH.maybeStatement|",
-          "select",
-          "  id :: int8",
-          "from wines",
-          "where id = $1 :: int8",
-          "|]",
-          "",
-          "singletonQuery = [TH.singletonStatement|",
-          "select count(*) :: int8 from wines",
-          "|]",
-        }, "\n")
-
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(sample, "\n", { plain = true }))
-        vim.bo.filetype = "haskell"
-
-        local parser = vim.treesitter.get_parser(0, "haskell")
-        local tree = parser:parse()[1]
-
-        local saw_maybe = false
-        local saw_singleton = false
-
-        for cap_id, node in query:iter_captures(tree:root(), 0, 0, -1) do
-          if query.captures[cap_id] == "injection.content" then
-            assert(
-              node:type() == "quasiquote_body",
-              "injection.content must capture quasiquote_body"
-            )
-
-            local content = vim.treesitter.get_node_text(node, 0)
-            saw_maybe = saw_maybe
-              or content:find("where id = $1 :: int8", 1, true) ~= nil
-            saw_singleton = saw_singleton
-              or content:find("select count(*) :: int8 from wines", 1, true) ~= nil
-          end
-        end
-
-        assert(saw_maybe, "missing SQL injection for TH.maybeStatement")
-        assert(saw_singleton, "missing SQL injection for TH.singletonStatement")
-        EOF
-
-        nvim --headless -u NONE -i NONE --cmd 'set noswapfile' -S check.lua +qall!
-        touch "$out"
-      '';
+    systems = lib.unique (lib.mapAttrsToList (_: host: host.system) hosts);
+    forAllSystems = lib.genAttrs systems;
   in {
     # build darwin flake using:
     # $ darwin-rebuild build --flake .#<name>
-    darwinConfigurations."my-macbook" = darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [
-        ./darwin
-        ./hosts/my-macbook/configuration.nix
-      ];
-      specialArgs = {
-        inherit inputs self primaryUser nvf;
-        machineProfile = {
-          browserApp = "Arc";
-          defaultTerminal = "kitty";
-          enableDefaultBrowserActivation = true;
-          gitEmail = "nunogcferreira@gmail.com";
-          gitName = "nunocf";
-          githubUser = primaryUser;
-          homeConfigurationName = "my-macbook";
-          managesSystem = true;
-        };
-      };
-    };
-    homeConfigurations."work-macbook" = home-manager.lib.homeManagerConfiguration {
-      pkgs = mkPkgs system;
-      modules = [
-        ./home
-        ./hosts/work-macbook/home.nix
-        homebrew-hm.homeManagerModules.default
-      ];
-      extraSpecialArgs = {
-        inherit inputs self nvf;
-        inherit (workSettings) primaryUser;
-        machineProfile = {
-          browserApp = "Dia";
-          defaultTerminal = "kitty";
-          enableDefaultBrowserActivation = false;
-          gitEmail = "nferreira@pagerduty.com";
-          gitName = "Nuno Ferreira";
-          githubUser = "nunocf-pagerduty";
-          homeConfigurationName = "work-macbook";
-          managesSystem = false;
-        };
-      };
-    };
-    # Hostname alias so `home-manager switch --flake ~/.config/nix` auto-detects
-    # the work-macbook profile on this machine without specifying #work-macbook.
-    homeConfigurations."nferreira@nferreira-M0YXMMFJPX" = self.homeConfigurations."work-macbook";
-    checks.${system} = {
-      treesitter-nix-injections = treesitterNixInjections;
-      treesitter-haskell-sql-injections = treesitterHaskellSqlInjections;
-    };
+    darwinConfigurations = lib.mapAttrs (name: host:
+      mkDarwinHost {inherit host name;})
+    darwinHosts;
+
+    homeConfigurations = homeConfigurationOutputs // homeConfigurationAliases;
+
+    checks = forAllSystems (system:
+      import ./checks/treesitter-injections.nix {
+        pkgs = mkPkgs system;
+      });
   };
 }

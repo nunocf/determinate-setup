@@ -1,15 +1,16 @@
 {
+  config,
   primaryUser,
-  machineProfile ? {},
   lib,
   ...
 }: let
+  machine = config.my.machine;
   gitIdentity =
-    lib.optionalAttrs (machineProfile.gitName or null != null) {
-      name = machineProfile.gitName;
+    lib.optionalAttrs (machine.gitName != null) {
+      name = machine.gitName;
     }
-    // lib.optionalAttrs (machineProfile.gitEmail or null != null) {
-      email = machineProfile.gitEmail;
+    // lib.optionalAttrs (machine.gitEmail != null) {
+      email = machine.gitEmail;
     };
 in {
   programs.git = {
@@ -33,8 +34,8 @@ in {
         st = "status";
         yoda = "push --force-with-lease";
       };
-      github = lib.optionalAttrs (machineProfile.githubUser or null != null) {
-        user = machineProfile.githubUser or primaryUser;
+      github = lib.optionalAttrs (machine.githubUser != null) {
+        user = machine.githubUser or primaryUser;
       };
       init = {
         defaultBranch = "master";

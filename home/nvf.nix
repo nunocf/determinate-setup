@@ -2,12 +2,11 @@
   config,
   pkgs,
   lib,
-  machineProfile ? {},
   ...
 }: let
   inherit (lib.generators) mkLuaInline;
   inherit (lib.hm.dag) entryAfter;
-  isWorkMacbook = (machineProfile.homeConfigurationName or "") == "work-macbook";
+  isWorkMacbook = config.my.machine.homeConfigurationName == "work-macbook";
   # On the work laptop, bake the exact claude binary path in at eval time so
   # toggle_codex() never falls back to codex (which would hit the OpenAI API
   # and be blocked by Cloudflare Zero Trust).
@@ -678,7 +677,9 @@ in {
       };
 
       mini = import ./nvim/mini.nix;
-      assistant.codecompanion-nvim = import ./nvim/code-companion.nix {inherit lib pkgs machineProfile;};
+      assistant.codecompanion-nvim = import ./nvim/code-companion.nix {
+        inherit isWorkMacbook lib;
+      };
     };
   };
 }
