@@ -31,6 +31,10 @@
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) unfreePackageNames;
 
+  # Shared nixpkgs fixes (see lib/overlays.nix). Applied at the system level
+  # because home-manager.useGlobalPkgs ignores home-manager's nixpkgs.overlays.
+  nixpkgs.overlays = import ../lib/overlays.nix;
+
   # homebrew installation manager
   nix-homebrew = {
     user = primaryUser;

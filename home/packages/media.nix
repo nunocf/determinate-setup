@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
+    pngpaste
     imagemagick
     ghostscript
     tectonic
