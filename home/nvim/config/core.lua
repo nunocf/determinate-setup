@@ -95,62 +95,6 @@ do
 	sync_which_key_icons()
 end
 
-do
-	local ht = vim.g.haskell_tools
-	if type(ht) ~= "table" then
-		ht = {}
-	end
-	if type(ht.hls) ~= "table" then
-		ht.hls = {}
-	end
-
-	ht.hls.root_dir = nil
-	ht.hls.enable = nil
-	ht.hls.filetypes = nil
-
-	if type(ht.tools) ~= "table" then
-		ht.tools = {}
-	end
-	if type(ht.tools.hover) ~= "table" then
-		ht.tools.hover = {}
-	end
-	ht.tools.hover.enable = nil
-
-	vim.g.haskell_tools = ht
-end
-
-do
-	local ht = vim.g.haskell_tools
-	if type(ht) ~= "table" then
-		ht = {}
-	end
-	if type(ht.hls) ~= "table" then
-		ht.hls = {}
-	end
-	if type(ht.hls.settings) ~= "table" then
-		ht.hls.settings = {}
-	end
-
-	local hs = ht.hls.settings.haskell
-	if type(hs) ~= "table" then
-		hs = {}
-		ht.hls.settings.haskell = hs
-	end
-
-	if type(hs.plugin) ~= "table" then
-		hs.plugin = {}
-	end
-	if type(hs.plugin.hlint) ~= "table" then
-		hs.plugin.hlint = {}
-	end
-
-	hs.plugin.hlint.globalOn = true
-	hs.plugin.hlint.diagnosticsOn = true
-	hs.plugin.hlint.codeActionsOn = true
-
-	vim.g.haskell_tools = ht
-end
-
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "nix",
 	callback = function()
@@ -195,103 +139,6 @@ local function project_root(bufnr)
 end
 
 _G.project_root = project_root
-
-local function warn_missing_hls()
-	if vim.bo.buftype ~= "" then
-		return
-	end
-
-	local filetype = vim.bo.filetype
-	if filetype ~= "haskell" and filetype ~= "lhaskell" then
-		return
-	end
-
-	if vim.fn.exepath("haskell-language-server-wrapper") ~= "" then
-		return
-	end
-
-	if vim.b._warned_missing_hls then
-		return
-	end
-
-	vim.b._warned_missing_hls = true
-	vim.schedule(function()
-		vim.notify(
-			"Haskell LSP is not available in this session. Start Neovim from the project dev shell so it can use the project HLS.",
-			vim.log.levels.WARN
-		)
-	end)
-end
-
-vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
-	pattern = { "*.hs", "*.lhs", "haskell", "lhaskell" },
-	callback = warn_missing_hls,
-})
-
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "FileType" }, {
-	pattern = { "*.hs", "*.lhs", "haskell", "lhaskell" },
-	callback = function(args)
-		pcall(vim.treesitter.start, args.buf, "haskell")
-	end,
-})
-
--- Expert LSP (official Elixir language server, elixir-lang/expert)
--- Not in nixpkgs; add it to your project devShell flake.
-do
-	vim.lsp.config["expert"] = vim.tbl_deep_extend("force", vim.lsp.config["expert"] or {}, {
-		cmd = { "expert", "--stdio" },
-		filetypes = { "elixir", "eelixir", "heex", "eex" },
-		root_markers = { "mix.exs" },
-	})
-	vim.lsp.enable("expert")
-end
-
-local function warn_missing_expert()
-	if vim.bo.buftype ~= "" then
-		return
-	end
-
-	local filetype = vim.bo.filetype
-	if filetype ~= "elixir" and filetype ~= "eelixir" and filetype ~= "heex" and filetype ~= "eex" then
-		return
-	end
-
-	if vim.fn.exepath("expert") ~= "" then
-		return
-	end
-
-	if vim.b._warned_missing_expert then
-		return
-	end
-
-	vim.b._warned_missing_expert = true
-	vim.schedule(function()
-		vim.notify(
-			"Elixir LSP (expert) is not available in this session. Start Neovim from the project dev shell so it can use the project expert binary.",
-			vim.log.levels.WARN
-		)
-	end)
-end
-
-vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
-	pattern = { "*.ex", "*.exs", "*.heex", "*.eex", "elixir", "eelixir", "heex", "eex" },
-	callback = warn_missing_expert,
-})
-
-local function refresh_haskell_diagnostics(bufnr)
-	for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-		if client.supports_method and client:supports_method("workspace/diagnostic/refresh") then
-			pcall(client.request, client, "workspace/diagnostic/refresh", {}, function() end, bufnr)
-		end
-	end
-end
-
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "InsertLeave", "BufWritePost" }, {
-	pattern = { "*.hs", "*.lhs", "haskell", "lhaskell" },
-	callback = function(args)
-		refresh_haskell_diagnostics(args.buf)
-	end,
-})
 
 vim.keymap.set("n", "<leader>uc", function()
 	local root = project_root()
@@ -374,12 +221,14 @@ end
 
 do
 	local function codecompanion_cmdline(lhs, rhs)
-		vim.cmd.cnoreabbrev(("<expr> %s getcmdtype() == ':' && getcmdline() == '%s' && &filetype == 'codecompanion' ? '%s' : '%s'"):format(
-			lhs,
-			lhs,
-			rhs,
-			lhs
-		))
+		vim.cmd.cnoreabbrev(
+			("<expr> %s getcmdtype() == ':' && getcmdline() == '%s' && &filetype == 'codecompanion' ? '%s' : '%s'"):format(
+				lhs,
+				lhs,
+				rhs,
+				lhs
+			)
+		)
 	end
 
 	for _, cmd in ipairs({ "q", "q!", "quit", "quit!", "wq", "wq!", "x", "x!" }) do
