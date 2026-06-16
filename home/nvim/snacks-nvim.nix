@@ -1,7 +1,7 @@
-{
+{pkgs}: {
   enable = true;
   setupOpts = {
-    dashboard = import ./dashboard.nix;
+    dashboard = import ./dashboard.nix {inherit pkgs;};
     bigfile.enable = true;
     quickfile.enable = true;
     notifier.enable = true;

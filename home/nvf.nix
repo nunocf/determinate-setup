@@ -662,7 +662,7 @@ in {
             };
           };
         };
-        snacks-nvim = import ./nvim/snacks-nvim.nix;
+        snacks-nvim = import ./nvim/snacks-nvim.nix {inherit pkgs;};
         direnv.enable = true;
       };
 
