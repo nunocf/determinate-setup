@@ -35,6 +35,8 @@
   # because home-manager.useGlobalPkgs ignores home-manager's nixpkgs.overlays.
   nixpkgs.overlays = import ../lib/overlays.nix;
 
+  documentation.enable = false;
+
   # homebrew installation manager
   nix-homebrew = {
     user = primaryUser;

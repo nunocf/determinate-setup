@@ -34,7 +34,6 @@
     ];
     taps = [
       "nikitabobko/tap"
-      "PagerDuty/pd_brews"
     ];
   };
 }

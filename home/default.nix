@@ -22,9 +22,10 @@ in {
   # Shared nixpkgs fixes (see lib/overlays.nix). Honored here for standalone
   # home-manager (work-macbook); my-macbook applies the same set at the
   # darwin system level since useGlobalPkgs ignores this option.
-  nixpkgs.overlays = import ../lib/overlays.nix;
+  nixpkgs.overlays = lib.mkIf (! machine.managesSystem) (import ../lib/overlays.nix);
 
   programs.home-manager.enable = true;
+  manual.manpages.enable = false;
 
   home = {
     username = primaryUser;
@@ -44,13 +45,6 @@ in {
   };
 
   home.activation = lib.mkMerge [
-    # Install pipx-managed tools declaratively. When a package moves back
-    # into nix (e.g. vectorcode once dlinfo is fixed), remove it from here.
-    {
-      pipxPackages = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        $DRY_RUN_CMD ${pkgs.pipx}/bin/pipx install vectorcode --quiet 2>/dev/null || true
-      '';
-    }
     (lib.mkIf (machine.enableDefaultBrowserActivation && machine.browserApp != null) {
       setDefaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
         /usr/bin/open -a "${machine.browserApp}" --args --make-default-browser

@@ -14,4 +14,20 @@
         ++ ["test_fix_package_name" "test_parse_specifier_for_metadata"];
     });
   })
+
+  # vectorcode depends on dlinfo via chromadb/phonemizer. dlinfo builds on
+  # Darwin, but its tests assert /usr/lib/libdl.dylib exists as a normal path,
+  # which is false on modern macOS.
+  (_: prev: {
+    pythonPackagesExtensions =
+      (prev.pythonPackagesExtensions or [])
+      ++ [
+        (_: pythonPrev: {
+          dlinfo = pythonPrev.dlinfo.overridePythonAttrs (old: {
+            doCheck = false;
+            meta = old.meta // {broken = false;};
+          });
+        })
+      ];
+  })
 ]
