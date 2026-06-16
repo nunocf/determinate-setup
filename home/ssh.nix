@@ -3,28 +3,24 @@
     enable = true;
     enableDefaultConfig = false;
 
-    matchBlocks = {
+    settings = {
       "*" = {
-        addKeysToAgent = "yes";
+        AddKeysToAgent = "yes";
       };
 
       "github.com" = {
-        hostname = "github.com";
-        identityFile = "~/.ssh/id_ed25519";
-        extraOptions = {
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
+        Hostname = "github.com";
+        IdentityFile = "~/.ssh/id_ed25519";
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
       };
 
       "wine-store-prod" = {
         hostname = "sede.gingeroak.pt";
         user = "root";
         identityFile = "~/.ssh/id_ed25519";
-        extraOptions = {
-          AddKeysToAgent = "yes";
-          UseKeychain = "yes";
-        };
+        AddKeysToAgent = "yes";
+        UseKeychain = "yes";
       };
     };
   };

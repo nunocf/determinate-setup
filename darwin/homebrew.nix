@@ -21,12 +21,7 @@
       "raycast"
       "betterdisplay"
 
-      # dev
-      "cursor"
-      "zed"
-
       # messaging
-      "discord"
       "slack"
       "whatsapp" # Pick your GHC package-set attribute here.
 
@@ -39,6 +34,7 @@
     ];
     taps = [
       "nikitabobko/tap"
+      "PagerDuty/pd_brews"
     ];
   };
 }
