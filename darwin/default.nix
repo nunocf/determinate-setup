@@ -1,9 +1,11 @@
 {
   pkgs,
   inputs,
+  lib,
   self,
   primaryUser,
-  machineProfile,
+  machineSettings,
+  unfreePackageNames,
   ...
 }: {
   imports = [
@@ -26,7 +28,8 @@
     enable = false; # using determinate installer
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) unfreePackageNames;
 
   # homebrew installation manager
   nix-homebrew = {
@@ -42,10 +45,11 @@
     users.${primaryUser} = {
       imports = [
         ../home
+        {my.machine = machineSettings;}
       ];
     };
     extraSpecialArgs = {
-      inherit inputs self primaryUser machineProfile;
+      inherit inputs self primaryUser;
     };
   };
 

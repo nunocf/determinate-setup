@@ -3,26 +3,28 @@
   inputs,
   nvf,
   self,
+  unfreePackageNames,
 }: {
   host,
   name,
-}:
-darwin.lib.darwinSystem {
-  inherit (host) system;
+}: let
+  machineSettings =
+    host.profile
+    // {
+      homeConfigurationName = host.profile.homeConfigurationName or name;
+    };
+in
+  darwin.lib.darwinSystem {
+    inherit (host) system;
 
-  modules =
-    [
-      ../darwin
-    ]
-    ++ (host.modules or []);
+    modules =
+      [
+        ../darwin
+      ]
+      ++ (host.modules or []);
 
-  specialArgs = {
-    inherit inputs nvf self;
-    inherit (host) primaryUser;
-    machineProfile =
-      host.profile
-      // {
-        homeConfigurationName = host.profile.homeConfigurationName or name;
-      };
-  };
-}
+    specialArgs = {
+      inherit inputs machineSettings nvf self unfreePackageNames;
+      inherit (host) primaryUser;
+    };
+  }

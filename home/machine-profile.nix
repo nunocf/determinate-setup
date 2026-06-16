@@ -1,9 +1,5 @@
-{
-  lib,
-  machineProfile ? {},
-  ...
-}: let
-  inherit (lib) mkDefault mkOption types;
+{lib, ...}: let
+  inherit (lib) mkOption types;
 in {
   options.my.machine = {
     browserApp = mkOption {
@@ -53,16 +49,5 @@ in {
       default = false;
       description = "Whether this host owns system-level nix-darwin state.";
     };
-  };
-
-  config.my.machine = {
-    browserApp = mkDefault (machineProfile.browserApp or null);
-    defaultTerminal = mkDefault (machineProfile.defaultTerminal or "kitty");
-    enableDefaultBrowserActivation = mkDefault (machineProfile.enableDefaultBrowserActivation or false);
-    gitEmail = mkDefault (machineProfile.gitEmail or null);
-    gitName = mkDefault (machineProfile.gitName or null);
-    githubUser = mkDefault (machineProfile.githubUser or null);
-    homeConfigurationName = mkDefault (machineProfile.homeConfigurationName or null);
-    managesSystem = mkDefault (machineProfile.managesSystem or false);
   };
 }

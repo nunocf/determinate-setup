@@ -2,41 +2,36 @@
   home-manager,
   homebrew-hm,
   inputs,
-  nixpkgs,
+  mkPkgs,
   nvf,
   self,
+}: {
+  host,
+  name,
 }: let
-  mkPkgs = system:
-    import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
+  machineSettings =
+    host.profile
+    // {
+      homeConfigurationName = host.profile.homeConfigurationName or name;
     };
 in
-  {
-    host,
-    name,
-  }:
-    home-manager.lib.homeManagerConfiguration {
-      pkgs = mkPkgs host.system;
+  home-manager.lib.homeManagerConfiguration {
+    pkgs = mkPkgs host.system;
 
-      modules =
-        [
-          ../home
-        ]
-        ++ (host.modules or [])
-        ++ (
-          if host.homebrewHm or false
-          then [homebrew-hm.homeManagerModules.default]
-          else []
-        );
+    modules =
+      [
+        ../home
+        {my.machine = machineSettings;}
+      ]
+      ++ (host.modules or [])
+      ++ (
+        if host.homebrewHm or false
+        then [homebrew-hm.homeManagerModules.default]
+        else []
+      );
 
-      extraSpecialArgs = {
-        inherit inputs nvf self;
-        inherit (host) primaryUser;
-        machineProfile =
-          host.profile
-          // {
-            homeConfigurationName = host.profile.homeConfigurationName or name;
-          };
-      };
-    }
+    extraSpecialArgs = {
+      inherit inputs nvf self;
+      inherit (host) primaryUser;
+    };
+  }

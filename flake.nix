@@ -38,17 +38,14 @@
     inherit (nixpkgs) lib;
 
     hosts = import ./lib/hosts.nix;
-    mkPkgs = system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
+    pkgsLib = import ./lib/pkgs.nix {inherit nixpkgs;};
+    inherit (pkgsLib) mkPkgs unfreePackageNames;
 
     mkDarwinHost = import ./lib/mk-darwin-host.nix {
-      inherit darwin inputs nvf self;
+      inherit darwin inputs nvf self unfreePackageNames;
     };
     mkHomeHost = import ./lib/mk-home-host.nix {
-      inherit home-manager homebrew-hm inputs nixpkgs nvf self;
+      inherit home-manager homebrew-hm inputs mkPkgs nvf self;
     };
 
     hostsOfType = type: lib.filterAttrs (_: host: host.type == type) hosts;
@@ -64,6 +61,15 @@
 
     systems = lib.unique (lib.mapAttrsToList (_: host: host.system) hosts);
     forAllSystems = lib.genAttrs systems;
+
+    hostBuildChecksFor = system:
+      lib.mapAttrs' (name: host:
+        lib.nameValuePair "${name}-build" (
+          if host.type == "darwin"
+          then self.darwinConfigurations.${name}.system
+          else homeConfigurationOutputs.${name}.activationPackage
+        ))
+      (lib.filterAttrs (_: host: host.system == system) hosts);
   in {
     # build darwin flake using:
     # $ darwin-rebuild build --flake .#<name>
@@ -74,7 +80,18 @@
     homeConfigurations = homeConfigurationOutputs // homeConfigurationAliases;
 
     checks = forAllSystems (system:
-      import ./checks/treesitter-injections.nix {
+      (import ./checks/treesitter-injections.nix {
+        pkgs = mkPkgs system;
+      })
+      // hostBuildChecksFor system);
+
+    devShells = forAllSystems (system:
+      import ./lib/dev-shells.nix {
+        pkgs = mkPkgs system;
+      });
+
+    apps = forAllSystems (system:
+      import ./lib/apps.nix {
         pkgs = mkPkgs system;
       });
   };
