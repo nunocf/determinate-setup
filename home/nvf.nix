@@ -5,10 +5,8 @@
   ...
 }: let
   inherit (lib.hm.dag) entryAfter;
-  # vectorcode-nvim built without the Python vectorcode package as a buildInput
-  # (the dlinfo dep chain is broken on Darwin). The Lua modules try to invoke
-  # the CLI at load-time, so they're skipped in the nixpkgs require check —
-  # they work fine at runtime when vectorcode is in PATH (installed via pipx).
+  # vectorcode-nvim modules invoke the vectorcode CLI at load time, which makes
+  # nixpkgs' require check fail before the full runtime PATH is available.
   vectorcode-nvim-lua = pkgs.vimUtils.buildVimPlugin {
     pname = "vectorcode-nvim";
     inherit (pkgs.vimPlugins.vectorcode-nvim) version src;

@@ -11,7 +11,11 @@
     ./configuration.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "claude-code"
+      "graphite-cli"
+    ];
 
   # claude-code overlay adds pkgs.claude-code (work-macbook only)
   nixpkgs.overlays = [claude-code.overlays.default];

@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    pipx
     vectorcode
     nodejs
     tree-sitter

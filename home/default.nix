@@ -30,7 +30,7 @@ in {
   home = {
     username = primaryUser;
     homeDirectory = "/Users/${primaryUser}";
-    # pipx and other user-installed tools land here
+    # User-installed tools land here.
     sessionPath = ["$HOME/.local/bin"];
     stateVersion = "25.05";
     sessionVariables = {
