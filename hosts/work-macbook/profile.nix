@@ -5,5 +5,6 @@
   gitEmail = "nferreira@pagerduty.com";
   gitName = "Nuno Ferreira";
   githubUser = "nunocf-pagerduty";
+  manageSshConfig = false;
   managesSystem = false;
 }

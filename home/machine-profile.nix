@@ -44,6 +44,12 @@ in {
       description = "Name of the Home Manager configuration backing this machine.";
     };
 
+    manageSshConfig = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether home-manager owns ~/.ssh/config directly. Set false on machines where an external tool (e.g. pd-aws/pd-ssh) owns ~/.ssh/config; nix then writes only an include fragment at ~/.ssh/config.d/nix.";
+    };
+
     managesSystem = mkOption {
       type = types.bool;
       default = false;
