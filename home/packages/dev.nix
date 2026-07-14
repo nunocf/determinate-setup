@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     vectorcode
     nodejs
+    openssl
     tree-sitter
     nil
     biome
