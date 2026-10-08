@@ -13,5 +13,6 @@
     fzf
     lazygit
     fd
+    delta
   ];
 }

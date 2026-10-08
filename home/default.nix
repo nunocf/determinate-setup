@@ -15,6 +15,7 @@ in {
     ./kitty.nix
     ./zoxide.nix
     ./nvf.nix
+    ./lazygit.nix
     ./direnv.nix
     ./ssh.nix
   ];
